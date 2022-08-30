@@ -1,0 +1,44 @@
+Package: GSNA
+Type: Package
+Title: Gene Set Networking Analysis Package (Title Case)
+Version: 0.1.0
+Authors@R: 
+    person("Jonathan", "Urbach", "M", "jurbach@mgh.harvard.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-0597-2848"))
+Description: This package provides functions for performing Gene Set Networking Analysis (GSNA). It is designed to work in tandem
+  with standard pathways analysis methods, such as CERNO, GSEA and others, for simplifying such data sets by grouping together
+  related functions on the basis of shared genes.
+    Inputs to GSNA are the outputs of pathways analysis methods: a list of gene sets, modules, pathways or GO-terms with associated
+  p-values. Since these pathways analysis methods may be used to analyze many different types of data including transcriptomic,
+  metagenomic, and high-throughput screen data sets, the GSNA pipeline is useful for analysing these data as well.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports:
+    DT,
+    dendextend,
+    ggplot2,
+    graphics,
+    grDevices,
+    igraph,
+    inline,
+    Matrix,
+    psych,
+    stringr,
+    stringi,
+    stats,
+    tibble,
+    tidyr,
+    tmod,
+    utils,
+    withr,
+    Rcpp
+Depends: R (>= 3.0.0)
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+LinkingTo: 
+    Rcpp
