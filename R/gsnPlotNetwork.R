@@ -108,33 +108,33 @@
 #' @importFrom grDevices dev.size svg pdf png
 #'
 gsnPlotNetwork <- function( object,
-                                   pathways.data = NULL,
-                                   distance = NULL,
-                                   id_col = NULL,
-                                   substitute_id_col = NULL,
-                                   stat_col = NULL,
-                                   stat_col_2 = NULL,  # NA suppresses 2-color plotting behavior
-                                   sig_order = NULL,
-                                   sig_order_2 = NULL,
-                                   optimal_extreme = NULL,
-                                   transform_function = nzLog10,
-                                   pathways_title_col = 'Title',
-                                   edge_colors = c("black", "purple", "blue", "green","yellow4", "orange","red"),
-                                   vertex_colors = c("white","yellow","red"),
-                                   vertex_colors.1 = c("white", "red" ),
-                                   vertex_colors.2 = c("white", "blue" ),
-                                   filename = NULL,
-                                   out_format = NULL,
-                                   width = NULL,
-                                   height = NULL,
-                                   vertex.shape = "circle",
-                                   vertex.size = NULL,
-                                   vertex.label.cex = NULL,
-                                   max_edge_width = NULL,
-                                   edge_arrow_size = NULL,
-                                   seed = 29189892,
-                                   layout = function(x){igraph::layout_with_fr(x, grid = "nogrid" )},
-                                   .plot = igraph::plot.igraph
+                            pathways.data = NULL,
+                            distance = NULL,
+                            id_col = NULL,
+                            substitute_id_col = NULL,
+                            stat_col = NULL,
+                            stat_col_2 = NULL,  # NA suppresses 2-color plotting behavior
+                            sig_order = NULL,
+                            sig_order_2 = NULL,
+                            optimal_extreme = NULL,
+                            transform_function = nzLog10,
+                            pathways_title_col = 'Title',
+                            edge_colors = c("black", "purple", "blue", "green","yellow4", "orange","red"),
+                            vertex_colors = c("white","yellow","red"),
+                            vertex_colors.1 = c("white", "red" ),
+                            vertex_colors.2 = c("white", "blue" ),
+                            filename = NULL,
+                            out_format = NULL,
+                            width = NULL,
+                            height = NULL,
+                            vertex.shape = "circle",
+                            vertex.size = NULL,
+                            vertex.label.cex = NULL,
+                            max_edge_width = NULL,
+                            edge_arrow_size = NULL,
+                            seed = 29189892,
+                            layout = function(x){igraph::layout_with_fr(x, grid = "nogrid" )},
+                            .plot = igraph::plot.igraph
 ){
   stopifnot( class( object ) == "GSNData" )
   if( is.null(distance) ) distance <- object$default_distance
@@ -147,8 +147,11 @@ gsnPlotNetwork <- function( object,
     if( is.null(stat_col) ) stop( "stat_col is not defined" )
     if( is.null(sig_order) ) stop( "sig_order is not defined" )
     # adding stat_col_2 and sig_order_2 for two-color networks:
-    if( is.null(stat_col_2) ) stat_col_2 <- object$pathways$stat_col_2
-    if( is.na(stat_col_2) ) stat_col_2 <- NULL;
+    if( is.null(stat_col_2) ){
+      stat_col_2 <- object$pathways$stat_col_2
+    } else if( is.na(stat_col_2) ){
+      stat_col_2 <- NULL;
+    }
     if( is.null(sig_order_2) ) sig_order_2 <- object$pathways$sig_order_2
     if( is.null(sig_order_2) ) sig_order_2 <- object$pathways$sig_order
     #
@@ -185,7 +188,9 @@ gsnPlotNetwork <- function( object,
                          colors.2 = vertex_colors.2,
                          n = 100 )
     } else {
-      pathways.data$color <- myColorF( c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways.data[[stat_col]]) )
+      pathways.data$color <- myColorF( numbers = c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways.data[[stat_col]]),
+                                       n = 100,
+                                       colors = vertex_colors )
     }
 
     igraph::vertex_attr(sigNet, "color") <- pathways.data[igraph::V(sigNet)$name,"color"]

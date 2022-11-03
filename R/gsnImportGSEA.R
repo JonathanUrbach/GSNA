@@ -61,6 +61,10 @@ gsnImportGSEA <- function( object, pathways_data = NULL, filename = NULL, id_col
   if( is.null( pathways_data ) ){
     pathways_data <- utils::read.table( file = filename, header = TRUE, sep = sep, stringsAsFactors = FALSE, check.names = FALSE )
   }
+  if( !is.null(sig_order) && ! sig_order %in% c( "loToHi", "hiToLo" ) )
+    stop( "Invalid sig_order: ", as.character( sig_order ) )
+  if( ! is.null(stat_col) && ! stat_col %in% colnames( pathways_data ) )
+    stop( "stat_col '", stat_col, "' not found in pathways data."  )
 
   field_names <- colnames( pathways_data )
 

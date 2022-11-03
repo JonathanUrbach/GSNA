@@ -53,8 +53,12 @@ gsnImportCERNO <- function( object, pathways_data = NULL, filename = NULL, id_co
   if( is.null( pathways_data ) ){
     pathways_data <- utils::read.table( file = filename, header = TRUE, sep = sep, stringsAsFactors = FALSE )
   }
+  if( !is.null(sig_order) && ! sig_order %in% c( "loToHi", "hiToLo" ) )
+    stop( "Invalid sig_order: ", as.character( sig_order ) )
+  if( ! is.null(stat_col) && ! stat_col %in% colnames( pathways_data ) )
+    stop( "stat_col '", stat_col, "' not found in pathways data."  )
 
-  cerno_fieldnames <- c("ID", "GO_ACCESSION", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val" )
+  cerno_fieldnames <- c("ID", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val" )
 
   if( length( missing_fieldnames <- cerno_fieldnames[! cerno_fieldnames %in% colnames(pathways_data)] ) > 0 ){
     warning( "Data is missing the following CERNO fields:", paste0( missing_fieldnames,  collapse = ", " ) )

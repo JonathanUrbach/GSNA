@@ -18,8 +18,12 @@
 #' @param stat_col (optional) A character vector of length 1 indicating the name of the column used as a statistic
 #' to evaluate the quality of pathways results. If unspecified, the function uses regular expressions to search for
 #' a column that is labeled as a p-value or p-adj.
+#' @param stat_col_2 (optional) A character vector of length 1 indicating the name of the column used as an optional
+#' second statistic to evaluate the quality of pathways results. If unspecified, the value is NULL.
 #' @param sig_order (optional) Either \code{'loToHi'} (default) or \code{'hiToLo'} depending on the statistic used to
 #' evaluate pathways results.
+#' @param sig_order_2 (optional) Either \code{'loToHi'} (default) or \code{'hiToLo'} depending on the \code{stat_col_2}
+#' statistic used to evaluate pathways results.
 #' @param sep A separator for text file import, defaults to "\\t". Ignored if the \code{filename} argument is not specified.
 #'
 #' @return This returns a GSNData object containing imported pathways data.
@@ -42,7 +46,7 @@
 #' @importFrom utils read.table
 #'
 
-gsnImportGenericPathways <- function( object, pathways_data = NULL, filename = NULL, type = 'generic', id_col = NULL, stat_col = NULL, sig_order = NULL, sep = "\t" ){
+gsnImportGenericPathways <- function( object, pathways_data = NULL, filename = NULL, type = 'generic', id_col = NULL, stat_col = NULL, stat_col_2 = NULL, sig_order = NULL, sig_order_2 = NULL, sep = "\t" ){
   stopifnot( class( object ) == "GSNData" )
 
   # Not searching for *all* the fields, just the critical ones. (Some are repeats, with weird names.)
@@ -50,12 +54,18 @@ gsnImportGenericPathways <- function( object, pathways_data = NULL, filename = N
   if( is.null( pathways_data ) ){
     pathways_data <- utils::read.table( file = filename, header = TRUE, sep = sep, stringsAsFactors = FALSE, check.names = FALSE )
   }
+  if( !is.null(sig_order) && ! sig_order %in% c( "loToHi", "hiToLo" ) )
+    stop( "Invalid sig_order: ", as.character( sig_order ) )
+  if( !is.null(sig_order_2) && ! sig_order_2 %in% c( "loToHi", "hiToLo" ) )
+    stop( "Invalid sig_order_2: ", as.character( sig_order_2 ) )
+  if( ! is.null(stat_col) && ! stat_col %in% colnames( pathways_data ) )
+    stop( "stat_col '", stat_col, "' not found in pathways data."  )
+  if( ! is.null(stat_col_2) &&  ! stat_col_2 %in% colnames( pathways_data ) )
+    stop( "stat_col_2 '", stat_col_2, "' not found in pathways data."  )
 
   field_names <- colnames( pathways_data )
 
   pathways <- list( data = pathways_data, type = type )
-
-  #if( "NAME" %in% field_names ) pathways$id_col <- "NAME"
 
   if( any( c("ID","id", "NAME", "Term" ) %in% field_names ) )
     pathways$id_col <- match.arg( arg = field_names, choices = c("ID","id", "NAME", "Term" ), several.ok = TRUE  )
@@ -93,6 +103,14 @@ gsnImportGenericPathways <- function( object, pathways_data = NULL, filename = N
     mesgs <- c( mesgs, paste0( " sig_order = ", pathways$sig_order ) )
   }
   if( is.null( pathways$id_col ) ) stop( "id_col (ID Column specification) required." )
+
+  # For the optional stat_col_2 and sig_order_2
+  if( !is.null(stat_col_2) ){
+    pathways$stat_col_2 <- stat_col_2
+  }
+  if( !is.null(sig_order_2) ){
+    pathways$sig_order_2 <- sig_order_2
+  }
 
   if(length(mesgs) > 0) message(paste0( c("Using:", mesgs), collapse = "\n" ))
 

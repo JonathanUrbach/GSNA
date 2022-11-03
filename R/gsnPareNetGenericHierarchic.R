@@ -6,28 +6,38 @@ invisible(utils::globalVariables( c("DIST", "M1", "M2", "Stat")))
 #' @description Method to perform hierarchical clustering and paring of gene set networks.
 #'
 #' @param object  An object of type \code{GSNData} containing a distance matrix.
+#'
 #' @param distance  (optional) character vector of length 1 indicating which pared distance matrix is to be used for assigning
 #' subnets. This defaults to the 'default_distance'.
+#'
 #' @param extreme (optional) Either \code{min} or \code{max} indicating whether low or high values are most significant,
 #' i.e. to be interpreted as the shortest distance for nearast neighbor paring. This defaults to the value set for the
 #' \code{optimal_extreme} field of the specified \code{distance} matrix.
+#'
 #' @param cutoff (optional) A cutoff specifying a maximal of minimal value that will be retained, dependent on the distance
 #' metric being used. This is not usually necessary to specify for hierachical clustering. (see details)
+#'
 #' @param keepOrphans A boolean indicating whether 'orphan' gene sets that have no nearest neighbors should be retained in
 #' the final network. (default \code{TRUE} )
+#'
 #' @param matrix_scaling_fun A function to perform transformation and scaling of the distance matrix. The default,
 #' \code{distMat2ScaledRank} converts the distance matrix to ranks and scales the resulting numbers to a range between 0 and 1.
 #' If set to NULL, the distances are not scaled or transformed. (see details)
+#'
 #' @param lower_is_closer Boolean indicating that lower values should be treated as closer for the sake of hierarchical
 #' clustering.
+#'
 #' @param k (optional) Parameter passed to cutree to determine the number of desired clusters. If both k and h are NULL,
 #' a value for k will be chosen. (see details)
+#'
 #' @param h (optional) Parameter passed to cutree to determine the cutting height for breaking the clusters into groups.
 #' (see details)
+#'
 #' @param method (optional) Parameter passed to \code{hclust()} to specify the hierarchical clustering method used.
 #' (default "average")
 #'
-#' @return
+#' @return A \code{GSNData} copy of the original \code{object} argument containing a pared distance matrix for the
+#' specified distance metric.
 #'
 #' @details This method performs hierarchical clustering, then joins the members of each cluster. This joining occurs as
 #' follows:
@@ -209,13 +219,13 @@ gsnPareNetGenericHierarchic <- function( object,
 
   if( keepOrphans ){
     # Make Orphan vertices list
-    orphanVertices <- colnames(object$distances[[distance]]$jaccard.matrix)
-    orphanVertices <- orphanVertices[!orphanVertices %in% unique(c( object$distances[[distance]]$edges.df$M1, object$distances[[distance]]$edges.df$M2))]
+    orphanVertices <- colnames(object$distances[[distance]]$matrix)
+    orphanVertices <- orphanVertices[!orphanVertices %in% unique(c( object$distances[[distance]]$edges$M1, object$distances[[distance]]$edges$M2))]
     object$distances[[distance]]$orphanVertices <- orphanVertices
     #
     if( length(orphanVertices) > 0 ){
       orphanVertices.df <- data.frame(M1 = orphanVertices, M2 = rep( NA, length(orphanVertices) ), Stat = rep( NA, length(orphanVertices) ) )
-      object$distances[[distance]]$edges.df <- rbind( object$distances[[distance]]$edges.df, orphanVertices.df )
+      object$distances[[distance]]$edges <- rbind( object$distances[[distance]]$edges, orphanVertices.df )
     }
   }
 

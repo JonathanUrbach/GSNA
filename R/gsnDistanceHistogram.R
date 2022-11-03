@@ -48,16 +48,19 @@ gsnDistanceHistogram <- function( object,
 
   for( d in distance ){
     for( dm in dist.matrix ){
-      if( dm == 'raw' ){
+      dist <- NULL
+      if( dm == 'raw' && !is.null(object$distances[[distance]]$matrix) ){
         dist <- as.vector(object$distances[[distance]]$matrix)
-      } else if( dm == 'pared' ){
+      } else if( dm == 'pared' && !is.null(object$distances[[distance]]$pared) ){
         dist <- as.vector(object$distances[[distance]]$pared )
-      } else if( dm == 'edges' ){
+      } else if( dm == 'edges' && !is.null(object$distances[[distance]]$edges)){
         dist <- as.vector(object$distances[[distance]]$edges$Stat)
       }
-      dist <- dist[!is.na(dist)]
-      data.df <- rbind( data.df,
-                        data.frame( dist = dist, `Distance Matrix` = paste0( d, ': ', dm ), check.names = FALSE) )
+      if( ! is.null( dist ) ){
+        dist <- dist[!is.na(dist)]
+        data.df <- rbind( data.df,
+                          data.frame( dist = dist, `Distance Matrix` = paste0( d, ': ', dm ), check.names = FALSE) )
+      }
     }
   }
   if( stat == "percent" ){

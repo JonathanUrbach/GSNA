@@ -6,7 +6,10 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of GSNA is to …
+GSNA stands for **G**ene **S**et **N**etwork **A**nalysis. It is a tool
+for assessing the similarity of different gene sets, and generating
+networks and subnets from them, that group together genes sets that have
+similar or associated functions.
 
 ## Installation
 

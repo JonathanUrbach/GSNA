@@ -17,7 +17,7 @@
 #' field, the function looks for occurrences of key values within the text using \code{gsub()} to substitute a URL link tag.
 #' This allows fields containing multiple IDs to be converted to a group of URL links.
 #' @param min_decimal (optional) The minimal value for decimal format. Below this, scientific notation is used (default 0.0005).
-#'
+#' @param ... Additional arguments passed to \code{DT::datatable}.
 #' @return An attractive HTML table widget, optionally with unique IDs represented as links.
 #'
 #' @export
@@ -58,7 +58,8 @@ yassifyPathways <- function( pathways,
                              n = NULL,
                              url_map_list = list(),
                              url_map_by_words_list = list(),
-                             min_decimal = 0.0005
+                             min_decimal = 0.0005,
+                             ...
                             ){
   if( is.null(n) ){ n <- nrow(pathways) }
 
@@ -73,6 +74,7 @@ yassifyPathways <- function( pathways,
   for( column in other_numeric_cols ){
     pathways[[column]] <- sapply( X = pathways[[column]],
                                   FUN = function(x){
+                                    if( is.na( x ) ) return( NA )
                                     if( abs( x ) > 1000000 || abs(x) < min_decimal )
                                       return( format( x, scientific = TRUE, digits = 5 ) )
                                     return( format( x, scientific = FALSE, digits = 5 ) )
@@ -110,22 +112,21 @@ yassifyPathways <- function( pathways,
                                     } ) )
     }
   }
+  pathways <- utils::head( pathways, n )
+  .dt <- DT::datatable( pathways,
+                        escape=FALSE,
+                        rownames=FALSE, ... )
 
   if( all( c("subnet", "subnetRank" ) %in% colnames( pathways ) ) ){
-    pathways <- utils::head( pathways, n )
     subnet.id <- unique( pathways$subnet )
     subnet.val <- c("1"="#EEE","2"="#FFF")[(as.numeric( subnet.id ) %% 2) + 1]
-
-    DT::formatStyle( DT::datatable( pathways,
-                                    escape=FALSE,
-                                    rownames=FALSE),
+    DT::formatStyle( .dt,
                      'subnet',
                      target = 'row',
-                     backgroundColor = DT::styleEqual( subnet.id, subnet.val ) )
+                     backgroundColor = DT::styleEqual( subnet.id, subnet.val )
+                     )
   } else {
-    DT::datatable( pathways,
-                   escape=FALSE,
-                   rownames=FALSE)
+    .dt
   }
 }
 

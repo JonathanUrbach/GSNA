@@ -42,16 +42,22 @@
 #' @exportS3Method
 #'
 plot.GSNData <- function( x, y = NULL,
+                          object,
                           pathways.data = NULL,
                           distance = NULL,
                           id_col = NULL,
                           substitute_id_col = NULL,
                           stat_col = NULL,
+                          stat_col_2 = NULL,  # NA suppresses 2-color plotting behavior
                           sig_order = NULL,
+                          sig_order_2 = NULL,
                           optimal_extreme = NULL,
                           transform_function = nzLog10,
                           pathways_title_col = 'Title',
-                          edge_colors = c("#000000FF", "purple", "blue", "green","yellow4", "orange","red"),
+                          edge_colors = c("black", "purple", "blue", "green","yellow4", "orange","red"),
+                          vertex_colors = c("white","yellow","red"),
+                          vertex_colors.1 = c("white", "red" ),
+                          vertex_colors.2 = c("white", "blue" ),
                           filename = NULL,
                           out_format = NULL,
                           width = NULL,
@@ -67,16 +73,22 @@ plot.GSNData <- function( x, y = NULL,
                           plot_layout_params_bool = FALSE,
                           ...
 ){
-  gsnPlotNetwork( object=x,
+  gsnPlotNetwork( object = x,
                   pathways.data = pathways.data,
                   distance = distance,
                   id_col = id_col,
+                  substitute_id_col = substitute_id_col,
                   stat_col = stat_col,
+                  stat_col_2 = stat_col_2,  # NA suppresses 2-color plotting behavior
                   sig_order = sig_order,
+                  sig_order_2 = sig_order_2,
                   optimal_extreme = optimal_extreme,
                   transform_function = transform_function,
                   pathways_title_col = pathways_title_col,
                   edge_colors = edge_colors,
+                  vertex_colors = vertex_colors,
+                  vertex_colors.1 = vertex_colors.1,
+                  vertex_colors.2 = vertex_colors.2,
                   filename = filename,
                   out_format = out_format,
                   width = width,
@@ -88,8 +100,8 @@ plot.GSNData <- function( x, y = NULL,
                   edge_arrow_size = edge_arrow_size,
                   seed = seed,
                   layout = layout,
-                  substitute_id_col = substitute_id_col,
-                  .plot = .plot) -> nw
+                  .plot = .plot
+                  ) -> nw
   if( plot_layout_params_bool ){
     attr( x = nw, which = "GSNA_plot_params" )
   } else {

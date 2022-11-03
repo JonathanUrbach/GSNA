@@ -23,6 +23,10 @@
 #' method attempts to guess.
 #' @param sig_order (optional) Either \code{'loToHi'} or \code{'hiToLo'} depending on the statistic used to
 #' evaluate pathways results. For *p*-values, this should be \code{'loToHi'}.
+#' @param stat_col_2 (optional) A character vector of length 1 indicating the name of the column used as a second
+#' statistic to evaluate pathway result quality. Used in 2-color networks.
+#' @param sig_order_2 (optional) Either \code{'loToHi'} or \code{'hiToLo'} depending on \code{stat_col_2}. Used
+#' in 2-color networks.
 #'
 #' @return This returns a GSNData object containing imported pathways data.
 #'
@@ -53,7 +57,7 @@
 #' @seealso \code{\link{gsnImportCERNO}}, \code{\link{gsnImportGSEA}}, \code{\link{gsnImportGSNORA}}, \code{\link{gsnImportGenericPathways}}
 #'
 
-gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL ){
+gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL ){
   stopifnot( class( object ) == "GSNData" )
   field_names <- colnames( pathways_data )
   # "ID", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val"
@@ -75,6 +79,22 @@ gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL
   } else {
     message( "Using generic pathways import." )
     object <- gsnImportGenericPathways( object = object, pathways_data = pathways_data, type = type, id_col = id_col, stat_col = stat_col, sig_order = sig_order )
+  }
+
+  # Setting stat_col_2 and sig_order_2
+  if( ! is.null(stat_col_2) ){
+    if( ! stat_col_2 %in% colnames( object$pathways$data ) ){
+      stop( "stat_col_2 '", stat_col_2, "' not found in pathways data."  )
+    } else {
+      object$pathways$stat_col_2 <- stat_col_2
+    }
+  }
+  if( !is.null(sig_order_2) ){
+    if( ! sig_order_2 %in% c( "loToHi", "hiToLo" ) ){
+      stop( "Invalid sig_order_2: ", as.character( sig_order_2 ) )
+    } else {
+      object$pathways$sig_order_2 <- sig_order_2
+    }
   }
 
   object

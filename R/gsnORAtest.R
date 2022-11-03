@@ -15,19 +15,29 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #'
 #' @return Returns a data.frame with an ORA (overrepresentation analysis) results set containing the following columns:
 #'
-#' 1. ID: The main identifier of the gene set
-#' 2. Title: The "Title" field from \code{tmod} class gene set collection objects, corresponding to the reformatted
-#' \code{STANDARD_NAME} field in an MSigDB xml file, with spaces substituted for underscores and initial only uppercase.
-#' **NOTE:** If the search is done using a list of gene sets rather than a \code{tmod} object, this column will contain
-#' NA.
-#' 3. Enrichment: The fraction of genes in a experimental gene set that belong to a gene set divided by the fraction of
-#' genes in the background of observable genes (including the experimental gene set) that belong to that gene set.
-#' 4. P.2S: Raw 2-sided Fisher *p*-value
-#' 5. adj.P.2S: 2-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg^1 and implemented in
-#' the \code{stats} package.
-#' 6. P.1S: Raw, 2-sided Fisher *p*-value
-#' 7. adj.P.1S: 2-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg^1 and implemented in
-#' the \code{stats} package.
+#' \itemize{
+#'   \item{*ID*: the gene set identifiers.}
+#'   \item{*Title*: The "Title" field from \code{tmod} class gene set collection objects, corresponding to the reformatted
+#'           \code{STANDARD_NAME} field in an MSigDB xml file, with spaces substituted for underscores and initial only
+#'           uppercase. **NOTE:** If the search is done using a list of gene sets rather than a \code{tmod} object, this
+#'           column will contain NA.}
+#'   \item{*a*: the number of genes observed in the background but not in *l* or the queried gene set. (present
+#'          only if \code{full == TRUE})}
+#'   \item{*b*: the number of observed genes in *l* but not the queried gene set. (present only if \code{full == TRUE})}
+#'   \item{*c*: the number of observed genes in the queried gene set but not *l*. (present only if \code{full == TRUE})}
+#'   \item{*d*: the number of observed genes in both *l* and the queried gene set, i.e. the overlap.  (present only
+#'          if \code{full == TRUE})}
+#'   \item{*N*: the number of observed genes the queried gene set.}
+#'   \item{*Enrichment*: The fold overrepresentation of genes in the overlap set *d* calculated as:
+#'       \item{\code{E = (d / (c+d)) / ((b+d)/(a+b+c+d))}}
+#'        }
+#'   \item{*P_2S*: 2-sided Fisher *p*-value. (*NOT* log-transformed, present only if \code{full == TRUE})}
+#'   \item{*adj.P.2S*: 2-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg^1 and implemented in
+#'         the \code{stats} package. (present only if \code{full == TRUE})}
+#'   \item{*P_1S*: 1-sided Fisher *p*-value. (*NOT* log-transformed.)}
+#'   \item{*adj.P.1S*: 1-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg^1 and implemented in
+#'         the \code{stats} package. (present only if \code{full == TRUE})}
+#' }
 #'
 #' @details This function is provided to allow rapid and easy overrepresentation analysis using an unordered experimental
 #' gene set to query a gene set collection that may be either an arbitrary list of gene-sets, or an \code{tmod} class
@@ -47,7 +57,7 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #'                           geneSetCollection = msig.tmod )
 #'}
 #'
-#' @seealso \code{\link[stats]{p.adjust}}
+#' @seealso \code{\link{gsnORAtest_cpp}} \code{\link[stats]{p.adjust}}
 #'
 #' @references
 #' 1. Benjamini, Y., and Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society Series B*, **57**, 289–300. <http://www.jstor.org/stable/2346101>.
@@ -63,6 +73,8 @@ gsnORAtest <- function( l, bg, geneSetCollection, Alpha = 0.05, full = FALSE ){
     m2g <- geneSetCollection
     modules <- NULL
   }
+  if( class( l ) != 'character' ) stop( 'Argument l must be a characer vector' )
+  if( class( bg ) != 'character' ) stop( 'Argument bg must be a characer vector' )
 
   out.df <- gsnORAtest_cpp( l = l, bg = bg, geneSetCollection = m2g )
 
@@ -80,82 +92,9 @@ gsnORAtest <- function( l, bg, geneSetCollection, Alpha = 0.05, full = FALSE ){
   out.df <- tibble::add_column( .data = out.df, adj.P.1S = stats::p.adjust( out.df$P.1S, method = "BH" ), .after = 'P.1S' )
 
   if( !full )
-    out.df <- within( out.df, {a <- NULL; b <- NULL; c <- NULL; d <- NULL } )
+    out.df <- within( out.df, {a <- NULL; b <- NULL; c <- NULL; d <- NULL; adj.P.2S <- NULL; P.2S <- NULL } )
 
-  return( subset( out.df[ order( out.df$P.2S ), ], adj.P.1S <= Alpha ) )
+  return( subset( out.df[ order( out.df$P.1S ), ], adj.P.1S <= Alpha ) )
 }
 
 
-#
-# gsnORAtest <- function( l, bg, geneSetCollection, Alpha = 0.05, full = FALSE ){
-#   l.0 <- intersect( l, bg )    # Only take list genes that are in the background.
-#   bg.0 <- bg[!bg %in% l.0]     # For bg.0, take bg genes not in l
-#
-#   p.1S <- c()
-#   p.2S <- c()
-#
-#   enrichment <- c()
-#
-#   A <- c() # Number of "l.0" in set
-#   B <- c() # Number of "l.0" not in set
-#   C <- c() # Number of "bg.0" in set
-#   D <- c() # Number of "bg.0" not in set
-#
-#   if( class(geneSetCollection) == 'tmod' ){
-#     m2g <- geneSetCollection$MODULES2GENES
-#     modules <- geneSetCollection$MODULES
-#   } else if(class(geneSetCollection) == 'list' ){
-#     m2g <- geneSetCollection
-#     modules <- NULL
-#   }
-#
-#   for( geneSetID in  names( m2g ) ){
-#     contingency.matrix <-  matrix( data = c( sum( l.0 %in% m2g[[geneSetID]] ),
-#                                              sum( ! l.0 %in% m2g[[geneSetID]] ),
-#                                              sum( bg.0 %in% m2g[[geneSetID]] ),
-#                                              sum( ! bg.0 %in% m2g[[geneSetID]] )),
-#                                    nrow = 2, ncol = 2 )
-#     p.2S[[geneSetID]] <- fisher.test( x = contingency.matrix, alternative = "two.sided" )$p.value
-#     p.1S[[geneSetID]] <- fisher.test( x = contingency.matrix, alternative = "greater" )$p.value
-#     enrichment[[geneSetID]] <- (contingency.matrix[1,1] / (contingency.matrix[1,1] + contingency.matrix[2,1])) /
-#       ((contingency.matrix[1,1] + contingency.matrix[1,2]) / sum( contingency.matrix))
-#     A[[geneSetID]] <- as.vector( contingency.matrix )[[1]]
-#     B[[geneSetID]] <- as.vector( contingency.matrix )[[2]]
-#     C[[geneSetID]] <- as.vector( contingency.matrix )[[3]]
-#     D[[geneSetID]] <- as.vector( contingency.matrix )[[4]]
-#   }
-#
-#   titles <- NA
-#   if( ! is.null( modules) ) titles <- modules[names( m2g ), "Title"]
-#
-#   if( full ){
-#     out.df <- data.frame(
-#       ID = names( m2g ),
-#       Title = titles,
-#       Enrichment = round( enrichment, 3),
-#       P.2S = p.2S,
-#       adj.P.2S = p.adjust( p.2S, method = "BH" ),
-#       P.1S = p.1S,
-#       adj.P.1S = p.adjust( p.1S, method = "BH" ),
-#       A = A,
-#       B = B,
-#       C = C,
-#       D = D,
-#       stringsAsFactors = FALSE
-#     )
-#   } else {
-#     out.df <- data.frame(
-#       ID = names( m2g ),
-#       Title = titles,
-#       Enrichment = round( enrichment, 3),
-#       P.2S = p.2S,
-#       adj.P.2S = p.adjust( p.2S, method = "BH" ),
-#       P.1S = p.1S,
-#       adj.P.1S = p.adjust( p.1S, method = "BH" ),
-#       stringsAsFactors = FALSE
-#     )
-#   }
-#
-#   subset( out.df[ order( p.2S ), ], adj.P.1S <= Alpha )
-# }
-#

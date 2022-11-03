@@ -107,8 +107,7 @@ gsnHierarchicalDendrogram <- function( object,
                                 names = unique( subnets.lf ) )
   }
   # Get vertex names first... because we're going to change them.
-  #vertex.names <- stats:::labels.dendrogram(GSN.dend)
-  vertex.names <- labels(GSN.dend)
+  vertex.names <- stats:::labels.dendrogram(GSN.dend)
 
   if( is.null(substitute_id_col) ) substitute_id_col <- id_col
 

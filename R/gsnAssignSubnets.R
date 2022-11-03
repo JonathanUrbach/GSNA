@@ -58,7 +58,7 @@ gsnAssignSubnets <- function( object, distance = NULL, scoreCol = NULL, highToLo
   if( !is.null(object$distances[[distance]]$clusters) )
     subnets.l$vertex_subnets$hcluster <- object$distances[[distance]]$clusters[subnets.l$vertex_subnets$vertex]
 
-  object$distances[[distance]]$edges <- subnets.l$edges
+  object$distances[[distance]]$edges <- subnets.l$edges[,1:3]
   object$distances[[distance]]$subnets <- subnets.l$subnets
   object$distances[[distance]]$vertex_subnets <- subnets.l$vertex_subnets
 
