@@ -14,12 +14,16 @@
 #' @param stat_col (optional) This is the name of the column in the pathways data.frame that contains a significance
 #' value for coloring network vertices. The default value is specified by \code{object$pathways$stat_col}.
 #'
-#' @param stat_col_2 (optional)
+#' @param stat_col_2 (optional) This is the name of an optional second column in the pathways data.frame that
+#' contains a significance value for coloring network vertices in a 2-color network. The default value is specified
+#' by \code{object$pathways$stat_col_2}. When specified, a 2-color network is generated. To force a 2-color network
+#' to plot as a standard 1-color network using \code{stat_col} alone, use \code{stat_col_2 = NA}.
 #'
 #' @param sig_order (optional) This indicates the behavior of \code{stat_col}, whether low values (\code{'loToHi'}) or
 #' high values (\code{'hiToLo'}) are most significant. The default value is specified in \code{object$pathways$sig_order}.
 #'
-#' @param sig_order_2 (optional)
+#' @param sig_order_2 (optional) This indicates the behavior of \code{stat_col_2}, whether low values (\code{'loToHi'}) or
+#' high values (\code{'hiToLo'}) are most significant. The default value is specified in \code{object$pathways$sig_order_2}.
 #'
 #' @param optimal_extreme (optional) This indicates the behavior of the statistic used to generate the distance metric,
 #' specifically whether low values (\code{'min'}) or high values \code{'max'} are to be regarded as close. This is used
@@ -36,11 +40,17 @@
 #' edge distances. By default, the colors are arranged as a rainbow with black and purple representing the greatest
 #' distannces, and orange and red the nearest distances.
 #'
-#' @param vertex_colors (optional)
-#'
-#' @param vertex_colors.1 (optional)
-#'
-#' @param vertex_colors.2 (optional)
+#' @param vertex_colors (optional) This is the standard set of colors used for a standard single color network.
+#' By default, c("white","yellow","red") is used, coloring low values white, high values red, and intermediate values
+#' yellow if \code{sig_order} is "loToHi" and vice versa if sig_order is "hiToLo".
+#' @param vertex_colors.1 (optional) This is the range of colors used for a 2-color network corresponding to
+#' values of \code{stat_col}. Up to 2 colors can be used, and should correspond to a color contrasting with
+#' \code{vertex_colors.2}. The default is c("white","red"), coloring high values red and low values white if
+#' \code{sig_order} is \code{"loToHi"} and vice versa if \code{sig_order} is \code{"hiToLo"}.
+#' @param vertex_colors.2 (optional) This is the range of colors used for a 2-color network corresponding to
+#' values of \code{stat_col_2}. Up to 2 colors can be used, and should correspond to a color contrasting with
+#' \code{vertex_colors.2}. The default is \code{c("white","blue")}, coloring high values blue and low values white
+#' if \code{sig_order_2} is \code{"loToHi"} and vice versa if \code{sig_order} is \code{"hiToLo"}.
 #'
 #' @param filename (optional) An output file name for the plot. If 'out_format' is not set (see below), the output
 #' file type will be determined by the file suffix, which can be \code{'.svg'}, \code{'.pdf'}, or \code{'.png'}. If
@@ -104,7 +114,6 @@
 #'
 #' @seealso \code{\link{plot.GSNData}}, \code{\link{gsnToIgraph}}, \code{\link[igraph]{plot.igraph}}
 #'
-
 #' @importFrom grDevices dev.size svg pdf png
 #'
 gsnPlotNetwork <- function( object,
@@ -302,169 +311,7 @@ gsnPlotNetwork <- function( object,
 
 
 
-# gsnPlotNetwork <- function( object,
-#                             pathways.data = NULL,
-#                             distance = NULL,
-#                             id_col = NULL,
-#                             substitute_id_col = NULL,
-#                             stat_col = NULL,
-#                             sig_order = NULL,
-#                             optimal_extreme = NULL,
-#                             transform_function = nzLog10,
-#                             pathways_title_col = 'Title',
-#                             edge_colors = c("#000000FF", "purple", "blue", "green","yellow4", "orange","red"),
-#                             filename = NULL,
-#                             out_format = NULL,
-#                             width = NULL,
-#                             height = NULL,
-#                             vertex.shape = "circle",
-#                             vertex.size = NULL,
-#                             vertex.label.cex = NULL,
-#                             max_edge_width = NULL,
-#                             edge_arrow_size = NULL,
-#                             seed = 29189892,
-#                             layout = function(x){igraph::layout_with_fr(x, grid = "nogrid" )},
-#                             .plot = igraph::plot.igraph
-# ){
-#   stopifnot( class( object ) == "GSNData" )
-#   if( is.null(distance) ) distance <- object$default_distance
-#   if( is.null(pathways.data) ) pathways.data <- object$pathways$data
-#   if( !is.null(pathways.data) ){
-#     if( is.null(id_col) ) id_col <- object$pathways$id_col
-#     if( is.null(stat_col) ) stat_col <- object$pathways$stat_col
-#     if( is.null(sig_order) ) sig_order <- object$pathways$sig_order
-#     if( is.null(id_col) ) stop( "id_col is not defined" )
-#     if( is.null(stat_col) ) stop( "stat_col is not defined" )
-#     if( is.null(sig_order) ) stop( "sig_order is not defined" )
-#     rownames(pathways.data) <- pathways.data[[id_col]]
-#   }
-#   if( is.null( optimal_extreme ) ) optimal_extreme <- object$distances[[distance]]$pared_optimal_extreme
-#   if( is.null( optimal_extreme ) ) optimal_extreme <- object$distances[[distance]]$optimal_extreme
-#   if( is.null( optimal_extreme ) ) stop( "optimal_extreme is not defined" )
-#
-#   if( is.null( width ) ) width <- dev.size("in")[1]
-#   if( is.null( height ) ) height <- dev.size("in")[2]
-#
-#   sigNet <- gsnToIgraph( object, distance )
-#
-#   vertex_count <- length(igraph::V( sigNet ) )
-#
-#   # Weirdly, vertex sizes seem to be callibrated relative to canvas size
-#   if( is.null( vertex.size ) ) vertex.size <- round( 100 / sqrt( vertex_count ), digits = 1 )
-#   # Vertex labels and edge width are callibrated on an absolute scale.
-#   if( is.null( vertex.label.cex ) ) vertex.label.cex <- round( 0.27 * min( width, height ) /sqrt( vertex_count ), digits = 3 )
-#   if( is.null( max_edge_width ) ) max_edge_width <- 10 *  min( width, height ) /sqrt( vertex_count )
-#
-#   # Node characteristics in this implementation are dependent on pathways.data, whereas edge characterisics are
-#   # dependent on the distance matrix.
-#   if( ! is.null( pathways.data ) ){
-#     pathways.data$color <- myColorF( c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways.data[[stat_col]]) )
-#     igraph::vertex_attr(sigNet, "color") <- pathways.data[igraph::V(sigNet)$name,"color"]
-#
-#     titles_v <- c( "Title", "Name", "NAME", "ID" )
-#     if( is.null( pathways_title_col ) )
-#       pathways_title_col <- titles_v[titles_v %in% colnames(pathways.data)][1]
-#
-#     if( !is.na( pathways_title_col ) && !is.null( pathways_title_col ) ){
-#       id <- igraph::V(sigNet)$name
-#       if( ! is.null( substitute_id_col ) )
-#         id <- pathways.data[igraph::V(sigNet)$name, substitute_id_col ]
-#
-#       igraph::V(sigNet)$label <- paste0( id,
-#                                          "\n",
-#                                          gsub( x = pathways.data[igraph::V(sigNet)$name, pathways_title_col ],
-#                                                pattern = '(.{1,15})(\\s)',
-#                                                replacement = '\\1\n' ) )# Adds converts '\s' to '\n' after up to 1
-#     } else if( ! is.null( substitute_id_col ) ){
-#       id <- pathways.data[igraph::V(sigNet)$name, substitute_id_col ]
-#       igraph::V(sigNet)$label <- id
-#     }
-#   }
-#
-#   paredDistRange <- structure(  range( object$distances[[distance]]$pared, na.rm = TRUE ), names = c("min","max" ) )
-#
-#   if( optimal_extreme == "min" ){
-#     paredDistRange <- structure(rev( paredDistRange ), names = c("min","max" ) )
-#   }
-#   scale_fun <- function(x){ (x - paredDistRange[['min']]) / ( paredDistRange[['max']] - paredDistRange[['min']] ) }
-#   convert_fun <- function(x){ scale_fun(object$distances[[distance]]$pared[x[1], x[2]] ) }
-#
-#   igraph::E(sigNet)$width <-
-#     1+as.integer( apply( X = read.table( text = attr( igraph::E(sigNet),"vnames" ), sep = "|"),
-#                          MARGIN = 1,
-#                          FUN = convert_fun ) * max_edge_width )
-#
-#   # The arrow.size argument doesn't seem to work properly for igraph, so we're making it configurable, but not
-#   # used by default.
-#   if( !is.null(  edge_arrow_size ) ) igraph::E(sigNet)$arrow.size <- edge_arrow_size
-#
-#   igraph::E(sigNet)$color <-
-#     myColorF( numbers = 1+as.integer(apply(X = read.table(text = attr( igraph::E(sigNet),"vnames" ), sep = "|"),
-#                                            MARGIN = 1,
-#                                            FUN = convert_fun ) * (length( edge_colors ) - 1 ) ),
-#               n = length( edge_colors ),
-#               colors = edge_colors )
-#
-#   igraph::V(sigNet)$shape <- vertex.shape
-#   igraph::V(sigNet)$size <- vertex.size
-#   igraph::V(sigNet)$label.cex <- vertex.label.cex
-#
-#   if( is.null(out_format) ){
-#     if( ! is.null( filename ) ){
-#       if( stringr::str_detect( string =  filename, pattern = stringr::regex( "\\.svg$", ignore_case = TRUE) ) ){
-#         out_format <- "svg"
-#       } else if( stringr::str_detect( string =  filename, pattern = stringr::regex( "\\.pdf$", ignore_case = TRUE) ) ){
-#         out_format <- "pdf"
-#       } else if( stringr::str_detect( string =  filename, pattern = stringr::regex( "\\.png$", ignore_case = TRUE) ) ){
-#         out_format <- "png"
-#       } else {
-#         stop( "Need to specify output type." )
-#       }
-#     } else {
-#       out_format <- 'plot'
-#     }
-#   } else if ( out_format %in% c("svg", "pdf", "png") & is.null(filename) ){
-#     stop( "filename argument needed for svg, pdf, or png" )
-#   }
-#
-#   # Default is 'plot'
-#   do_nothing <- function(file = NULL, width = width, height = height){}
-#   out_fun <- do_nothing
-#   close_fun <- do_nothing
-#
-#   if( out_format == "svg" ){
-#     out_fun <- svg
-#     close_fun <- dev.off
-#   } else if( out_format == "pdf" ){
-#     out_fun <- pdf
-#     close_fun <- dev.off
-#   }  else if( out_format == "png" ){
-#     out_fun <- png
-#     close_fun <- dev.off
-#   }
-#
-#   # Store plotting parameters as GSNA_plot_params attribute.
-#   attr( x = sigNet, which = "GSNA_plot_params" ) <- list(width = width,
-#                                                          height = height,
-#                                                          vertex.size = vertex.size,
-#                                                          vertex.label.cex = vertex.label.cex,
-#                                                          vertex.shape =  vertex.shape,
-#                                                          seed = seed,
-#                                                          max_edge_width = max_edge_width
-#                                                         )
-#
-#   {
-#     out_fun( file = filename, width = width, height = height  )
-#     par( mar = c(0.5, 0.5, 0.5, 0.5) )
-#     if( !is.null( seed ) ){
-#       withr::with_seed( seed = seed, code = .plot(sigNet, layout = layout ) )
-#     } else {
-#       .plot(sigNet, layout = layout )
-#     }
-#     close_fun() -> out
-#   }
-#   invisible( sigNet )
-# }
+
 
 #' @importFrom grDevices col2rgb
 #'
