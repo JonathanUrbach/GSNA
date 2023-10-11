@@ -1,6 +1,139 @@
-get_usr_x_coords_per_inch <- function() ( par('usr')[2] - par('usr')[1] ) / par('pin')[1]
+
+#' get_usr_x_coords_per_inch
+#'
+#' @description Internal GSNA package function to return the ratio of user x coordinates per inch. This number is used
+#' in the \code{makeNodeSizeLegend()} functions.
+#'
+#' @return The numerical value corresponding to \code{par('usr')[2] - par('usr')[1] ) / par('pin')[1]}
+#'
+#' @examples
+#' \dontrun{
+#'     uxcpi <- get_usr_x_coords_per_inch()
+#'}
+#'
+get_usr_x_coords_per_inch <- function(){
+  ( par('usr')[2] - par('usr')[1] ) / par('pin')[1]
+}
 
 
+#' makeNodeSizeLegend
+#'
+#' @description Internal GSNA package function to generate a vertex size legend for GSNA network plots generated
+#' via \code{gsnPlotNetwork()} which uses \code{\link{[igraph]plot.igraph}()} from the igraph package to generate plots.
+#'
+#' @param numbers A vector containing numerical values to be mapped to a range of vertex sizes. The only really needs
+#' to be a mininimum and a maximum value to establish a set of scale values.
+#'
+#' @param sizeEncode.fun The function used by \code{gsnPlotNetwork()} to convert the value in \code{n_col} (usually
+#' representing gene set sizes) into vertex sizes within the \code{igraph::plot.igraph()} function. For the current
+#' implementation of the \code{igraph} package, vertex sizes are user x coordinates * 200.
+#'
+#' @param usr_x_coords_per_inch The ratio of horizontal (x) user coordinates per inch at the time when (or immediately
+#' after) \code{plot.igraph()} is called, equal to \code{( par('usr')[2] - par('usr')[1] ) / par('pin')[1]}. This ratio
+#' is essential for correctly sizing the vertices in the legend. If not specified when the function is called,
+#' \code{get_usr_x_coords_per_inch} will be called to obtain this value, but this is only valid if \code{plot.window()}
+#' has not been called to create a new user coordinate system.
+#'
+#' @param log_scale (optional) Logical value indicating whether the size values should be incremented in a linear or
+#' logrithmic scale. If not specified, then this will be decided based on the range of minimum to maximum values
+#' specified in the \code{numbers} argument.
+#'
+#' @param cex.ticks (optional) The font size used for tick labels. (default: par('cex'))
+#'
+#' @param legend.lab (optional) The label for the legend, generally the name of the pathways data field used for scaling
+#' the vertex sizes.
+#'
+#' @param legend.lab.cex (optional) The font size of the legend labels in cex units. (default: \code{cex.ticks * 1.1})
+#'
+#' @param legend.fg (optional) The foreground color of the legend, used for font, tick and border color. (default: par("fg"))
+#'
+#' @param legend.bg (optional) The background color of the legend. Doesn't currently do anything.  (default: par("bg"))
+#'
+#' @param legend.vertex.fg (optional) The foreground color of the legend vertices, used to set the border color of vertices
+#' in the legend. This should generally be the same as the value of \code{vertex.frame.color} assigned when generating the
+#' igraph network. (default: par("fg"))
+#'
+#' @param legend.vertex.bg (optional) The background color of the legend vertices, used to set the fill color of vertices
+#' in the legend. (default: "#DDDDDD")
+#'
+#' @param font_face (optional) The font family used for text in the legend. (default: par( "family" ))
+#'
+#' @param .plt.leg Required plot area where the legend is drawn, specified in the manner of par('plt') as a vector of
+#' four values in figure units. This is generally determined before rendering by calling \code{makeNodeSizeLegend()}
+#' and the other legend plot functions with a provisional value for .plt.leg that specifies the maximal available
+#' region for plotting the legend and the arguments \code{render.bool = FALSE}, \code{optimize.legend.size = TRUE} and
+#' \code{h.adjust} specified as \code{"left", "right", or "center"} prior to rendering. The function returns a list of
+#' graphical parameters including an optimized \code{.plt.leg} (see value) and the different values for this returned
+#' by the various legend plot functions can be reconciled prior to calling this function a second time with
+#' \code{render.bool = TRUE} to actually render the legend.
+#'
+#' @param .fin (optional) The width and height of the current figure in inches. It is advisable to allow this to be
+#' automatically determined. (default: par('fin'))
+#'
+#' @param .pin (optional) The width and height of the current plot region in inches. It is advisable to allow this
+#' to be automatically determined. (default: par('pin'))
+#'
+#' @param .usr (optional) The range of user coordinates corresponding to the plot region. It is advisable to allow
+#' this to be automatically determined. (default: par('usr'))
+#'
+#' @param order_high_to_low (optional) If TRUE, tells the function to order the vertices in the legend with the largest
+#' first, and the smallest last. Otherwise, vertices are ordered from lowest to highest. (default FALSE)
+#'
+#' @param optimize.legend.size (optional) Tells the function to optimize the legend dimensions and graphical parameters.
+#' (default: FALSE)
+#'
+#' @param y.compression.factor (optional) A compression factor allowing lines of the legend to be squeezed together
+#' if less than one or stretched apart if greater than one. When less than 1, this can result in vertices overlapping.
+#' (default: 1)
+#'
+#' @param v.adjust (optional) This argument, which is passed to the function \code{\link{adjust_plt}()} controls how the
+#' legend position and height are optimized. Valid values are "top", "center", "bottom" and NULL. See
+#' \code{\link{adjust_plt}()} for more details. (default: "top")
+#'
+#' @param h.adjust (optional) This argument, which is passed to the function \code{\link{adjust_plt}()} controls how the
+#' legend position and width are optimized. Valid values are "left", "center", "right" and NULL. See
+#' \code{\link{adjust_plt}()} for more details.
+#'
+#' @param draw.legend.box.bool (optional) This argument is a logical, telling the function to draw a box around the
+#' legend. (default: FALSE)
+#'
+#' @param bottom_legend_margin (optional) Number of lines added to the bottom to create a bottom legend margin.
+#' (default: FALSE)
+#'
+#' @param restore.params.bool (optional) Logical telling the function to restore any graphical parameters that may have
+#' been changed to their values when the function was called. (restore.params.bool: TRUE)
+#'
+#' @param render.bool (optional) Logical telling the function to actually render the legend as opposed to merely
+#' calculating graphical parameters. (default: TRUE)
+#'
+#' @return The function returns a list with a set of graphic parameters, including the optimized value \code{.plt.leg} if
+#' \code{optimize.legend.size = TRUE}.
+#'
+#' @examples
+#' \dontrun{
+#'     uxcpi <- get_usr_x_coords_per_inch()
+#'
+#'     .plt.leg <- c( legend_left_x.fig,
+#'                    legend_left_x.fig + legend_x_size.fig,
+#'                    legend_bottom_y.fig
+#'                    legend_top_y.fig )
+#'
+#'     legend.list <- makeNodeSizeLegend( numbers = c(10, 240),
+#'                                        sizeEncode.fun = sizeEncode.fun,
+#'                                        .plt.leg = .plt.leg,
+#'                                        legend.lab = "Gene Set Size",
+#'                                        legend.lab.cex = 1,
+#'                                        legend.fg = "black",
+#'                                        legend.vertex.fg = "black",
+#'                                        legend.vertex.bg = "#CCCCCC",
+#'                                        usr_x_coords_per_inch = uxcpi,
+#'                                        draw.legend.box.bool = TRUE,
+#'                                        h.adjust = "left",
+#'                                        render.bool = TRUE,
+#'                                        optimize.legend.size = TRUE  )
+#' }
+#'
+#'
 makeNodeSizeLegend <-
   function(numbers,
            sizeEncode.fun,

@@ -16,7 +16,7 @@ getStringHeightsFigure <- function( strings,
     sizes <- try( strheight( s = as.character( strings ), units = "figure", cex = cex, family = font_face ), silent = TRUE )
   }
   if( is.null(sizes) && method == "csi" ||
-      ( class(sizes) == "try-error" && method == "auto" )
+      ( ( "try-error" %in% class(sizes) ) && method == "auto" )
   ){
     sizes <-  sapply( X = strings, FUN = function(x) ifelse( !is.null(x), cex * CSI / height.fig, 0 ) )
   }

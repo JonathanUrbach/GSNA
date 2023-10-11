@@ -16,7 +16,7 @@ getStringWidthsUsr <- function( strings,
     sizes <- try( strwidth( s = as.character( strings ), units = "user", cex = cex, family = font_face ), silent = TRUE )
   }
   if( is.null(sizes) && method == "cwi" ||
-      ( class(sizes) == "try-error" && method == "auto" )
+      ( ( "try-error" %in% class(sizes) ) && method == "auto" )
   ){
     sizes <- nchar( strings ) * cex * CWI * (.xlim[2] - .xlim[1]) / width.plt
   }

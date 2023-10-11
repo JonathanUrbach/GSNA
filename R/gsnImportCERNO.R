@@ -47,7 +47,7 @@
 #' @importFrom utils read.table
 #'
 gsnImportCERNO <- function( object, pathways_data = NULL, filename = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, sep = "\t" ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
 
   if( is.null( pathways_data ) && is.null( filename ) ) stop( "The 'pathways_data' and 'filename' arguments cannot both be NULL." )
   if( is.null( pathways_data ) ){

@@ -20,7 +20,7 @@
 #'
 #' @seealso \code{\link{distMat2ScaledRank}()}
 distMat2Rank <- function( mat, lower_is_closer = TRUE ){
-  if( class( mat ) == "dist" ){
+  if( "dist" %in% class( mat ) ){
     mat <- as.matrix(mat)
   }
   if( nrow( mat ) != ncol( mat ) ){

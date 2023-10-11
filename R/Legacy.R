@@ -149,7 +149,7 @@ gsnPlotNetwork.old <- function( object,
                                 layout = function(x){igraph::layout_with_fr(x, grid = "nogrid" )},
                                 .plot = igraph::plot.igraph
 ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   if( is.null(distance) ) distance <- object$default_distance
   if( is.null(pathways.data) ) pathways.data <- object$pathways$data
   if( !is.null(pathways.data) ){
@@ -450,14 +450,16 @@ gsnHierarchicalDendrogram.old <- function( object,
                                            font_face = 'Courier',
                                            modules = NULL
 ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
 
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( distance ) ) stop( 'Need distance argument.' )
 
   if( !is.null( modules ) ){
-    if( class(modules) == 'tmod' ){
+    if( 'tmod' %in% class(modules) ){
       pathways_dat <- modules$MODULES
+    } else if( 'tmodGS' %in% class(modules) ){
+      pathways_dat <- modules$gs
     } else {
       pathways_dat <- modules
     }
@@ -474,7 +476,7 @@ gsnHierarchicalDendrogram.old <- function( object,
   }
 
   # Scan for pathways_title_column.
-  if( ! is.null(pathways_title_col) && ! is.na(pathways_title_col) ){
+  if( ! is.null(pathways_title_col) && ! all(is.na(pathways_title_col)) ){
     pathways_title_col <- pathways_title_col[pathways_title_col %in% colnames( pathways_dat )][[1]]
     if(length(pathways_title_col) == 0)
       stop("Cannot find pathways Title column.\nSet correct pathways column with pathways_title_column='NAME'",

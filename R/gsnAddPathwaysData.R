@@ -58,7 +58,7 @@
 #'
 
 gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   field_names <- colnames( pathways_data )
   # "ID", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val"
   if( ( !is.null(type) && type == "cerno" ) |

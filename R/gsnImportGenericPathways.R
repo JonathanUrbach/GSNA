@@ -47,7 +47,7 @@
 #'
 
 gsnImportGenericPathways <- function( object, pathways_data = NULL, filename = NULL, type = 'generic', id_col = NULL, stat_col = NULL, stat_col_2 = NULL, sig_order = NULL, sig_order_2 = NULL, sep = "\t" ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
 
   # Not searching for *all* the fields, just the critical ones. (Some are repeats, with weird names.)
   if( is.null( pathways_data ) && is.null( filename ) ) stop( "The 'pathways_data' and 'filename' arguments cannot both be NULL." )

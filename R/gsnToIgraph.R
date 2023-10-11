@@ -26,7 +26,7 @@
 #'
 #'
 gsnToIgraph <- function( object, distance = NULL ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   if( is.null(distance) ) distance <- object$default_distance
   if( is.null(distance) ) stop( 'Need distance parameter.' )
   if( is.null(object$distances[[distance]]$edges) )

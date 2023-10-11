@@ -35,7 +35,7 @@
 #
 #'
 gsnMergePathways <- function( object, pathways.data = NULL, distance = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( pathways.data ) ) pathways.data <- object$pathways$data
 

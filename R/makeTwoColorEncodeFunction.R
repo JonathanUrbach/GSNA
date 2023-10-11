@@ -22,7 +22,8 @@ makeTwoColorEncodeFunction <- function( numbers.1,
                                         combine_method = "mean", #"default"
                                         c1.fun = NULL,
                                         c2.fun = NULL,
-                                        na.color = "#CCCCCC"
+                                        na.color = "#CCCCCC",
+                                        n = 100
 ){
   force( na.color )
   force( colors.1 )
@@ -31,11 +32,11 @@ makeTwoColorEncodeFunction <- function( numbers.1,
   force( c2.fun )
   force( combine_method )
 
-  if( is.null( c1.fun ) && ( is.null( colors.1 ) || is.null( n ) ) )
-    stop( "If c1.fun is not set, then colors.1 and n must be." )
+  if( is.null( c1.fun ) && ( is.null( colors.1 ) ) )
+    stop( "If c1.fun is not set, then colors.1 must be." )
 
-  if( is.null( c2.fun ) && ( is.null( colors.2 ) || is.null( n ) ) )
-    stop( "If c2.fun is not set, then colors.2 and n must be." )
+  if( is.null( c2.fun ) && ( is.null( colors.2 ) ) )
+    stop( "If c2.fun is not set, then colors.2 must be." )
 
   if( is.null( c1.fun ) ) c1.fun <- makeLinearNColorGradientFunction( colors = colors.1,
                                                                       x.min = min( numbers.1, na.rm = TRUE ),

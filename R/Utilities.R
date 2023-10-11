@@ -14,7 +14,7 @@
 #' gsnDefaultDistance( analysis.GSN )
 #' }
 gsnDefaultDistance <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   object$default_distance
 }
 
@@ -30,7 +30,7 @@ gsnDefaultDistance <- function( object ){
 #' }
 #' @seealso \code{\link{gsnDistances}}
 `gsnDefaultDistance<-` <- function( object, value ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( value %in% names( object$distances ) ){
     object$default_distance <- value
   } else {
@@ -57,7 +57,7 @@ gsnDefaultDistance <- function( object ){
 #'
 #' @seealso \code{\link{gsnDefaultDistance}()}
 gsnDistances <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   names( object$distances )
 }
 
@@ -81,7 +81,7 @@ gsnDistances <- function( object ){
 #' gsnPathways_id_col( analysis.GSN )
 #' }
 gsnPathways_id_col <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$id_col
 }
@@ -101,7 +101,7 @@ gsnPathways_id_col <- function( object ){
 #' }
 #' @seealso \code{\link{gsnDistances}}
 `gsnPathways_id_col<-` <- function( object, value ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
   if( is.null( value ) || value %in% colnames( object$pathways$data ) ){
@@ -130,7 +130,7 @@ gsnPathways_id_col <- function( object ){
 #' gsnPathways_stat_col( analysis.GSN )
 #' }
 gsnPathways_stat_col <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$stat_col
 }
@@ -150,7 +150,7 @@ gsnPathways_stat_col <- function( object ){
 #' }
 #' @seealso \code{\link{gsnDistances}}
 `gsnPathways_stat_col<-` <- function( object, value ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
   if( is.null( value ) || value %in% colnames( object$pathways$data ) ){
@@ -179,7 +179,7 @@ gsnPathways_stat_col <- function( object ){
 #' gsnPathways_stat_col_2( analysis.GSN )
 #' }
 gsnPathways_stat_col_2 <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$stat_col_2
 }
@@ -199,7 +199,7 @@ gsnPathways_stat_col_2 <- function( object ){
 #' }
 #' @seealso \code{\link{gsnDistances}}
 `gsnPathways_stat_col_2<-` <- function( object, value ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
   if( is.null( value ) || value %in% colnames( object$pathways$data ) ){
@@ -228,7 +228,7 @@ gsnPathways_stat_col_2 <- function( object ){
 #' gsnPathways_sig_order( analysis.GSN )
 #' }
 gsnPathways_sig_order <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$sig_order
 }
@@ -249,7 +249,7 @@ gsnPathways_sig_order <- function( object ){
 #' }
 #' @seealso \code{\link{gsnDistances}}
 `gsnPathways_sig_order<-` <- function( object, value ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
   if(  is.null( value ) || value %in% c( "hiToLo", "loToHi" ) ){
@@ -278,7 +278,7 @@ gsnPathways_sig_order <- function( object ){
 #' gsnPathways_sig_order_2( analysis.GSN )
 #' }
 gsnPathways_sig_order_2 <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$sig_order_2
 }
@@ -299,7 +299,7 @@ gsnPathways_sig_order_2 <- function( object ){
 #' }
 #' @seealso \code{\link{gsnDistances}}
 `gsnPathways_sig_order_2<-` <- function( object, value ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
   if( is.null( value ) || value %in% c( "hiToLo", "loToHi" ) ){
@@ -329,7 +329,7 @@ gsnPathways_sig_order_2 <- function( object ){
 #' gsnPathways_type( analysis.GSN )
 #' }
 gsnPathways_type <- function( object ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$type
 }
@@ -348,7 +348,7 @@ gsnPathways_type <- function( object ){
 #' }
 #' @seealso \code{\link{gsnDistances}}
 `gsnPathways_type<-` <- function( object, value ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
   if( value %in% colnames( object$pathways$data ) ){
@@ -538,3 +538,133 @@ pick_MappedGeneSymbol <- function( .from, .to ){
 }
 
 
+
+
+
+
+### Reading GMT format and converting a list of gene sets into a tmod object.
+
+#' Title
+#'
+#' @param file
+#'
+#' @return
+#' @export
+#'
+#' @examples
+read_gmt <- function( file ){
+  .lines <- readLines( con = file )
+  gsc <- list()
+  .dat <- stringr::str_split( string = .lines, pattern = "\t" )
+  for( .datum in .dat ){
+    if( length( .datum ) > 2 ){
+      gs_name <- .datum[[1]]
+      gs <- .datum[3:length(.datum )]
+      gsc[[gs_name]] <- gs
+    }
+  }
+ gsc
+}
+
+#' Title
+#'
+#' @param MODULES2GENES
+#' @param MODULES
+#' @param GENES
+#'
+#' @return
+#' @export
+#'
+#' @examples
+gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
+  if( is.null( MODULES ) )
+    MODULES <-
+      data.frame( ID = names( MODULES2GENES ),
+                  Title = stringr::str_to_title( gsub( pattern = "_",
+                                                       replacement = " ",
+                                                       x = names( MODULES2GENES ) )
+                  ),
+                  row.names = names( MODULES2GENES ),
+                  stringsAsFactors = FALSE,
+                  check.names = FALSE
+      )
+  if( is.null( GENES ) )
+    GENES <- data.frame( ID = unique( unlist( MODULES2GENES ) ) )
+
+  # Sanity checks:
+  if( length(names( MODULES2GENES )) != length(MODULES$ID) ||
+      ! all( names( MODULES2GENES ) == MODULES$ID )  )
+    stop("Mismatch beween names(MODULES2GENES) and MODULES$ID")
+
+  if( any( ! unlist( MODULES2GENES ) %in% GENES$ID ) || any( ! GENES$ID %in% unlist( MODULES2GENES ) ) )
+    stop("Mismatch beween unlist( MODULES2GENES ) %in% GENES$ID")
+
+  new("tmod", list( MODULES2GENES = MODULES2GENES, MODULES = MODULES, GENES = GENES ) )
+}
+
+
+
+#' intV2Color
+#'
+#' @param rgb_v
+#'
+#' @return
+#' @export
+#'
+#' @examples
+intV2Color <- function( rgb_v ){
+  if( ! "numeric" %in% class( rgb_v ) )
+    stop( "Incorrect data type '", class( rgb_v ), "', expected numeric."  )
+
+  if( length( rgb_v ) != 3 )
+    stop( "Incorrect data length '", length( rgb_v ), "', expected length 3."  )
+
+  if( any( is.na( rgb_v ) ) || any( is.nan( rgb_v ) ))
+    stop( "Missing data. Vector contain NA or NaN." )
+
+  if( any( rgb_v > 255) || any( rgb_v < 0 ) )
+    stop( "Invalid input." )
+
+  rgb_v[is.na(rgb_v ) | rgb_v > 255] <- 255
+  rgb_v[rgb_v < 0] <- 0
+  paste0( "#", paste0( sprintf( "%02X", round(rgb_v) ), collapse = "" ) )
+}
+
+#' color2IntV
+#'
+#' @param color A color specified either by name (e.g. "red") or as a RGB hexadecimal value (e.g. "#FF0000").
+#'
+#' @return A integer vector containing the RGB specification.
+#'
+#' @importFrom grDevices col2rgb
+#'
+color2IntV <- function( color ){
+  as.vector(grDevices::col2rgb(color))
+}
+
+#' tmod2gsc
+#'
+#' @description Function takes a tmod or tmodGS object and converts it to a gene set collecton. In the case of a
+#' tmod object, the function merely extracts the \code{$MODULES2GENES} list of character vectors. In the case of
+#' tmodGS objects, the list of vectors of numeric gene identifiers in \code{$gs2gv} is converted to a named list
+#' of character vectors of gene names.
+#'
+#' @param tmod : a tmod or tmodGS object.
+#'
+#' @return The function returns a gene set collection as a named list of character vectors containing gene names.
+#'
+tmod2gsc <- function( tmod ){
+  if( 'tmod' %in% class( tmod ) ){
+    gsc <- tmod$MODULES2GENES
+  } else if( 'tmodGS' %in% class( tmod ) ){
+    # This maps the numerical coded genes and gene sets to a named list of character vectors.
+    gsc <- lapply( X = tmod$gs2gv,
+                   FUN = function( gs ){
+                     tmod$gv[unlist(gs)]
+                   } )
+    names(gsc) <- tmod$gs$ID
+  } else {
+    stop("Can't convert class '", class(tmod), "'");
+  }
+  gsc
+}

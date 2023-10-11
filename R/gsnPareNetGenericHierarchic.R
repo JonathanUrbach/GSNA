@@ -112,7 +112,7 @@ gsnPareNetGenericHierarchic <- function( object,
   paring_call_arguments$matrix_scaling_fun <- deparse(substitute(matrix_scaling_fun) )
   paring_call_arguments$object <- NULL
 
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
 
   if( is.null(distance) ) distance <- object$default_distance
   if( is.null(distance) ) stop( 'distance parameter required (lf, jaccard, etc.).' )

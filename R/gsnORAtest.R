@@ -66,15 +66,18 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #' @importFrom stats p.adjust
 #'
 gsnORAtest <- function( l, bg, geneSetCollection, Alpha = 0.05, full = FALSE ){
-  if( class(geneSetCollection) == 'tmod' ){
+  if( 'tmod' %in% class(geneSetCollection) ){
     m2g <- geneSetCollection$MODULES2GENES
     modules <- geneSetCollection$MODULES
+  } else if ( 'tmodGS' %in% class(geneSetCollection) ){
+    m2g <- tmod2gsc( geneSetCollection )
+    modules <- geneSetCollection$gs
   } else if(class(geneSetCollection) == 'list' ){
     m2g <- geneSetCollection
     modules <- NULL
   }
-  if( class( l ) != 'character' ) stop( 'Argument l must be a characer vector' )
-  if( class( bg ) != 'character' ) stop( 'Argument bg must be a characer vector' )
+  if( ! 'character' %in% class( l ) ) stop( 'Argument l must be a characer vector' )
+  if( ! 'character' %in% class( bg ) ) stop( 'Argument bg must be a characer vector' )
 
   out.df <- gsnORAtest_cpp( l = l, bg = bg, geneSetCollection = m2g )
 

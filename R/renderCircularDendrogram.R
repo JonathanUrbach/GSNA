@@ -169,7 +169,7 @@ renderCircularDendrogram <- function( dendro,
                              circlize::circos.dendrogram(dendro)
                            })
 
-    if( clear ) circos.clear()
+    if( clear ) circlize::circos.clear()
   }
   #attr( x = dendro, which = ".plt.plot" ) <- c( 0, 2 / ( canvas.xlim[2] - canvas.xlim[1] ), 0, 2 / ( canvas.ylim[2] - canvas.ylim[1] ) )
   attr( x = dendro, which = ".plt.plot" ) <- .plt.plot

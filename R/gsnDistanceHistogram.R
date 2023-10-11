@@ -39,7 +39,7 @@ gsnDistanceHistogram <- function( object,
                                   stat = "percent", # Can also be "count" or "density"
                                   colors = NULL,
                                   bins = 100){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( distance ) ) stop( 'Need distance argument.' )
   if( is.null(object$distances[[distance]]) ) stop( 'Cannot find data for distance ', distance )

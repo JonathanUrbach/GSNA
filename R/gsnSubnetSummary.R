@@ -45,7 +45,7 @@ invisible( utils::globalVariables( c( "subnetRank" ) ) )
 #' @importFrom psych harmonic.mean
 #'
 gsnSubnetSummary <- function( object, pathways.data = NULL, distance = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL  ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
 
   if( is.null( pathways.data ) ) pathways.data <- object$pathways$data
   if( is.null( id_col ) ) id_col <- object$pathways$id_col
@@ -62,8 +62,13 @@ gsnSubnetSummary <- function( object, pathways.data = NULL, distance = NULL, id_
   SUM.subnets <- data.frame( subnet = unique( PW.subnets$subnet ) )
 
   if( !is.null( PW.subnets$subnet ) && !is.null( PW.subnets$subnetRank ) && !is.null( PW.subnets$Title ) ){
+    #sn.minranks <- with( PW.subnets,  ave( x = subnetRank, subnet, FUN = min ) )
+    sn.is.minrank <- with( PW.subnets,  subnetRank == ave( x = subnetRank, subnet, FUN = min ) )
+    sn.is.not.dup <- ! with( PW.subnets, duplicated( paste0( subnet, '/', subnetRank ) ) )
+    PW.subnets.minrank <- PW.subnets[ sn.is.not.dup & sn.is.minrank, ]
+    #y = subset( PW.subnets, subnetRank == 1, select = c("subnet", "Title" ) ),
     SUM.subnets <- merge( x = SUM.subnets,
-                          y = subset( PW.subnets, subnetRank == 1, select = c("subnet", "Title" ) ),
+                          y = PW.subnets.minrank,
                           by = "subnet"
     )
   }
@@ -75,7 +80,11 @@ gsnSubnetSummary <- function( object, pathways.data = NULL, distance = NULL, id_
     )
   }
 
-  for( col_sig in list( c(stat_col, sig_order) , c(stat_col_2, sig_order_2) ) ){
+  col_sigs <- list()
+  if( !is.null(stat_col) ) col_sigs[[length(col_sigs)+1]] <-c(stat_col, sig_order)
+  if( !is.null(stat_col_2) ) col_sigs[[length(col_sigs)+1]] <-c(stat_col_2, sig_order_2)
+
+  for( col_sig in col_sigs ){
     .col <- col_sig[1]
     .sig_ord <- col_sig[2]
     if( ! is.null( .col ) ){

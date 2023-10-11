@@ -6,7 +6,7 @@ gsnToIgraphFormatted <- function( object, pathways.data = NULL, vertex.shape = "
                                   max_edge_width = 16,
                                   edge_colors = c("#000000FF", "purple", "blue", "green","yellow4", "orange","red")
 ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   if( is.null(distance) ) distance <- object$default_distance
   if( is.null(pathways.data) ) pathways.data <- object$pathways$data
   if( !is.null(pathways.data) ){

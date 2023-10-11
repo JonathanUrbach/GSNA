@@ -56,7 +56,7 @@ invisible( utils::globalVariables( c( "vertex" ) ) )
 #' @seealso \code{\link{GSNData}()}
 #'
 gsnSubset<- function( object, distance = NULL, vertex_names = c(), subnet_names = NULL ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( distance ) ) stop( "Need distance argument" )
 

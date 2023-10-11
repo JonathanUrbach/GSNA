@@ -34,7 +34,7 @@
 #'
 
 gsnAssignSubnets <- function( object, distance = NULL, scoreCol = NULL, highToLow = NULL ){
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( scoreCol ) ) scoreCol <- object$pathways$stat_col
   if( is.null( highToLow ) ) highToLow <- object$pathways$sig_order == 'hiToLo'

@@ -55,7 +55,7 @@ gsnPareNetGenericToNearestNNeighbors <- function( object,
   paring_call_arguments$object <- NULL
 
 
-  stopifnot( class( object ) == "GSNData" )
+  stopifnot( "GSNData" %in% class( object ) )
 
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( extreme ) ) extreme <- object$distances[[distance]]$optimal_extreme

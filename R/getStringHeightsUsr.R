@@ -17,7 +17,7 @@ getStringHeightsUsr <- function( strings,
     sizes <- try( strheight( s = as.character( strings ), units = "user", cex = cex, family = font_face ), silent = TRUE )
   }
   if( is.null(sizes) && method == "csi" ||
-      ( class(sizes) == "try-error" && method == "auto" )
+      ( ( "try-error" %in% class(sizes) ) && method == "auto" )
   ){
     sizes <-  sapply( X = strings, FUN = function(x) ifelse( !is.null(x), cex * CSI * (.ylim[2] - .ylim[1]) / height.plt, 0 ) )
   }

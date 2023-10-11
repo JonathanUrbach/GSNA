@@ -17,7 +17,7 @@ getStringWidthsFigure <- function( strings,
     sizes <- try( strwidth( s = as.character( strings ), units = "figure", cex = cex, family = font_face ), silent = TRUE )
   }
   if( is.null(sizes) && method == "cwi" ||
-      ( class(sizes) == "try-error" && method == "auto" )
+      ( ( "try-error" %in% class(sizes) ) && method == "auto" )
   ){
     sizes <- nchar( strings ) * cex * CWI / width.fig
   }
