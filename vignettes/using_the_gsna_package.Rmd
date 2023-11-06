@@ -117,38 +117,40 @@ We can inspect the structure of this CERNO data set using the head function.
 head( Bai_CiHep_DN.cerno )
 ```
 
-A sailent feature of this CERNO results set is that it includes a gene set ID as well as *p*-values. We will use the adjusted *p*-values in our analysis.  
+This CERNO result set includes a gene set ID as well as several statistical values uncluding the **cerno**, **AUC**, **cES**, and both standard (nominal) and adjusted *p*-values. We will use the adjusted *p*-values in our analysis.  
 
-
-With a CERNO data set loaded, we also load the **"Bai_gsc.tmod"** gene set collection.  
+Having loaded our CERNO data set, we also load the **"Bai_gsc.tmod"** gene set collection.  
 
 ```{r}
 data("Bai_gsc.tmod")
 Bai_gsc.tmod
 ```
 
-Subset the Bai_gsc.tmod gene set collection to obtain a collection with only significant hits. The ID column in a cerno dataset contains the the ID of its respective gene set, which may then be used for subsetting a gene set collection list, or a **tmod** or **tmodGS** object. 
-
-Here we specify a value for **.alpha** and use that to subset a CERNO data set and derive a vector of significant gene set IDs:    
+Now we can filter the **Bai_CiHep_DN.cerno** data set for gene signatures that have significant adjusted *p*-values. We will use $\alpha = 0.05$ for our significance cutoff. This filtered **CERNO** data set will be used     
 
 ```{r}
 .alpha <- 0.05
 
 Bai_CiHep_DN.cerno.sig <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= .alpha )
+```
 
+
+The ID column in a cerno dataset contains the the ID of its respective gene set, which can then be used for subsetting a gene set collection list, or a **tmod** or **tmodGS** object.:  
+
+```{r}
 Bai_CiHep_DN.sigid <- Bai_CiHep_DN.cerno.sig$ID
 
 Bai_CiHep_DN.sigid
 ```
 
-Subsetting a **tmod** or **tmodGS** object works using the list subset operator [], where the IDs are treated as indices.  
+Now, we subset the **Bai_gsc.tmod** gene set collection to obtain a collection with only significant hits using the gene set IDs as keys for the tmod object. Subsetting **tmod** or **tmodGS** objects works using the list subset operator [], where the IDs are treated as indices.  
 
 ```{r}
 Bai_CiHep_DN.sig.tmod <- Bai_gsc.tmod[Bai_CiHep_DN.sigid]
 ```
 
 
-Get the background of observable genes from the differential expression data. In the case of the Bai dataset, gene symbols are in "title case", with only the first letter capitalized, but gene symols in the gene set collection are all upper case, so we convert the genes in the Bai data set to upper case too:  
+Now that we have a filtered CERNO data set and a GSC containing only significant gene sets, we need the background of observable genes in our expression set. Typically, this is obtained from the differential expression data. In the case of the Bai dataset, we have expression data in the form of a Seurat data set obtained using Seurat's **FindMarkers()** function, with gene symbols as the row names. In this data, gene symbols are in "title case", with only the first letter capitalized, but gene symols in the gene set collection are all upper case, so we convert the genes in the Bai data set to upper case too:  
 
 ```{r}
 data("Bai_CiHep_v_Fib2.de")
@@ -157,7 +159,7 @@ Bai_CiHep_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
 
 ## Creating a Gene Set Network  
 
-Use the **buildGeneSetNetworkSTLF()** function to create a **GSNData** object and calculate a distance matrix.  
+Use the **buildGeneSetNetworkSTLF()** function to create a **GSNData** object and calculate a distance matrix. This first step requires just the filtered GSC and the referebce background.  
 
 ```{r}
 Bai_CiHep_DN.sig.GSN <- buildGeneSetNetworkSTLF( ref.background = Bai_CiHep_genes, geneSetCollection = Bai_CiHep_DN.sig.tmod )
@@ -179,15 +181,13 @@ Bai_CiHep_DN.sig.GSN <- gsnAddPathwayData( object = Bai_CiHep_DN.sig.GSN, pathwa
 Bai_CiHep_DN.sig.GSN
 ```
 
-The **gsnAddPathwayData()** function automatically identifies the data set as a CERNO data set, and selects **'ID'** as the identifier column (**id_col**), **'adj.P.Val'** as the statistical column (**stat_col**) to be used, and the ordering of that colum (**sig_order**) as **'loToHi'** meaning that low values are treated as most significant. This value **'loToHi'** is appropriate when *p*-values or adjusted *p*-values are used as the statistical column.
+The **gsnAddPathwayData()** function automatically identifies the data set as a CERNO data set, and selects **'ID'** as the identifier column (**id_col**), **'adj.P.Val'** as the statistical column (**stat_col**) to be used, and the ordering of that colum (**sig_order**) as **'loToHi'** meaning that low values are treated as most significant. This value **'loToHi'** is appropriate when *p*-values or adjusted *p*-values are used as the statistical column.  
 
 Now, pare the network using hierarchical clustering:  
 
 ```{r}
 Bai_CiHep_DN.sig.GSN <- gsnPareNetGenericHierarchic( object = Bai_CiHep_DN.sig.GSN )
 ```
-
-
 
 **Variations**  
 
@@ -204,13 +204,16 @@ Bai_CiHep_DN.sig.GSN <- gsnAssignSubnets( object = Bai_CiHep_DN.sig.GSN )
 
 ## Outputting Subnet Data    
 
+Once subnets have been assigned, we can output a set of them in tabular format. We use gsnMergePathways to create a table of the pathways results organized into subnets. This table includes, in addition to the pathways results, **subnet** and **subnetRank** columns.     
+
 ```{r}
 Bai_CiHep_DN.sig.GSN.subnets <- gsnMergePathways(object = Bai_CiHep_DN.sig.GSN )
+
 Bai_CiHep_DN.sig.GSN.subnets
 ```
 
 
-Within R markdown documents, the table can be reformated using the **yassifyPathways()** function. In addition to providing a better output format, the values in the ID column can be nested within links to information on the corresponding gene sets using the **url_map_list** argument. The argument takes a list containing named vectors. The vectors are named according to the ID column to be substituted with a link, and the vectors contain name-value pairs in which the names are the IDs to be substituted and the values are the corresponding link URL.
+Within R markdown documents, data frames can be reformated for output using the **yassifyPathways()** function. In addition to providing a better output format, the values in the ID column can be nested within links to information on the corresponding gene sets using the **url_map_list** argument. The argument takes a list containing named vectors. The vectors are named according to the ID column to be substituted with a link, and the vectors contain name-value pairs in which the names are the IDs to be substituted and the values are the corresponding link URL.
 
 In the following code block, the structure function is used to generate the ID/URL pairs from values in the MODULES slot of the **Bai_gsc.tmod** object. Calling the **yassifyPathways()** function thereby yields a table with improved format and links to the corresponding URLs describing the gene sets in question.
 
@@ -220,6 +223,8 @@ url_map_l <- list( ID = with( Bai_gsc.tmod$MODULES, structure( URL, names = ID )
 yassifyPathways( Bai_CiHep_DN.sig.GSN.subnets,
                  url_map_list = url_map_l )
 ```
+
+Note the **url_map_list** argument results in links for the gene set IDs.  
 
 Another, more summarized report of subnets can be obtained using **gsnSubnetSummary()**. This report groups subnets together and gives some additional statistics relating to the subnets.
 
@@ -234,7 +239,6 @@ yassifyPathways( Bai_CiHep_DN.sig.GSN.subnetSummary,
                                 scrollX = TRUE
                                 )
                  )
-
 ```
 
 Try horizontally scrolling this table to see all columns.  
@@ -251,16 +255,9 @@ plot( x = Bai_CiHep_DN.sig.GSN, filename = "Bai_CiHep_DN.sig.GSN.PL.svg", width 
 knitr::include_graphics( "Bai_CiHep_DN.sig.GSN.PL.svg" )
 ```
 
+Note that the **n_col = 'N1'** argument tells the plot function to scale the size of vertices according to the values of the 'N1' column of the pathways data, which indicates the number of genes in a given gene signature.  
 
-Note that the **n_col = 'N1'** argument tells the plot function to scale the size of vertices according to the values of the 'N1' column of the pathways data, which indicates the number of genes in a given gene signature. 
-
-
-
-
-
-
-To generate a hierarchical dendrogram of distances between gene sets, the **gsnHierarchicalDendrogram()** function can be used.
-
+To generate a hierarchical dendrogram of distances between gene sets, the **gsnHierarchicalDendrogram()** function can be used.  
 
 ```{r HierarchicalDendrogram_1}
 
@@ -278,13 +275,16 @@ knitr::include_graphics( path = "Bai_CiHep_DN.sig.GSN.HD.svg" )
 ```
 
 
+On the basis of this output, it could be concluded that there are 6 subnets or clusters of gene signatures that are downregulated upon chemical induction of CiHep cells from Fibroblast2 cells, with subnet 1 being the most significant, and within that, the [M30131 Psmb5](https://www.gsea-msigdb.org/gsea/msigdb/cards/PSMB5_TARGET_GENES) signature being particularly strong.  
+
+**Variation:** A hierarchical dendrogram with a circular geometry can be generated with **gsnHierarchicalDendrogram()** using the **geometry = 'circular'** argument.  
 
 
 # Generating a 2-channel Gene Set Network with CERNO data   
 
 Two channel gene set networks are useful for comparing differential pathway activation or repression between conditions, treatments or transitions between cell types. This mainly applies to cases where two distinct cellular states are derived from a single reference state or cell type. In the Bai data set, the fibroblast 2 cellular subset differentiates into hepatocyte-like (CiHep), keratinocyte-like (CiKrt) and several other cell types upon chemical induction. In an analysis of this data set, comparisons can be made between the transition from the fibroblast 2 cell type to both the CiHep and CiKrt induced cell types. 
 
-A 2-channel Gene Set Network workflow is very similar to a single channel workflow. The main difference is that two parallel significance statistics are used in the pathways dataset instead of a single significance statistic. These two significance statistics would be derived from the two pathways datasets being compared. Subsequent steps for the analysis are nearly the same.  
+A 2-channel Gene Set Network workflow is very similar to a single channel workflow. The main difference is that two parallel significance statistics are used in the pathways dataset instead of a single significance statistic. These two significance statistics are derived from the two pathways datasets being compared. Subsequent steps for the analysis are nearly the same.  
 
 
 
@@ -304,7 +304,7 @@ Bai_CiHep_v_CiKrt_DN.merge <- merge( x = Bai_CiHep_DN.cerno,
 
 
 For columns common to bothe CERNO datasets, the names are suffixed with .x and .y depending on which argument was used.
-To clean up this data, we can delete columns not of interest and give the columns with .x and .y suffixes better names:
+To clean up this data, we can delete columns not of interest and give the columns with .x and .y suffixes better names, using the rename function from the **dplyr** package:
 
 ```{r}
 Bai_CiHep_v_CiKrt_DN.merge$Title.y <- NULL
@@ -374,21 +374,22 @@ Bai_CiHep_v_CiKrt_DN.sig.tmod
 ```
 
 
-The two differential expression data sets have largely overlapping but slightly different sets of observable genes. These two bacground gene lists should give similar, but not identical distance values when generating a gene set network. We'll use the **Bai_CiHep_genes** gene list.
+The two differential expression data sets have largely overlapping but slightly different sets of observable genes. These two bacground gene lists should give similar, but not identical distance values when generating a gene set network. We'll use the **Bai_CiHep_genes** gene list. Using the **venn** function from the **gplots** package, we can visualize the overlap of gene sets in the CiHep vs Fibroblast2 and CiKrt vs Fibroblast2 data sets.     
 
 
 ```{r}
 Bai_CiHep_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
 Bai_CiKrt_genes <- toupper( rownames( Bai_CiKrt_v_Fib2.de ) )
+
+library( gplots )
 gplots::venn( list(CiHep = Bai_CiHep_genes, CiKrt = Bai_CiKrt_genes) )
 ```
 
-
+We now calculate gene set distances and generate a GSNData object using the **buildGeneSetNetworkSTLF()** function:   
 
 ```{r}
 Bai_CiHep_v_CiKrt_DN.GSN <- GSNA::buildGeneSetNetworkSTLF( geneSetCollection = Bai_CiHep_v_CiKrt_DN.sig.tmod, ref.background = Bai_CiHep_genes )
 ```
-
 
 Adding pathways data is a little different from before, since we will need to explicitly specify stat_col, stat_col_2, sig_order and sig_order_2.
 
@@ -414,7 +415,6 @@ Bai_CiHep_v_CiKrt_DN.GSN <- gsnPareNetGenericHierarchic( Bai_CiHep_v_CiKrt_DN.GS
 
 Bai_CiHep_v_CiKrt_DN.GSN <- gsnAssignSubnets( Bai_CiHep_v_CiKrt_DN.GSN )
 
-#yassifyPathways( dplyr::arrange( gsnMergePathways( Bai_CiHep_v_CiKrt_DN.GSN ), subnet, subnetRank ), url_map_list = url_map_l )
 yassifyPathways( gsnMergePathways( Bai_CiHep_v_CiKrt_DN.GSN  ),
                  url_map_list = url_map_l,
                  options =list( autoWidth = FALSE,
@@ -445,10 +445,13 @@ gsnPlotNetwork( Bai_CiHep_v_CiKrt_DN.GSN, n_col = "N1.CiHep", filename = "Bai_Ci
 knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.NP.svg" )
 ```
 
+From this analysis, it may be concluded that about 7 subnets or clusters of related gene sets are downregulated in CiHep and CiKrt cells upon chemical induction of Fibroblast 2 cells.  In particular, the Psmb5 downregulation signature is strong in CiHeps (strpng red), whereas the Hes2 signature (strong) blue is strongest in CiKrt cells.  
+
 
 **Variation:**
 
 When available in the pathways data, an alternative statistic can be used to color gene sets in a gene set network. Here, we're specifying **stat_col = 'AUC.CiHep'**, suppressing the previously set value of the second statistical column with **stat_col_2 = NA** and specifying a custom set of vertex colors used to represent the AUC values, such that the color scale goes from dark blue to white.     
+
 
 ```{r NetworkPlot_AUC}
 
@@ -469,9 +472,7 @@ knitr::include_graphics( path = "Bai_CiHep_v_CiKrt_DN.GSN.NP_AUC.svg" )
 ```
 
 
-
-
-A hierarchical dendrogram is also revealing.
+A hierarchical dendrogram is also revealing. This time, we'll generate a circular hierarchical dendrogram by including the argument **geometry = 'circular'**:  
 
 ```{r}
 gsnHierarchicalDendrogram( Bai_CiHep_v_CiKrt_DN.GSN,
@@ -479,7 +480,8 @@ gsnHierarchicalDendrogram( Bai_CiHep_v_CiKrt_DN.GSN,
                            filename = "Bai_CiHep_v_CiKrt_DN.GSN.HD.svg",
                            width = 7,
                            height = 5,
-                           show.leaves = TRUE)
+                           show.leaves = TRUE,
+                           geometry = 'circular' )
 
 knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.HD.svg" )
 ```
@@ -509,7 +511,6 @@ ggplot2::ggplot( data = Bai_CiHep_dorothea_UD.Gsea,
                                          y = `NOM p-val`,
                                          color = `Activated In`,
                                          shape = `FDR q-val<=0.05`,
-                                         #alpha = `FDR q-val<=0.05`,
                                          text = paste0( 'Gene Set Name: ',NAME ) ) ) +
   ggplot2::geom_point() +
   ggplot2::scale_shape_manual( values = c(3, 19)) +
@@ -554,7 +555,7 @@ Bai_CiHep_dorothea_DN.Gsea <- read.table( file = file.path( gsea_outputs_dir,
 
 ```
 
-These two data sets can be considered togethers. To do so, we'll use the rbind function to combine the two data sets into one.  
+These two data sets can be considered together. To do so, we'll use the rbind function to combine the two data sets into one.  
 
 
 ```{r}
@@ -566,7 +567,8 @@ yassifyPathways( Bai_CiHep_dorothea_UD.Gsea,
                  n = 6   # <= this argument tells the function to just show the first 6 results
                  )
 ```
-Note the empty 12th column present in the imported GSEA tsv output table, plus the **`GS DETAILS`** without useful information and the **`GS<br> follow link to MSigDB`** that duplicates the **NAME** column. We can clean up this data somewhat by removing these:
+
+Note the empty 12th column present in the imported GSEA tsv output table, plus the **`GS DETAILS`** without useful information and the **`GS<br> follow link to MSigDB`** that duplicates the **NAME** column. We can clean up this data somewhat by removing these:  
 
 ```{r}
 Bai_CiHep_dorothea_UD.Gsea[[12]] <- NULL
