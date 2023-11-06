@@ -44,8 +44,11 @@
 #'
 #' @importFrom Matrix as.matrix
 #'
+buildGeneSetNetworkSTLF <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = scoreLFMatrix_C  ){
+  buildGeneSetNetworkGeneric(object, ref.background, geneSetCollection, distMatrixFun, distance = 'stlf', optimal_extreme = "min" )
+}
 
-buildGeneSetNetworkSTLF <- function( object = NULL, ref.background = NULL, geneSetCollection, distMatrixFun = scoreLFMatrix_C ){
+buildGeneSetNetworkSTLF.old <- function( object = NULL, ref.background = NULL, geneSetCollection, distMatrixFun = scoreLFMatrix_C ){
   if( is.null( object ) ) object <- GSNData()
 
   if( ! is.null( ref.background ) && !is.null( geneSetCollection ) ){

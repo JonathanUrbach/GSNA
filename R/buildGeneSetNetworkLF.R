@@ -3,9 +3,19 @@
 #' @name buildGeneSetNetworkLF
 #' @title buildGeneSetNetworkLF, buildGeneSetNetworkLF-deprecated
 #'
-#' @description Using a gene set collection and a background of observable genes, calculate log Fisher *p*-value
-#' distances and return the results as a GSNData object. Note: \code{buildGeneSetNetworkLFFast} is deprecated.
-#' Please use \code{buildGeneSetNetworkLF} instead.
+#' @description Using a gene set collection and a background of observable genes, calculate log partial
+#' Fisher *p*-value distances and return the results as a GSNData object. This is equal to
+#'
+#' log(P) = log( (a+b)!(c+d)!(a+c)!(b+d)! / (a!b!c!d!(a+b+c+d)!) )
+#'
+#' This differs from the \code{buildGeneSetNetworkSTLF} in that only the one value of P is summed, whereas in
+#' \code{buildGeneSetNetworkSTLF}, all more extreme values are summed (prior to log-transformation), generating an
+#' actual single-sided *p*-value.
+#'
+#' This statistic behaves approximately like a 2-sided Fisher exact test, but may not be appropriate for
+#' most purposes. It is also somewhat faster to calculate than STLF (single tailed log-Fisher). Unless speed is an issue,
+#' we recommend using \code{buildGeneSetNetworkSTLF} Note: \code{buildGeneSetNetworkLFFast} is deprecated. Please use
+#' \code{buildGeneSetNetworkLF} instead.
 #'
 #' @param object An object of type GSNData. If NULL, a new one is instantiated.
 #' @param ref.background (required) A character vector corresponding to the genes observable in a differential
@@ -43,6 +53,10 @@
 #' @importFrom Matrix as.matrix
 #'
 buildGeneSetNetworkLF <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = function( geneSetCollection ) scoreLFMatrix_C(geneSetCollection, alternative = 4) ){
+  buildGeneSetNetworkGeneric(object, ref.background, geneSetCollection, distMatrixFun, distance = 'lf', optimal_extreme = "min" )
+}
+
+buildGeneSetNetworkLF.old <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = function( geneSetCollection ) scoreLFMatrix_C(geneSetCollection, alternative = 4) ){
   if( is.null( object ) ) object <- GSNData()
 
   if( ! is.null( ref.background ) && !is.null( geneSetCollection ) ){
@@ -77,9 +91,8 @@ buildGeneSetNetworkLF <- function( object = NULL, ref.background = NULL, geneSet
 }
 
 
-
+#' @name buildGeneSetNetworkLFFast
 #' @rdname buildGeneSetNetworkLF
-
 buildGeneSetNetworkLFFast <- function( ... ){
   warning( "Deprecated. Use buildGeneSetNetworkLF()." )
   buildGeneSetNetworkLF( ... )

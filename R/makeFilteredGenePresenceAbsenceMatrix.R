@@ -35,20 +35,12 @@
 makeFilteredGenePresenceAbsenceMatrix <- function( ref.background, geneSetCollection ){
   # The geneSetCollection argument can be a tmod object or a list of vectors containing appropriate gene symbols,
   # for example, the $MODULES2GENES field of a tmod object. If it's a tmod object, the $MODULES2GENES is used.
-
-  # if( 'tmod' %in% class( geneSetCollection ) ){
-  #   geneSetCollection <- geneSetCollection$MODULES2GENES
-  # } else if( 'tmodGS' %in% class( geneSetCollection ) ){
-  #   # This maps the numerical coded genes and gene sets to a named list of character vectors.
-  #   gsc <- lapply( X = geneSetCollection$gs2gv,
-  #                  FUN = function( gs ){
-  #                    geneSetCollection$gv[unlist(gs)]
-  #                  } )
-  #   names(gsc) <- geneSetCollection$gs$ID
-  #   geneSetCollection <- gsc
-  # }
   if( any( c( 'tmod', 'tmodGS' ) %in% class( geneSetCollection ) ) )
     geneSetCollection <- tmod2gsc( geneSetCollection )
+
+  # A quick sanity check. Check how many of the genes in geneSetCollection are actually in ref.background.
+  # If the fraction is less than min_genes_found_frx, then emit a warning.
+  checkGSGenesFraction(ref.background = ref.background, geneSetCollection = geneSetCollection, min_genes_found_pct = 20)
 
   # Not all gene SYMs from the background will appear in gene lists, so filter the collection subset to remove the missing ones
   geneSetCollectionFilt.df <- list()
@@ -59,17 +51,12 @@ makeFilteredGenePresenceAbsenceMatrix <- function( ref.background, geneSetCollec
 }
 
 
-
-makeFilteredGenePresenceAbsenceMatrix.old <- function( ref.background, geneSetCollection ){
-  # The geneSetCollection argument can be a tmod object or a list of vectors containing appropriate gene symbols,
-  # for example, the $MODULES2GENES field of a tmod object. If it's a tmod object, the $MODULES2GENES is used.
-  #if( 'tmod' %in% class( geneSetCollection ) ) geneSetCollection <- geneSetCollection$MODULES2GENES
-  if( any( c( 'tmod', 'tmodGS' ) %in% class( geneSetCollection ) ) ) geneSetCollection <- tmod2gsc( geneSetCollection )
-
-  # Not all gene SYMs from the background will appear in gene lists, so filter the collection subset to remove the missing ones
-  geneSetCollectionFilt.df <- list()
-  for( geneListName in names(geneSetCollection) ){
-    geneSetCollectionFilt.df[[geneListName]] <- ref.background %in% geneSetCollection[[geneListName]]
+checkGSGenesFraction <- function( ref.background, geneSetCollection, min_genes_found_pct = 20 ){
+  # A quick sanity check. Check how many of the genes in geneSetCollection are actually in ref.background.
+  # If the percent of genes found in ref.bqckground is less than min_genes_found_pct, then emit a warning.
+  unique_genes <- unique( unlist( geneSetCollection ) )
+  genes_found_pct <- 100 * sum( unique_genes %in% ref.background ) / length( unique_genes )
+  if( genes_found_pct < min_genes_found_pct ){
+    warning( "Only ", sprintf( "%3.5f", genes_found_pct ), " % of genes in geneSetCollection were detected in ref.background. Are the gene indentifiers in the correct case?\n" )
   }
-  as.matrix( as.data.frame( geneSetCollectionFilt.df, row.names = ref.background, check.names = FALSE ) )
 }

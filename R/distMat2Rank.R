@@ -18,7 +18,7 @@
 #' mat.ranks <- distMat2Rank(mat.dist)
 #' }
 #'
-#' @seealso \code{\link{distMat2ScaledRank}()}
+#' @seealso \code{\link{distMat2UnitNormRank}()}
 distMat2Rank <- function( mat, lower_is_closer = TRUE ){
   if( "dist" %in% class( mat ) ){
     mat <- as.matrix(mat)

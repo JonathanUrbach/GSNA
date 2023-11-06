@@ -55,7 +55,8 @@ make2ColorLegend <- function(numbers.1,
                              log_scale.2 = FALSE,
                              #.plt = c( 0.20, 0.90, 0.20, 0.80 ),
                              .plt.leg =c( 0.71, 1.0, 0.70, 1.0 ),
-                             .mar.leg.vm = c( 4.1, 4.1, 2.1, 2.1 ), # Virtual Margins for Legend (Within region set by .plt.leg)
+                             #.mar.leg.vm = c( 4.1, 4.1, 2.1, 2.1 ), # Virtual Margins for Legend (Within region set by .plt.leg)
+                             .mar.leg.vm = adj_mar_leg_vm(.mar.leg.vm = c( 4.1, 4.1, 2.1, 2.1 ) ),
                              .fin = par('fin'),
 
                              v.adjust = "top",

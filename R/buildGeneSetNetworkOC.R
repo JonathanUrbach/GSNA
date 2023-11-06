@@ -51,6 +51,10 @@
 #' @importFrom Matrix as.matrix
 
 buildGeneSetNetworkOC <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = scoreOCMatrix_C ){
+  buildGeneSetNetworkGeneric(object, ref.background, geneSetCollection, distMatrixFun, distance = 'oc', optimal_extreme = "max" )
+}
+
+buildGeneSetNetworkOC.old <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = scoreOCMatrix_C ){
   if( is.null( object ) ) object <- GSNData()
 
   if( ! is.null( ref.background ) && !is.null( geneSetCollection ) ){

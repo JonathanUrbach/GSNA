@@ -406,7 +406,7 @@ gsnPlotNetwork <- function( object,
   if( is.null( vertex.label.cex ) ){
     vertex.label.cex <- round( 0.27 * min( width.plot.in, height.plot.in ) / sqrt( vertex_count ), digits = 3 )
     # If we're using a range of vertex sizes without label scaling, optimize vertex.label.cex so that it fits in a the smallest vertex.
-    if( !is.null( n_col ) ) vertex.label.cex <- vertex.label.cex * min( vertex.size.range ) / vertex.size
+    if( !is.null( n_col ) && ! scale_labels_by_vertex ) vertex.label.cex <- vertex.label.cex * min( vertex.size.range ) / vertex.size
   }
   if( is.null( max_edge_width ) ) max_edge_width <- 10 *  min( width.plot.in, height.plot.in ) / sqrt( vertex_count )
 

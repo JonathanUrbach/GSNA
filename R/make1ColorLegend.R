@@ -6,7 +6,8 @@ make1ColorLegend <- function(numbers,
                              log_scale = FALSE,
 
                              .plt.leg = c( 0.71, 1.0, 0.70, 1.0 ),
-                             .mar.leg.vm = c( 1.1, 4.1, 1.1, 1.1 ), # Virtual Margins for Legend (Within region set by .plt.leg)
+                             #.mar.leg.vm = c( 1.1, 4.1, 1.1, 1.1 ), # Virtual Margins for Legend (Within region set by .plt.leg)
+                             .mar.leg.vm = adj_mar_leg_vm(.mar.leg.vm = c( 1.1, 4.1, 1.1, 1.1 ) ),
                              .fin = par('fin'),
 
                              h_w.leg = 1, # Height to width ratio of the 1-color legend panel.
@@ -78,6 +79,7 @@ make1ColorLegend <- function(numbers,
   if( is.null( cex.lab ) ){
     cex.lab <- par( 'cex' )
     # Estimate the dimensions of the raster. We want the label to be at most about that size.
+    #raster.width.est.fu <- ( .plt.adj[2] - .plt.adj[1] ) - par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[1]
     raster.height.est.fu <- ( .plt.adj[4] - .plt.adj[3] ) - par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[2]
 
     if( ! is.null( legend.lab ) ){
@@ -86,7 +88,8 @@ make1ColorLegend <- function(numbers,
       #   cex.lab <- cex.lab * y.dim.actual.fu * 0.80 / legend.lab.height.fu
       # }
       if( legend.lab.width.fu > raster.height.est.fu ){
-        cex.lab <- cex.lab * raster.width.est.fu / legend.lab.width.fu
+        #cex.lab <- cex.lab * raster.width.est.fu / legend.lab.width.fu
+        cex.lab <- cex.lab * raster.height.est.fu / legend.lab.width.fu
       }
     }
   }

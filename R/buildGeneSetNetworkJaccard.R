@@ -46,7 +46,12 @@
 #'
 #' @importFrom Matrix as.matrix
 
+
 buildGeneSetNetworkJaccard <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = scoreJaccardMatrix_C ){
+  buildGeneSetNetworkGeneric(object, ref.background, geneSetCollection, distMatrixFun, distance = 'jaccard', optimal_extreme = "max" )
+}
+
+buildGeneSetNetworkJaccard.old <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = scoreJaccardMatrix_C ){
   if( is.null( object ) ) object <- GSNData()
 
   if( ! is.null( ref.background ) && !is.null( geneSetCollection ) ){

@@ -604,11 +604,13 @@ gsnHierarchicalDendrogram <- function( object,
         # Adjust the labels to have a space prior equal to leaf_char_shift X the width of a space, then plot:
         label_shift <- paste0( rep(" ", leaf_char_shift ), collapse = "" )
 
+
         stats:::plot.dendrogram( dendextend::`labels<-`( object = GSN.dend,
                                                          value = paste0( label_shift, stats:::labels.dendrogram( GSN.dend ))),
                                  cex = max( leaf_cex_range, na.rm = TRUE ),
-                                 horiz = TRUE,
-                                 height = tree_x_size.in )
+                                 horiz = TRUE )
+                                 #height = tree_x_size.in )
+
 
         # Figure out position of subnets indicator brackets, calculate .plt.bar:
         cex_multiplier <- 1

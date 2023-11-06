@@ -66,7 +66,8 @@ gsnMergePathways <- function( object, pathways.data = NULL, distance = NULL, id_
   # Set order of gene sets within the subnets, order by subnet, then rank within subnets.
   if( ! is.null( stat_col ) && ! is.null( sig_order ) ){
     PW.subnets$subnetRank <- with( PW.subnets, ave( x = c("loToHi"= 1,"hiToLo" = -1)[[sig_order]] * get(stat_col), subnet, FUN = function(x) rank(x, ties.method = "min" ) ) )
-    PW.subnets <- PW.subnets[with(PW.subnets,order(as.numeric(subnet), c("loToHi"= 1,"hiToLo" = -1)[[sig_order]] * get(stat_col))),]
+    #PW.subnets <- PW.subnets[with(PW.subnets,order(as.numeric(subnet), c("loToHi"= 1,"hiToLo" = -1)[[sig_order]] * get(stat_col))),]
+    PW.subnets <- dplyr::arrange( PW.subnets, as.numeric(subnet), as.numeric(subnetRank) )
   }
   PW.subnets
 }

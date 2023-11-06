@@ -74,7 +74,7 @@ gsnImportGSEA <- function( object, pathways_data = NULL, filename = NULL, id_col
                         "RANK AT MAX", "LEADING EDGE" )
 
   if( length( missing_fieldnames <- gsea_fieldnames[! make.names(gsea_fieldnames) %in% make.names(field_names)] ) > 0 ){
-    warning( "Data is missing the following GSEA fields:", paste0( missing_fieldnames,  collapse = ", " ) )
+    warning( "Pathways data are missing the following GSEA fields:", paste0( missing_fieldnames,  collapse = ", " ), "\n" )
   }
 
   pathways <- list( data = pathways_data, type = "gsea" )
@@ -99,7 +99,7 @@ gsnImportGSEA <- function( object, pathways_data = NULL, filename = NULL, id_col
   if( ! all( colnames( object$genePresenceAbsence ) %in% pathways$data[[pathways$id_col]] ) )
     stop("Error: Pathways data do not match gene set collection. They are missing gene sets from gene set collection.")
   if( ! all( pathways$data[[pathways$id_col]] %in% colnames( object$genePresenceAbsence ) ) )
-    warning("Warning: Pathways data do not match gene set collection. They contain gene sets not present in gene set collection.")
+    warning("Warning: Pathways data do not match gene set collection. They contain gene sets not present in gene set collection.\n")
 
   object$pathways <- pathways
   object

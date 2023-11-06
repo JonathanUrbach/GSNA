@@ -613,7 +613,7 @@ gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
 #'
 #' @examples
 intV2Color <- function( rgb_v ){
-  if( ! "numeric" %in% class( rgb_v ) )
+  if( ! any( c( "numeric", "integer" ) %in% class( rgb_v ) ) )
     stop( "Incorrect data type '", class( rgb_v ), "', expected numeric."  )
 
   if( length( rgb_v ) != 3 )
