@@ -29,6 +29,8 @@
 #' with periods.)
 #' @param sig_order (optional) Either \code{'loToHi'} (default) or \code{'hiToLo'} depending on the statistic used to
 #' evaluate pathways results.
+#' @param n_col (optional) Specifies the column containing the number of genes in the gene set. Generally, this is the number
+#' of genes in the gene set that are attested in an expression data set (Defaults to 'SIZE').
 #' @param sep A separator for text file import, defaults to "\\t". Ignored if \code{filename} is not specified.
 #'
 #' @return This returns a GSNData object containing imported pathways data.
@@ -53,7 +55,7 @@
 #'
 #' @importFrom utils read.table
 #'
-gsnImportGSEA <- function( object, pathways_data = NULL, filename = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, sep = "\t" ){
+gsnImportGSEA <- function( object, pathways_data = NULL, filename = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, n_col = NULL, sep = "\t" ){
   stopifnot( "GSNData" %in% class( object ) )
 
   # Not searching for *all* the fields, just the critical ones. (Some are repeats, with weird names.)
@@ -86,6 +88,11 @@ gsnImportGSEA <- function( object, pathways_data = NULL, filename = NULL, id_col
     pathways$sig_order <- "loToHi"
   }
 
+  n_cols <- c( "SIZE" )
+  if( length( present_n_cols <- field_names[field_names %in% n_cols] ) > 0 ){
+    pathways$n_col <- present_n_cols[1]
+  }
+
   # Add a Title column to gsea data for later:
   if( "NAME" %in% field_names && ! "Title" %in% field_names )
     pathways$data$Title <- stringr::str_to_title( gsub( pattern = "_", replacement = " ", x = pathways$data$NAME ) )
@@ -93,6 +100,7 @@ gsnImportGSEA <- function( object, pathways_data = NULL, filename = NULL, id_col
   if( !is.null(id_col) ) pathways$id_col <- id_col
   if( !is.null(stat_col) ) pathways$stat_col <- stat_col
   if( !is.null(sig_order) ) pathways$sig_order <- sig_order
+  if( !is.null(n_col) ) pathways$n_col <- n_col
 
   if( is.null( pathways$id_col ) ) stop( "id_col (ID Column specification) required." )
 

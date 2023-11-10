@@ -70,6 +70,15 @@ gsnImportGenericPathways <- function( object, pathways_data = NULL, filename = N
   if( any( c("ID","id", "NAME", "Term" ) %in% field_names ) )
     pathways$id_col <- match.arg( arg = field_names, choices = c("ID","id", "NAME", "Term" ), several.ok = TRUE  )
 
+
+  # Find the first column in the data to match a N1/N/SIZE etc. regex. (This is a bit of a guess.)
+  pathways$n_col = field_names[which(stringi::stri_detect_regex(str = field_names,
+                                                                pattern = "(?:N1\\b|N\\b|SIZE\\b)",
+                                                                opts_regex=stringi::stri_opts_regex(case_insensitive=TRUE)))[1]]
+  if( is.na( pathways$n_col ) ){ # Fix n_col if NA
+    pathways$n_col <- NULL
+  }
+
   # Find the first column in the data to match a p-val/q-val/FDR etc. regex. (This is a bit of a guess.)
   pathways$stat_col = field_names[which(stringi::stri_detect_regex(str = field_names, pattern = "(?:adj|fdr|fwer).[pq][\\s\\-\\.]?val|FDR|Benjamini|Bonferroni", opts_regex=stringi::stri_opts_regex(case_insensitive=TRUE)))[1]]
   if( is.na( pathways$stat_col ) ){ # Fix stat_col if NA

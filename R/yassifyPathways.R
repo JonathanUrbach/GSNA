@@ -133,7 +133,8 @@ yassifyPathways <- function( pathways,
                         escape=FALSE,
                         rownames=FALSE, ... )
 
-  if( all( c("subnet", "subnetRank" ) %in% colnames( pathways ) ) ){
+  #if( all( c("subnet", "subnetRank" ) %in% colnames( pathways ) ) ){
+  if( "subnet" %in% colnames( pathways ) && !is.null(table_row_colors) && length(table_row_colors) > 0 ){
     subnet.id <- unique( pathways$subnet )
 
     # Convert to integers. If all subnet values are numeric and > 0 integer:

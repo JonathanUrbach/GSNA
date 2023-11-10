@@ -26,7 +26,7 @@ Pathways analysis is a family of powerful methods that associate experimentally-
 
 Pathways analysis methods such as GSEA(@subramanian_gene_2005,@mootha_pgc-1-responsive_2003), CERNO(@zyla_gene_2019), DAVID(@sherman_david_2022,@huang_systematic_2009) and others work by identifying statistical associations of ordered or unordered gene lists with genetic signatures, and returning lists of gene signatures with adjusted estimated *p*-values. A common pitfall of these methods is that the resulting lists of gene signatures may be complex and difficult to interpret. The reason for this complexity is multifold. Firstly, within GSCs which may include many thousands of gene signatures, there are frequently numerous signatures that are nested or otherwise overlap, sharing many of the same genes. This is easily understood; many of the perturbations used to generate the GSCs can activate the same or overlapping pathways. In addition, multiple separate pathways may be perturbed in a given experimental dataset. A significant challenge in pathways analysis is to determine which of numerous genetic signature "hits" from a given experimental dataset represent overlapping or distinct pathways.  
 
-Strategies exist to address this problem. TopGO (@alexa_improved_2006) maps hits against nested gene ontology gene sets to the predefined hierarchies of GO terms, and scores gene sets within the hierarchy. However it's utility is limited to gene ontology gene sets. DAVID (@sherman_david_2022,@huang_systematic_2009) uses kappa statisics to group gene sets together, but this feature is only usable within the DAVID web application and is not presently applicable to other methods or gene sets beyond those present in DAVID's online database. The **Enrichment Map** plugin for **Cytoscape** (@merico_enrichment_2010) uses Jaccard or Szymkiewicz–Simpson coefficients as distance metrics to group gene sets together, but it does not actually divide the gene sets into clusters, and is meant primarily for GSEA data. Here, we present a general method for associatiating gene sets that (1) is modular and independent of pathways-analysis method*, (2) works with arbitrary gene sets/combinations of gene sets, (3) can generate tabular gene set associations and graphical visualisations from pathways data and (4) is accessible via an application programming interface (API). We call this method Gene Set Networking Analysis (GSNA).  
+Strategies exist to address this problem. TopGO (@alexa_improved_2006) maps hits against nested gene ontology gene sets to the predefined hierarchies of GO terms, and scores gene sets within the hierarchy. However it's utility is limited to gene ontology gene sets. DAVID (@sherman_david_2022,@huang_systematic_2009) uses kappa statisics to group gene sets together, but this feature is only usable within the DAVID web application and is not presently applicable to other methods or gene sets beyond those present in DAVID's online database. The **Enrichment Map** plugin for **Cytoscape** (@merico_enrichment_2010) uses Jaccard or Szymkiewicz–Simpson coefficients as distance metrics to group gene sets together, but it does not actually divide the gene sets into clusters, and is meant primarily for GSEA data. Here, we present a general method for associatiating gene sets that (1) is modular and independent of pathways-analysis method*, (2) works with arbitrary gene sets/combinations of gene sets, (3) can generate tabular gene set associations and graphical visualisations from pathways data and (4) is accessible via an application programming interface (API). We call this method Gene Set Network Analysis (GSNA).  
 
 
 # Getting Started with GSNA      
@@ -93,7 +93,7 @@ In this vignette, we will use differential expression and pathways data derived 
 
 In the sample data provided, gene expression in CiHep cells and expression in CiKrt cells are both compared to the fibroblast type 2 cell type, generating two sets of differential expression data to profile both cell type transitions. These two transitions, fibroblast 2 to CiHep and fibroblast 2 to CiKrt cells were further analyzed by performing pathways analysis using a gene set collection containing sets of genes activated or repressed dependent on particular transcription factors derived from MSigDB signatures as well as from the dorothea data set(@garcia-alonso_benchmark_2019). The main signatures observed in this dataset are repressed gene signatures, genes whose expression went down upon treatment with the chemical coctail.   
 
-Here we are performing a single-channel GSNA analysis with gene signatures that were down in CiHep cells relative to fibrinoblast 2 cells. We start by importig the **"Bai_CiHep_DN.cerno"** CERNO results set.
+Here we are performing a single-channel GSNA analysis with gene signatures that were down in CiHep cells relative to fibrinoblast 2 cells. We start by importing the **"Bai_CiHep_DN.cerno"** CERNO results set.
 
 
 ```{r echo=FALSE, include=FALSE, eval=FALSE}
@@ -117,12 +117,25 @@ We can inspect the structure of this CERNO data set using the head function.
 head( Bai_CiHep_DN.cerno )
 ```
 
-This CERNO result set includes a gene set ID as well as several statistical values uncluding the **cerno**, **AUC**, **cES**, and both standard (nominal) and adjusted *p*-values. We will use the adjusted *p*-values in our analysis.  
+This CERNO result set includes a gene set ID as well as several statistical values including the **cerno**, **AUC**, **cES**, and both standard (nominal) and adjusted *p*-values. We will use the adjusted *p*-values in our analysis.  
 
-Having loaded our CERNO data set, we also load the **"Bai_gsc.tmod"** gene set collection.  
+Having loaded our CERNO data set, we also load the **"Bai_gsc.tmod"** gene set collection.
 
 ```{r}
 data("Bai_gsc.tmod")
+```
+
+The gene set collection object included in with the **GSNA** package is a **tmod** class object. However, as of version 0.50.11, the **tmod** package used in this vignette uses a new version of its gene set collection object, a **tmodGS** object. If you're using version 0.50.11 of the **tmod** package, convert the **Bai_gsc.tmod** into a **tmodGS** object.
+
+```{r}
+if( utils::packageVersion( pkg = "tmod" ) >= "0.50.11" ){
+  Bai_gsc.tmod <- tmod::tmod2tmodGS( Bai_gsc.tmod )
+}
+```
+
+Now, we can inspect the **Bai_gsc.tmod** object to see that it is indeed a **tmod** or **tmodGS** class object, and also see how many gene sets (referred to as modules) and genes it contains:
+
+```{r}
 Bai_gsc.tmod
 ```
 
@@ -147,10 +160,11 @@ Now, we subset the **Bai_gsc.tmod** gene set collection to obtain a collection w
 
 ```{r}
 Bai_CiHep_DN.sig.tmod <- Bai_gsc.tmod[Bai_CiHep_DN.sigid]
+Bai_CiHep_DN.sig.tmod
 ```
 
 
-Now that we have a filtered CERNO data set and a GSC containing only significant gene sets, we need the background of observable genes in our expression set. Typically, this is obtained from the differential expression data. In the case of the Bai dataset, we have expression data in the form of a Seurat data set obtained using Seurat's **FindMarkers()** function, with gene symbols as the row names. In this data, gene symbols are in "title case", with only the first letter capitalized, but gene symols in the gene set collection are all upper case, so we convert the genes in the Bai data set to upper case too:  
+Now that we have a filtered CERNO data set and a GSC containing only significant gene sets, we need the background of observable genes in our expression set. Typically, this is obtained from the differential expression data. In the case of the Bai dataset, we have expression data in the form of a Seurat data set obtained using Seurat's **FindMarkers()** function, with gene symbols as the row names. In this data, gene symbols are in "title case", with only the first letter capitalized, but gene symbols in the gene set collection are all upper case, so we convert the genes in the Bai data set to upper case too:  
 
 ```{r}
 data("Bai_CiHep_v_Fib2.de")
@@ -159,10 +173,11 @@ Bai_CiHep_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
 
 ## Creating a Gene Set Network  
 
-Use the **buildGeneSetNetworkSTLF()** function to create a **GSNData** object and calculate a distance matrix. This first step requires just the filtered GSC and the referebce background.  
+Use the **buildGeneSetNetworkSTLF()** function to create a **GSNData** object and calculate a distance matrix. This first step requires just the filtered GSC and the reference background.  
 
 ```{r}
-Bai_CiHep_DN.sig.GSN <- buildGeneSetNetworkSTLF( ref.background = Bai_CiHep_genes, geneSetCollection = Bai_CiHep_DN.sig.tmod )
+Bai_CiHep_DN.sig.GSN <- buildGeneSetNetworkSTLF( ref.background = Bai_CiHep_genes,
+                                                 geneSetCollection = Bai_CiHep_DN.sig.tmod )
 
 Bai_CiHep_DN.sig.GSN
 ```
@@ -172,11 +187,12 @@ Bai_CiHep_DN.sig.GSN
 * **buildGeneSetNetworkJaccard()** can be used to create networks based on the Jaccard distance.  
 * **buildGeneSetNetworkOC()** can be used to create networks based on the Szymkiewicz–Simpson overlap coefficient.  
 
-Once we have a GSNData object containing a distance matrix, we import the pathways results data set as a data.frame. This should include an ID column and a statistical column for ordering the data by significance. Such a statistical column is generally an adjusted *p*-value. When a pathways data are imported, the **id_col**, **stat_col**, and **sig_order** fields must also be set, but for known data set types (CERNO, GSEA, DAVID), defaults for these can be set automatically. NOTE: the ID col is the ID used by the gene set collection whether that is in the form of a **tmod** or **tmodGS** object, or when the gene set collection is supplied as a named list of gene set character vectors.  
+Once we have a GSNData object containing a distance matrix, we import the pathways results data set as a data.frame. This should include an ID column and a statistical column for ordering the data by significance. Such a statistical column is generally an adjusted *p*-value. When pathways data are imported, the **id_col**, **stat_col**, and **sig_order** fields must also be set, but for known data set types (CERNO, GSEA, DAVID), defaults for these can be set automatically. NOTE: the id_col is the ID used by the gene set collection whether that is in the form of a **tmod** or **tmodGS** object, or when the gene set collection is supplied as a named list of gene set character vectors.  
 
 
 ```{r}
-Bai_CiHep_DN.sig.GSN <- gsnAddPathwayData( object = Bai_CiHep_DN.sig.GSN, pathways_data = Bai_CiHep_DN.cerno.sig )
+Bai_CiHep_DN.sig.GSN <- gsnAddPathwayData( object = Bai_CiHep_DN.sig.GSN,
+                                           pathways_data = Bai_CiHep_DN.cerno.sig )
 
 Bai_CiHep_DN.sig.GSN
 ```
@@ -191,7 +207,7 @@ Bai_CiHep_DN.sig.GSN <- gsnPareNetGenericHierarchic( object = Bai_CiHep_DN.sig.G
 
 **Variations**  
 
-* By default, the **gsnPareNetGenericHierarchic()** applies a scaling function to the distances calculated between gene sets. In general, distance metrics for which greater values are considered closer and lesser values more distant, or which include negative values need to be transformed to allow hierarchical clustering so that the values are all positive and the smallest values correspond to the least distance. If the distances between gene sets treat low values as close as with (single tail log Fisher and standard Euclidean distanves), the **gsnPareNetGenericHierarchic()** function selects **distMat2UnitNormRank()** as the matrix scaling function (**matrix_scaling_fun**). If, on the other hand, high values are *closer* (as with Jaccard and Szymkiewicz–Simpson indices), the **negDistMat2UnitNormRank()** scaling function is used. These two scaling functions are essentially the same, except that **negDistMat2UnitNormRank()** multiplies the distance matrix by $-1$ before applying **distMat2UnitNormRank()** to calculate unit normalized ranks. This default behavior gives acceptable results in most cases, but for some distance metrics, other scaling functions may be used. For example, **matrix_scaling_fun = function(x) 1 - x** could be used with Jaccard and Szymkiewicz–Simpson indices.  
+* By default, the **gsnPareNetGenericHierarchic()** applies a scaling function to the distances calculated between gene sets. In general, distance metrics for which greater values are considered closer and lesser values more distant, or which include negative values need to be transformed to allow hierarchical clustering so that the values are all positive and the smallest values correspond to the least distance. If the distances between gene sets treat low values as close (as with single tail log Fisher and standard Euclidean distances), the **gsnPareNetGenericHierarchic()** function selects **distMat2UnitNormRank()** as the matrix scaling function (**matrix_scaling_fun**). If, on the other hand, high values are *closer* (as with Jaccard and Szymkiewicz–Simpson indices), the **negDistMat2UnitNormRank()** scaling function is used. These two scaling functions are essentially the same, except that **negDistMat2UnitNormRank()** multiplies the distance matrix by $-1$ before applying **distMat2UnitNormRank()** to calculate unit normalized ranks. This default behavior gives acceptable results in most cases, but for some distance metrics, other scaling functions may be used. For example, **matrix_scaling_fun = function(x) 1 - x** could be used with Jaccard and Szymkiewicz–Simpson indices.  
 * Paring can alternatively be performed by joining each node to it's nearest N neighbors using the function **gsnPareNetGenericToNearestNNeighbors()**. For **N=1** (the default), this produces similar groupings of gene sets as hierarchical paring, but for greater values of **N** the networks can be very complex. 
 
 
@@ -275,7 +291,7 @@ knitr::include_graphics( path = "Bai_CiHep_DN.sig.GSN.HD.svg" )
 ```
 
 
-On the basis of this output, it could be concluded that there are 6 subnets or clusters of gene signatures that are downregulated upon chemical induction of CiHep cells from Fibroblast2 cells, with subnet 1 being the most significant, and within that, the [M30131 Psmb5](https://www.gsea-msigdb.org/gsea/msigdb/cards/PSMB5_TARGET_GENES) signature being particularly strong.  
+On the basis of this output, it could be concluded that there are 6 subnets or clusters of gene signatures that are downregulated upon chemical induction of CiHep cells from fibroblast2 cells, with subnet 1 being the most significant, and within that, the [M30131 Psmb5](https://www.gsea-msigdb.org/gsea/msigdb/cards/PSMB5_TARGET_GENES) signature being particularly strong.  
 
 **Variation:** A hierarchical dendrogram with a circular geometry can be generated with **gsnHierarchicalDendrogram()** using the **geometry = 'circular'** argument.  
 
@@ -292,7 +308,7 @@ A 2-channel Gene Set Network workflow is very similar to a single channel workfl
 
 The 2-channel workflow begins with the merging of the two unfiltered parallel pathways data sets. Importantly, by "unfiltered", we mean that the two pathways data sets should conatain scores and *p*-values for all the gene sets in the gene set collection. For CERNO, such complete unfiltered result sets may be obtained by including the argument **qval = 1.1** when calling the **tmod** package's **tmodCERNOtest()** function. Using unfiltered pathways results sets allows us to generate a merged data set that includes gene signatures that are significant in either one or both of the two pathways results sets.  
 
-We start with two, complete unfiltered data sets containing all
+We start with two, complete unfiltered data sets containing all the CERNO results for a given GSC.  
 
 ```{r}
 data( Bai_CiKrt_DN.cerno )
@@ -303,7 +319,7 @@ Bai_CiHep_v_CiKrt_DN.merge <- merge( x = Bai_CiHep_DN.cerno,
 ```
 
 
-For columns common to bothe CERNO datasets, the names are suffixed with .x and .y depending on which argument was used.
+For columns common to both CERNO datasets, the names are suffixed with .x and .y depending on which argument was used.
 To clean up this data, we can delete columns not of interest and give the columns with .x and .y suffixes better names, using the rename function from the **dplyr** package:
 
 ```{r}
@@ -314,11 +330,13 @@ Bai_CiHep_v_CiKrt_DN.merge <- dplyr::rename( .data = Bai_CiHep_v_CiKrt_DN.merge,
                                              cerno.CiHep = cerno.x,
                                              N1.CiHep = N1.x,
                                              AUC.CiHep = AUC.x,
+                                             cES.CiHep = cES.x,
                                              P.Value.CiHep = P.Value.x,
                                              adj.P.Val.CiHep = adj.P.Val.x,
                                              cerno.CiKrt = cerno.y,
                                              N1.CiKrt = N1.y,
                                              AUC.CiKrt = AUC.y,
+                                             cES.CiKrt = cES.y,
                                              P.Value.CiKrt = P.Value.y,
                                              adj.P.Val.CiKrt = adj.P.Val.y
                                              )
@@ -374,7 +392,7 @@ Bai_CiHep_v_CiKrt_DN.sig.tmod
 ```
 
 
-The two differential expression data sets have largely overlapping but slightly different sets of observable genes. These two bacground gene lists should give similar, but not identical distance values when generating a gene set network. We'll use the **Bai_CiHep_genes** gene list. Using the **venn** function from the **gplots** package, we can visualize the overlap of gene sets in the CiHep vs Fibroblast2 and CiKrt vs Fibroblast2 data sets.     
+The two differential expression data sets have largely overlapping but slightly different sets of observable genes. These two bacground gene lists should give similar, but not identical distance values when generating a gene set network. We'll use the **Bai_CiHep_genes** gene list. Using the **venn** function from the **gplots** package, we can visualize the overlap of gene sets in the CiHep vs fibroblast 2 and CiKrt vs fibroblast 2 data sets.     
 
 
 ```{r}
@@ -436,7 +454,7 @@ yassifyPathways( gsnSubnetSummary( Bai_CiHep_v_CiKrt_DN.GSN  ),
 
 ## Plotting the 2-Channel Network  
 
-In 2-Channel network plots, gene set nodes can be color-scaled in two dimensions, based on **stat_col** and **stat_col_2**. In the plots below, signatures significant in the  CiHep vs fibroblast 2 comparison are strongly red, whereas those CiKrt vs fibroblast 2 are strongly blue. Any signatures significant for both comparisons would be purple. Note, the square color legend that indicates significance for both channels.  
+In 2-Channel network plots, gene set nodes can be color-scaled in two dimensions, based on **stat_col** and **stat_col_2**. In the plots below, signatures significant in the  CiHep vs fibroblast 2 comparison are strongly red, whereas those significant in CiKrt vs fibroblast 2 are strongly blue. Any signatures significant for both comparisons would be purple. Note the square color legend that indicates significance for both channels.  
 
 
 ```{r}
@@ -445,12 +463,10 @@ gsnPlotNetwork( Bai_CiHep_v_CiKrt_DN.GSN, n_col = "N1.CiHep", filename = "Bai_Ci
 knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.NP.svg" )
 ```
 
-From this analysis, it may be concluded that about 7 subnets or clusters of related gene sets are downregulated in CiHep and CiKrt cells upon chemical induction of Fibroblast 2 cells.  In particular, the Psmb5 downregulation signature is strong in CiHeps (strpng red), whereas the Hes2 signature (strong) blue is strongest in CiKrt cells.  
+From this analysis, it may be concluded that about 7 subnets or clusters of related gene sets are downregulated in CiHep and CiKrt cells upon chemical induction of fibroblast 2 cells. In particular, the Psmb5 downregulation signature is strong in CiHeps (strong red), whereas the Hes2 signature (strong blue) is strongest in CiKrt cells.  
 
 
-**Variation:**
-
-When available in the pathways data, an alternative statistic can be used to color gene sets in a gene set network. Here, we're specifying **stat_col = 'AUC.CiHep'**, suppressing the previously set value of the second statistical column with **stat_col_2 = NA** and specifying a custom set of vertex colors used to represent the AUC values, such that the color scale goes from dark blue to white.     
+**Variation:** When available in the pathways data, an alternative statistic can be used to color gene sets in a gene set network. Here, we're specifying **stat_col = 'AUC.CiHep'**, suppressing the previously set value of the second statistical column with **stat_col_2 = NA** and specifying a custom set of vertex colors used to represent the AUC values, such that the color scale goes from dark blue to white.     
 
 
 ```{r NetworkPlot_AUC}
@@ -496,7 +512,7 @@ GSEA is a popular pathways analysis program available from  [https://www.gsea-ms
 
 When running GSEA, users may specify an output directory; otherwise the data are saved to a subdirectory named "~/gsea_home/output/[date]" within the user's home directory. Results files are stored in these results directories with names along the lines of "gsea_report_for_Pheno1_1698209272006.tsv", with "gsea_report_for_" as a prefix, the phenotype being compared, and lastly, numbers + ".tsv" as the suffix. Results files are generally present in pairs appropriate for a given comparison, For a pheno1_versus_pheno2 comparison, there could be a file "gsea_report_for_Pheno1_1698209272006.tsv" with positive **ES** and **NES** values, and "gsea_report_for_Pheno2_1698209272006.tsv" file with negative **ES** and **NES** values. Such output files can be suitable as inputs for GSNA. Since *p*-values (and *q*-values) may not be accurately estimated below $p = 1/[# permuations]$, **NES** or **ES** statistics may be more suitable for use as the primary statistic used for GSEA. Since GSEA separates *UP* gene sets and *DOWN* gene sets into two different output files, these may be combined for a comprehensive analysis of activated and repressed gene sets.
 
-The following figure illustrates the relationship between GSEA's **NES** and nominal *p*-value statistics for a concatenated data set derived from a comparison of CiHep versus Hepatocyte 2 cells. Non-significant and significant results assessed on the basis of FDR *q*-values are indicated by crosses and solid circles, respectively.    
+The following figure illustrates the relationship between GSEA's **NES** and nominal *p*-value statistics for a concatenated data set derived from a comparison of CiHep versus fibroblast 2 cells. Non-significant and significant results assessed on the basis of FDR *q*-values are indicated by crosses and solid circles, respectively.    
 
 ```{r, echo=FALSE}
 data( "Bai_CiHep_dorothea_DN.Gsea" )
@@ -611,7 +627,7 @@ Bai_CiHep_dorothea_UD.GSN <- buildGeneSetNetworkJaccard( ref.background = Bai_ba
                                                          geneSetCollection = Bai_gsc.tmod.gsea )
 ```
 
-Next, we import the filtered pathways data set. Since we are opting to use NES as our primary statistic, we can specify that in this command.
+Next, we import the filtered pathways data set. Since we are opting to use 'FDR q-val' as our primary statistic with **sig_order = 'loToHi'**, we can specify that in this command.
 
 The 'sig_order' parameter specifies the order in which subnet membership is assigned, and therefore the order that they are reported. It also specifies how they will be colored for output plots, though users can override the automatic plot coloring behavior. In our case, since the NES values are mostly negative in our dataset, we will assign **sig_order = 'loToHi'**.
 
@@ -624,11 +640,13 @@ Bai_CiHep_dorothea_UC.GSN <- gsnAddPathwayData( object = Bai_CiHep_dorothea_UD.G
 Bai_CiHep_dorothea_UC.GSN
 ```
 
+Please ignore any warning about the missing **GS DETAILS** field, which we removed prior.  
+
 **NOTE:** For *p*-values and *q*-values, use sig_order = 'loToHi'. For data in which high or extreme values are most significant, use 'hiToLo'. (We may in the future add an option to specifically handle zero-centered extreme values properly in the future as 'absHiToLo'.)  
 
-Next, we pare the network and assign subnets. We'll use nearest single neighbor pairing for this example, with the **gsnPareNetGenericToNearestNNeighbors()** function. Among the factors that determine the granularity of the clustering into subnets are the **cutoff** and **extreme** parameters. The **cutoff** parameter specifies the maximal or minimal value of calculated distance for which gene-set groupings can be joined into subnets. More *distant* connections are removed. For distance metrics like **stlf** (single tailed log Fisher), **lf**, etc., for which lower values are considered *closer*, **extreme = 'min'**, hence **cutoff** is treated as the maximal distance for which gene sets may be joined in a subnet. For distance metrics such as Jaccard index or the Szymkiewicz–Simpson overlap coefficient, for which greater values are *closer*, **extreme = 'max'**, and **cutoff** is treated as the *minimal* value of distance for which gene sets may be joined into a subnet.
+Next, we pare the network and assign subnets. We'll use nearest single neighbor pairing for this example, with the **gsnPareNetGenericToNearestNNeighbors()** function. Among the factors that determine the granularity of the clustering into subnets are the **cutoff** and **extreme** parameters. The **cutoff** parameter specifies the maximal or minimal value of calculated distance for which gene-set groupings can be joined into subnets. More *distant* connections are removed. For distance metrics like **stlf** (single tailed log Fisher), **lf**, etc., for which lower values are considered *closer*, **extreme = 'min'**, hence **cutoff** is treated as the maximal distance for which gene sets may be joined in a subnet. For distance metrics such as Jaccard index or the Szymkiewicz–Simpson overlap coefficient, for which greater values are *closer*, **extreme = 'max'**, and **cutoff** is treated as the *minimal* value of distance for which gene sets may be joined into a subnet.  
 
-We have had good results when the **cutoff** is selected to retain $1 \over 4$ to $1 \over 2$ of distances in the distance matrix. We use the **gsnDistanceHistogram()** function with the argument **stat = 'cumulative'** specified to examine the distribution of distances in the raw distance matrix.
+We have had good results when the **cutoff** is selected to retain $1 \over 4$ to $1 \over 2$ of distances in the distance matrix. We use the **gsnDistanceHistogram()** function with the argument **stat = 'cumulative'** specified to examine the distribution of distances in the raw distance matrix.  
 
 ```{r}
 gsnDistanceHistogram( Bai_CiHep_dorothea_UC.GSN, stat = "cumulative" )
@@ -659,10 +677,10 @@ yassifyPathways( Bai_CiHep_dorothea_UC.subnets,
                                 ) )
 ```
 
-An interpretation of this result set would be that the GSEA pathways results break down into an estimated 16 subnet groupings. These groupings are approximate, and dependent on parameters used for **gsnPareNetGenericToNearestNNeighbors()**, particularly the **cutoff** parameter which specifies the minimal or maximal value of the distance parameter for which gene sets can be grouped in a network, depending on the distance metric being used. Within each subnet, the higher significance gene sets may indicate biologically significant associations. In this example GSEA analysis, we used a database with gene sets directed and repressed by particular transcription factors, so in the Bai data, these transcription factors may be considered candidates for mediating the differentiation of Fibroblast 2 cells into CiHeps, or hepatocyte like cells. In particular the gene signatures of AR, ELF3, FOXK2, KLF5, KDM5B are downregulated in CiHeps, whereas those of ETV4 & SPI1 are elevated.
+An interpretation of this result set would be that the GSEA pathways results break down into an estimated 16 subnet groupings. These groupings are approximate, and dependent on parameters used for **gsnPareNetGenericToNearestNNeighbors()**, particularly the **cutoff** parameter which specifies the minimal or maximal value of the distance parameter for which gene sets can be grouped in a network, depending on the distance metric being used. Within each subnet, the higher significance gene sets may indicate biologically significant associations. In this example GSEA analysis, we used a database with gene sets directed and repressed by particular transcription factors, so in the Bai data, these transcription factors may be considered candidates for mediating the differentiation of fibroblast 2 cells into CiHeps, or hepatocyte like cells. In particular the gene signatures of AR, ELF3, FOXK2, KLF5, KDM5B are downregulated in CiHeps, whereas those of ETV4 & SPI1 are elevated.
 
 
-We can now use the **gsnSubnetSummary()** function to generate a concise table of the subnets with summary statistics. By default, the summary statisics calculated are harmonic means and min or max values depending on the value of \code{sig_order}. These are generally appropriate for combining and sumarizing *p*-values and *q*-values, but may not be appropriate for a value such as NES. Here we will specifically specify that the mean and maximal (\code{max}) NES values should be calculated instead.  
+We can now use the **gsnSubnetSummary()** function to generate a concise table of the subnets with summary statistics. By default, the summary statisics calculated are harmonic means and min or max values depending on the value of **sig_order**. These are generally appropriate for combining and sumarizing *p*-values and *q*-values, but may not be appropriate for a value such as NES. Here we will specifically specify that the mean and maximal (**max**) NES values should be calculated instead.  
 
 
 ```{r}
@@ -739,7 +757,7 @@ knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.HD.svg" )
  
 ```
 
-One interpretation of these results are that changes in expression associated with the differentiation of Fibroblast 2 cells into CiHep cells upon chemical induction are characterized mainly by repression of numerous transcriptional programs such as those directed by the Myc, Ar, KLF5 and TP53 transcription factors, and activation of Spi1 and Etv4. 
+One interpretation of these results are that changes in expression associated with the differentiation of fibroblast 2 cells into CiHep cells upon chemical induction are characterized mainly by repression of numerous transcriptional programs such as those directed by the Myc, Ar, KLF5 and TP53 transcription factors, and activation of Spi1 and Etv4. 
 
 
 # References

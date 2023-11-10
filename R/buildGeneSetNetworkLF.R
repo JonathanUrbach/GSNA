@@ -48,7 +48,7 @@
 #'                                   geneSetCollection = msig.subset )
 #' }
 #'
-#' @seealso \code{\link{scoreLFMatrix_C}}, \code{\link{scoreSTLFMatrix}}, \code{\link{scoreJaccardMatrix_C}}
+#' @seealso \code{\link{scoreLFMatrix_C}}, \code{\link{scoreJaccardMatrix_C}}, \code{\link{scoreOCMatrix_C}}
 #'
 #' @importFrom Matrix as.matrix
 #'

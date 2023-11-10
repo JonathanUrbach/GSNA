@@ -1,35 +1,37 @@
 
-#' gsnDefaultDistance
+#' gsn_default_distance
 #'
 #' @description Retrieve or set default distances in a \code{GSNData} object.
 #'
 #' @param object An GSNData object.
 #'
 #' @return The name of the default distance metric.
-#' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Print the value of the default_distance:
-#' gsnDefaultDistance( analysis.GSN )
+#'   # Print the value of the default_distance:
+#'   gsn_default_distance( analysis.GSN )
 #' }
-gsnDefaultDistance <- function( object ){
+#' @export
+#'
+gsn_default_distance <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   object$default_distance
 }
 
-#' @rdname gsnDefaultDistance
+#' @rdname gsn_default_distance
 #' @param value A character vector of length 1 containing the name of a valid distance metric. The value must be
 #' a valid distance metric, for which there exists a distance matrix in the GSNData object, or else an error will
 #' be thrown.
-#' @export
+#'
 #' @examples
 #' \dontrun{
 #' # Set the value of the default_distance to 'jaccard':
-#' gsnDefaultDistance( analysis.GSN ) <- 'jaccard'
+#' gsn_default_distance( analysis.GSN ) <- 'jaccard'
 #' }
-#' @seealso \code{\link{gsnDistances}}
-`gsnDefaultDistance<-` <- function( object, value ){
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`gsn_default_distance<-` <- function( object, value ){
   stopifnot( "GSNData" %in% class( object )  )
   if( value %in% names( object$distances ) ){
     object$default_distance <- value
@@ -39,7 +41,7 @@ gsnDefaultDistance <- function( object ){
   object
 }
 
-#' gsnDistances
+#' gsn_distances
 #'
 #' @description Given a \code{GSNData} object, returns a character vector of distance matrices that are contained
 #' within.
@@ -47,16 +49,16 @@ gsnDefaultDistance <- function( object ){
 #' @param object An object of type \code{GSNData}.
 #'
 #' @return A character vector containing the names of distance matrices.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Print the names of distances in the GSNData object:
-#' gsnDistances( analysis.GSN )
+#' gsn_distances( analysis.GSN )
 #' }
 #'
-#' @seealso \code{\link{gsnDefaultDistance}()}
-gsnDistances <- function( object ){
+#' @seealso \code{\link{gsn_default_distance}()}
+#' @export
+gsn_distances <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   names( object$distances )
 }
@@ -66,41 +68,43 @@ gsnDistances <- function( object ){
 
 ####
 
-#' gsnPathways_id_col
+
+
+#' pw_id_col
 #'
 #' @description Retrieve or set the pathways id_col field in a \code{GSNData} object.
 #'
 #' @param object An GSNData object.
 #'
 #' @return The name of the id_col field.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Print the value of the default_distance:
-#' gsnPathways_id_col( analysis.GSN )
+#' pw_id_col( analysis.GSN )
 #' }
-gsnPathways_id_col <- function( object ){
+#' @export
+pw_id_col <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$id_col
 }
 
-#' @rdname gsnPathways_id_col
+#' @rdname pw_id_col
 #' @param value A character vector of length 1 containing the name of a column within
 #' the pathways data to be used as a gene set identifier. The GSNData object must contain
 #' a pathways data data.frame, or else an error will be thrown.
 #'
 #' @return A GSNData object with the value of the \code{$pathways$id_col} field set.
 #'
-#' @export
 #' @examples
 #' \dontrun{
 #' # Set the value of the id_col to 'ID':
-#' gsnPathways_id_col( analysis.GSN ) <- 'ID'
+#' pw_id_col( analysis.GSN ) <- 'ID'
 #' }
-#' @seealso \code{\link{gsnDistances}}
-`gsnPathways_id_col<-` <- function( object, value ){
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`pw_id_col<-` <- function( object, value ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
@@ -115,41 +119,41 @@ gsnPathways_id_col <- function( object ){
 ###
 
 
-#' gsnPathways_stat_col
+#' pw_stat_col
 #'
 #' @description Retrieve or set the pathways stat_col field in a \code{GSNData} object.
 #'
 #' @param object An GSNData object.
 #'
 #' @return The name of the stat_col field.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Print the value of the default_distance:
-#' gsnPathways_stat_col( analysis.GSN )
+#' pw_stat_col( analysis.GSN )
 #' }
-gsnPathways_stat_col <- function( object ){
+#' @export
+pw_stat_col <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$stat_col
 }
 
-#' @rdname gsnPathways_stat_col
+#' @rdname pw_stat_col
 #' @param value A character vector of length 1 containing the name of a column within
 #' the pathways data to be used as a gene set identifier. The GSNData object must contain
 #' a pathways data data.frame, or else an error will be thrown.
 #'
 #' @return A GSNData object with the value of the \code{$pathways$stat_col} field set.
 #'
-#' @export
 #' @examples
 #' \dontrun{
 #' # Set the value of the stat_col to 'ID':
-#' gsnPathways_stat_col( analysis.GSN ) <- 'ID'
+#' pw_stat_col( analysis.GSN ) <- 'ID'
 #' }
-#' @seealso \code{\link{gsnDistances}}
-`gsnPathways_stat_col<-` <- function( object, value ){
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`pw_stat_col<-` <- function( object, value ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
@@ -164,41 +168,41 @@ gsnPathways_stat_col <- function( object ){
 ####
 
 
-#' gsnPathways_stat_col_2
+#' pw_stat_col_2
 #'
 #' @description Retrieve or set the pathways stat_col_2 field in a \code{GSNData} object.
 #'
 #' @param object An GSNData object.
 #'
 #' @return The name of the stat_col_2 field.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Print the value of the default_distance:
-#' gsnPathways_stat_col_2( analysis.GSN )
+#' pw_stat_col_2( analysis.GSN )
 #' }
-gsnPathways_stat_col_2 <- function( object ){
+#' @export
+pw_stat_col_2 <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$stat_col_2
 }
 
-#' @rdname gsnPathways_stat_col_2
+#' @rdname pw_stat_col_2
 #' @param value A character vector of length 1 containing the name of a column within
 #' the pathways data to be used as a gene set identifier. The GSNData object must contain
 #' a pathways data data.frame, or else an error will be thrown.
 #'
 #' @return A GSNData object with the value of the \code{$pathways$stat_col_2} field set.
 #'
-#' @export
 #' @examples
 #' \dontrun{
 #' # Set the value of the stat_col_2 to 'ID':
-#' gsnPathways_stat_col_2( analysis.GSN ) <- 'ID'
+#' pw_stat_col_2( analysis.GSN ) <- 'ID'
 #' }
-#' @seealso \code{\link{gsnDistances}}
-`gsnPathways_stat_col_2<-` <- function( object, value ){
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`pw_stat_col_2<-` <- function( object, value ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
@@ -213,27 +217,27 @@ gsnPathways_stat_col_2 <- function( object ){
 ####
 
 
-#' gsnPathways_sig_order
+#' pw_sig_order
 #'
 #' @description Retrieve or set the pathways sig_order field in a \code{GSNData} object.
 #'
 #' @param object An GSNData object.
 #'
 #' @return The name of the sig_order field.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Print the value of the default_distance:
-#' gsnPathways_sig_order( analysis.GSN )
+#' pw_sig_order( analysis.GSN )
 #' }
-gsnPathways_sig_order <- function( object ){
+#' @export
+pw_sig_order <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$sig_order
 }
 
-#' @rdname gsnPathways_sig_order
+#' @rdname pw_sig_order
 #' @param value A character vector of length 1 containing the name of a column within
 #' the pathways data to be used as a gene set identifier. The GSNData object must contain
 #' a pathways data data.frame, or else an error will be thrown. Valid values are
@@ -241,14 +245,14 @@ gsnPathways_sig_order <- function( object ){
 #'
 #' @return A GSNData object with the value of the \code{$pathways$sig_order} field set.
 #'
-#' @export
 #' @examples
 #' \dontrun{
 #' # Set the value of the sig_order to 'ID':
-#' gsnPathways_sig_order( analysis.GSN ) <- 'ID'
+#' pw_sig_order( analysis.GSN ) <- 'ID'
 #' }
-#' @seealso \code{\link{gsnDistances}}
-`gsnPathways_sig_order<-` <- function( object, value ){
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`pw_sig_order<-` <- function( object, value ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
@@ -263,27 +267,27 @@ gsnPathways_sig_order <- function( object ){
 ####
 
 
-#' gsnPathways_sig_order_2
+#' pw_sig_order_2
 #'
 #' @description Retrieve or set the pathways sig_order_2 field in a \code{GSNData} object.
 #'
 #' @param object An GSNData object.
 #'
 #' @return The name of the sig_order_2 field.
-#' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Print the value of the default_distance:
-#' gsnPathways_sig_order_2( analysis.GSN )
+#' pw_sig_order_2( analysis.GSN )
 #' }
-gsnPathways_sig_order_2 <- function( object ){
+#' @export
+pw_sig_order_2 <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$sig_order_2
 }
 
-#' @rdname gsnPathways_sig_order_2
+#' @rdname pw_sig_order_2
 #' @param value A character vector of length 1 containing the name of a column within
 #' the pathways data to be used as a gene set identifier. The GSNData object must contain
 #' a pathways data data.frame, or else an error will be thrown. Valid values are
@@ -291,14 +295,14 @@ gsnPathways_sig_order_2 <- function( object ){
 #'
 #' @return A GSNData object with the value of the \code{$pathways$sig_order_2} field set.
 #'
-#' @export
 #' @examples
 #' \dontrun{
 #' # Set the value of the sig_order_2 to 'ID':
-#' gsnPathways_sig_order_2( analysis.GSN ) <- 'ID'
+#' pw_sig_order_2( analysis.GSN ) <- 'ID'
 #' }
-#' @seealso \code{\link{gsnDistances}}
-`gsnPathways_sig_order_2<-` <- function( object, value ){
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`pw_sig_order_2<-` <- function( object, value ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
@@ -311,10 +315,66 @@ gsnPathways_sig_order_2 <- function( object ){
   object
 }
 
+
+
+####
+
+#' pw_n_col
+#'
+#' @description Retrieve or set the pathways n_col field in a \code{GSNData} object.
+#'
+#' @param object An GSNData object.
+#'
+#' @return The name of the n_col field.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Print the value of the default_distance:
+#' pw_n_col( analysis.GSN )
+#' }
+#' @export
+pw_n_col <- function( object ){
+  stopifnot( "GSNData" %in% class( object )  )
+  if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
+  object$pathways$n_col
+}
+
+#' @rdname pw_n_col
+#' @param value A character vector of length 1 containing the name of a column within
+#' the pathways data to be used as a gene set identifier. The GSNData object must contain
+#' a pathways data data.frame, or else an error will be thrown.
+#'
+#' @return A GSNData object with the value of the \code{$pathways$n_col} field set.
+#'
+#' @export
+#' @examples
+#' \dontrun{
+#' # Set the value of the n_col to 'SIZE':
+#' pw_n_col( analysis.GSN ) <- 'SIZE'
+#' }
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`pw_n_col<-` <- function( object, value ){
+  stopifnot( "GSNData" %in% class( object )  )
+  if( is.null( object$pathways ) || is.null( object$pathways$data) )
+    stop( "Object is missing pathways data." )
+  if( is.null( value ) || value %in% colnames( object$pathways$data ) ){
+    object$pathways$n_col <- value
+  } else {
+    stop("Pathways data contains no column '", value, "'.")
+  }
+  object
+}
+
+
+
+
+
 ####
 
 
-#' gsnPathways_type
+#' pw_type
 #'
 #' @description Retrieve or set the pathways type field in a \code{GSNData} object.
 #'
@@ -326,15 +386,16 @@ gsnPathways_sig_order_2 <- function( object ){
 #' @examples
 #' \dontrun{
 #' # Print the value of the default_distance:
-#' gsnPathways_type( analysis.GSN )
+#' pw_type( analysis.GSN )
 #' }
-gsnPathways_type <- function( object ){
+#' @export
+pw_type <- function( object ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) ) stop("Object is missing pathways data.")
   object$pathways$type
 }
 
-#' @rdname gsnPathways_type
+#' @rdname pw_type
 #' @param value A character vector of length 1 containing the name of a column within
 #' the pathways data to be used as a gene set identifier. The GSNData object must contain
 #' a pathways data data.frame, or else an error will be thrown.
@@ -344,10 +405,11 @@ gsnPathways_type <- function( object ){
 #' @examples
 #' \dontrun{
 #' # Set the value of the type to 'ID':
-#' gsnPathways_type( analysis.GSN ) <- 'ID'
+#' pw_type( analysis.GSN ) <- 'ID'
 #' }
-#' @seealso \code{\link{gsnDistances}}
-`gsnPathways_type<-` <- function( object, value ){
+#' @seealso \code{\link{gsn_distances}}
+#' @export
+`pw_type<-` <- function( object, value ){
   stopifnot( "GSNData" %in% class( object )  )
   if( is.null( object$pathways ) || is.null( object$pathways$data) )
     stop( "Object is missing pathways data." )
@@ -360,8 +422,6 @@ gsnPathways_type <- function( object ){
 }
 
 ####
-
-
 
 #' print.GSNData
 #'
@@ -392,7 +452,7 @@ print.GSNData <- function( object ){
     .type <- object$pathways$type
     if( is.null( .type ) ) .type <- "NULL"
     cat( "  Contains pathways data of type: ", .type , "\n" )
-    for( .datname in c( "id_col", "stat_col", "sig_order", "stat_col_2", "sig_order_2" ) )
+    for( .datname in c( "id_col", "stat_col", "sig_order", "stat_col_2", "sig_order_2", "n_col" ) )
     if( !is.null(object$pathways[[.datname]] )  ){
       cat( "    ",  .datname, "=", object$pathways[[.datname]], "\n" )
     }
@@ -523,7 +583,6 @@ antiSplit <- function( .l, col.names = c("V1","V2") ){
 #'                                                           .to = msig$GENES$ID )
 #' }
 #'
-#'
 pick_MappedGeneSymbol <- function( .from, .to ){
   .mapped <- rep( x = NA, length(.from) )
   .to <- as.character( .to ) # Original case
@@ -544,14 +603,26 @@ pick_MappedGeneSymbol <- function( .from, .to ){
 
 ### Reading GMT format and converting a list of gene sets into a tmod object.
 
-#' Title
+#' read_gmt
 #'
-#' @param file
+#' @description This function parses a GMT file, documented
+#' \href{See https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29}{here}.
 #'
-#' @return
+#' @param file The path to GMT file to parse.
+#'
+#' @return This returns a GSC (gene set collection) as a name list of vectors, where the names correspond to gene set
+#' identifiers and the vectors are gene symbols.
+#'
+#' @seealso [func(gsc2tmod)]
+#'
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' gsc <- read_gmt( "gene_set_collection.GMT" )
+#' }
+#'
+#'
 read_gmt <- function( file ){
   .lines <- readLines( con = file )
   gsc <- list()
@@ -566,16 +637,29 @@ read_gmt <- function( file ){
  gsc
 }
 
-#' Title
+#' gsc2tmod
 #'
-#' @param MODULES2GENES
-#' @param MODULES
-#' @param GENES
+#' @description Function to convert a GSC in the form of a named list of vectors containing gene symbols to a object
+#' of class \code{tmod} which was used by the tmod prior to version \code{0.50.11},
 #'
-#' @return
+#' @param MODULES2GENES A named list of character vectors in which the vectors correspond to gene sets and contain gene
+#' symbols (or other gene identifiers) and the names are the corresponding gene set identifiers.
+#' @param MODULES (optional) A data.frame containing an \code{ID} and a \code{Title} field in the same order as the gene sets in
+#' \code{MODULES2GENES}. Furthermore, the row names should (apparently) correspond to the IDs in the corresponding rows. If not
+#' provided, this will be generated automatically.
+#' @param GENES (optional) A data frame with gene metadata. Must contain an ID column. If not provided, this will be generated
+#' automatically.
+#'
+#' @return Returns a \code{tmod} object.
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#'   gsc <- read_gmt( "gene_set_collection.GMT" )
+#'   gsc.tmod <- gsc2tmod( gsc )
+#' }
+#'
+#' @seealso [read_gmt()] [tmod2gsc()]
 gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
   if( is.null( MODULES ) )
     MODULES <-
@@ -603,15 +687,53 @@ gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
 }
 
 
+#' tmod2gsc
+#'
+#' @description Function takes a tmod or tmodGS object and converts it to a gene set collecton. In the case of a
+#' tmod object, the function merely extracts the \code{$MODULES2GENES} list of character vectors. In the case of
+#' tmodGS objects, the list of vectors of numeric gene identifiers in \code{$gs2gv} is converted to a named list
+#' of character vectors of gene names.
+#'
+#' @param tmod : a tmod or tmodGS object.
+#'
+#' @return The function returns a gene set collection as a named list of character vectors containing gene names.
+#'
+#' @seealso [gsc2tmod()]
+#'
+tmod2gsc <- function( tmod ){
+  if( 'tmod' %in% class( tmod ) ){
+    gsc <- tmod$MODULES2GENES
+  } else if( 'tmodGS' %in% class( tmod ) ){
+    # This maps the numerical coded genes and gene sets to a named list of character vectors.
+    gsc <- lapply( X = tmod$gs2gv,
+                   FUN = function( gs ){
+                     tmod$gv[unlist(gs)]
+                   } )
+    names(gsc) <- tmod$gs$ID
+  } else {
+    stop("Can't convert class '", class(tmod), "'");
+  }
+  gsc
+}
+
 
 #' intV2Color
 #'
+#' @description Converts a numeric or integer vector of length 3 containing
+#' RGB values in the range of 0 to 255 to 24 bit color specifications in the
+#' form "#FFFFFF".
+#'
 #' @param rgb_v
 #'
-#' @return
+#' @return A 24-bit color specification in the form "#FFFFFF".
 #' @export
 #'
 #' @examples
+#'
+#' col_v <- c( 255, 100, 240)
+#' col <- intV2Color( col_v )
+#'
+#' @seealso [color2IntV()]
 intV2Color <- function( rgb_v ){
   if( ! any( c( "numeric", "integer" ) %in% class( rgb_v ) ) )
     stop( "Incorrect data type '", class( rgb_v ), "', expected numeric."  )
@@ -632,39 +754,21 @@ intV2Color <- function( rgb_v ){
 
 #' color2IntV
 #'
+#' @description Convert a color, either as a name or as a RGB hexedecimal value to an integer vector containing
+#' the RGB specification.
+#'
+#'
 #' @param color A color specified either by name (e.g. "red") or as a RGB hexadecimal value (e.g. "#FF0000").
 #'
 #' @return A integer vector containing the RGB specification.
 #'
 #' @importFrom grDevices col2rgb
 #'
+#' @seealso [intV2Color()]
+#'
 color2IntV <- function( color ){
   as.vector(grDevices::col2rgb(color))
 }
 
-#' tmod2gsc
-#'
-#' @description Function takes a tmod or tmodGS object and converts it to a gene set collecton. In the case of a
-#' tmod object, the function merely extracts the \code{$MODULES2GENES} list of character vectors. In the case of
-#' tmodGS objects, the list of vectors of numeric gene identifiers in \code{$gs2gv} is converted to a named list
-#' of character vectors of gene names.
-#'
-#' @param tmod : a tmod or tmodGS object.
-#'
-#' @return The function returns a gene set collection as a named list of character vectors containing gene names.
-#'
-tmod2gsc <- function( tmod ){
-  if( 'tmod' %in% class( tmod ) ){
-    gsc <- tmod$MODULES2GENES
-  } else if( 'tmodGS' %in% class( tmod ) ){
-    # This maps the numerical coded genes and gene sets to a named list of character vectors.
-    gsc <- lapply( X = tmod$gs2gv,
-                   FUN = function( gs ){
-                     tmod$gv[unlist(gs)]
-                   } )
-    names(gsc) <- tmod$gs$ID
-  } else {
-    stop("Can't convert class '", class(tmod), "'");
-  }
-  gsc
-}
+
+

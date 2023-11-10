@@ -54,8 +54,8 @@
 #' high values (\code{'hiToLo'}) are most significant. The default value is specified in \code{object$pathways$sig_order}.
 #' @param n_col (optional) This is the name of the column in the pathways data.frame that contains a value for gene set
 #' size, or any other value intended to be the bases of leaf scaling. When specified, leaf sizes will be scaled by this
-#' value. (default is the value in \code{object$pathways$stat_col}). An \code{NA} value can be used to override the
-#' the value in \code{object$pathways$stat_col} and suppress leaf scaling.
+#' value. (default is the value in \code{object$pathways$n_col}). An \code{NA} value can be used to override the
+#' the value in \code{object$pathways$n_col} and suppress leaf scaling.
 #' @param sig_transform_function (optional) Function to transform significance values for conversion to a color scale.
 #' Normally, significance values are *p*-values, and need log transformation. If there are significance values of 0,
 #' these are converted to \code{-Inf} by log-transformation, so the function \code{nzLog10()} adds a small pseudocount
@@ -330,10 +330,6 @@ gsnHierarchicalDendrogram <- function( object,
     } else if( is.na( n_col ) ){
       n_col <- NULL
     }
-    #if( is.null( size_by )){
-    #  if( ! is.null( n_col) ) size_by <- ncol
-    #} else if( is.na( size_by ) ) size_by <- NULL
-
     rownames(pathways_dat) <- pathways_dat[[id_col]]
   } else stop("Need pathways data.")
   # } else { # Use data from modules when data from pathways is not available

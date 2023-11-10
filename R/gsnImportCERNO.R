@@ -19,6 +19,8 @@
 #' to evaluate the quality of pathways results. By default, this is 'adj.P.val' for CERNO.
 #' @param sig_order (optional) Either \code{'loToHi'} (default) or \code{'hiToLo'} depending on the statistic used to
 #' evaluate pathways results.
+#' @param n_col (optional) Specifies the column containing the number of genes in the gene set. Generally, this is the number
+#' of genes in the gene set that are attested in an expression data set (Defaults to 'N1').
 #' @param sep A separator for text file import, defaults to "\\t". Ignored if the \code{filename} argument is not specified.
 #'
 #' @return This returns a GSNData object containing imported pathways data.
@@ -46,7 +48,7 @@
 #'
 #' @importFrom utils read.table
 #'
-gsnImportCERNO <- function( object, pathways_data = NULL, filename = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, sep = "\t" ){
+gsnImportCERNO <- function( object, pathways_data = NULL, filename = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, n_col = NULL, sep = "\t" ){
   stopifnot( "GSNData" %in% class( object ) )
 
   if( is.null( pathways_data ) && is.null( filename ) ) stop( "The 'pathways_data' and 'filename' arguments cannot both be NULL." )
@@ -64,10 +66,11 @@ gsnImportCERNO <- function( object, pathways_data = NULL, filename = NULL, id_co
     warning( "Data is missing the following CERNO fields:", paste0( missing_fieldnames,  collapse = ", " ) )
   }
 
-  pathways <- list( data = pathways_data, type = "cerno", id_col = "ID", stat_col = "adj.P.Val", sig_order = "loToHi" )
+  pathways <- list( data = pathways_data, type = "cerno", id_col = "ID", stat_col = "adj.P.Val", sig_order = "loToHi", n_col = "N1" )
   if( !is.null(id_col) ) pathways$id_col <- id_col
   if( !is.null(stat_col) ) pathways$stat_col <- stat_col
   if( !is.null(sig_order) ) pathways$sig_order <- sig_order
+  if( !is.null(n_col) ) pathways$n_col <- n_col
 
   if( ! all( colnames( object$genePresenceAbsence ) %in% pathways$data[[pathways$id_col]] ) )
     stop("Error: Pathways data do not match gene set collection. They are missing gene sets from gene set collection.")

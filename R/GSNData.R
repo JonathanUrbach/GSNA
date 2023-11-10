@@ -58,9 +58,16 @@
 #'   \item{\code{$pathways$id_col}}{Indicates the name of the column in $pathways$data that contains the gene set ID.}
 #'   \item{\code{$pathways$stat_col}}{A character vector of length 1 indicating the statistic used for assessing significance,
 #'                                generally a p-value.}
+#'   \item{\code{$pathways$stat_col_2}}{A character vector of length 1 indicating the statistic used for assessing significance,
+#'                                generally a p-value.}
 #'   \item{\code{$pathways$sig_order}}{Indicates whether low of high values of $pathways$statistic are most significant with
 #'                                "loToHi" indicating that low values are optimal/most significant (as with typical p-values)
 #'                                and "hiToLo" indicating high values are optimal/most significant.}
+#'   \item{\code{$pathways$sig_order_2}}{Indicates whether low of high values of $pathways$statistic are most significant with
+#'                                "loToHi" indicating that low values are optimal/most significant (as with typical p-values)
+#'                                and "hiToLo" indicating high values are optimal/most significant.}
+#'   \item{\code{$pathways$n_col}}{Indicates the name of the pathways column used to indicate effective gene set size, based on
+#'                                genes actually observable in an experimental data set.}
 #'}
 #'
 #' @export

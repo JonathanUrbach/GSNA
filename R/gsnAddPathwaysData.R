@@ -27,6 +27,8 @@
 #' statistic to evaluate pathway result quality. Used in 2-color networks.
 #' @param sig_order_2 (optional) Either \code{'loToHi'} or \code{'hiToLo'} depending on \code{stat_col_2}. Used
 #' in 2-color networks.
+#' @param n_col (optional) Specifies the column containing the number of genes in the gene set. Generally, this is the number
+#' of genes in the gene set that are attested in an expression data set.
 #'
 #' @return This returns a GSNData object containing imported pathways data.
 #'
@@ -57,25 +59,25 @@
 #' @seealso \code{\link{gsnImportCERNO}}, \code{\link{gsnImportGSEA}}, \code{\link{gsnImportGSNORA}}, \code{\link{gsnImportGenericPathways}}
 #'
 
-gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL ){
+gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
   stopifnot( "GSNData" %in% class( object ) )
   field_names <- colnames( pathways_data )
   # "ID", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val"
   if( ( !is.null(type) && type == "cerno" ) |
       all( c( "ID", "cerno", "adj.P.Val" ) %in% field_names ) ){
     message( "Using CERNO import." )
-    object <- gsnImportCERNO( object = object, pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order )
+    object <- gsnImportCERNO( object = object, pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
   } else if ( ( !is.null(type) && type == "gsea" ) ||
               ( all( c( "NAME", "ES", "NES" ) %in% field_names ) &&
                 any( c( "FDR q-val", "FDR.q.val" ) %in% field_names )
               )
   ){
     message( "Using GSEA import." )
-    object <- gsnImportGSEA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order )
+    object <- gsnImportGSEA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
   } else if ( (!is.null(type) && type == "gsnora" ) ||
               (all( c("ID", "Title", "Enrichment", "P.Fisher.2S", "adj.P.Fisher.2S", "P.1S", "adj.P.1S" ) %in% field_names ))){
     message( "Using GSN-ORA import." )
-    object <- gsnImportGSNORA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order )
+    object <- gsnImportGSNORA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
   } else {
     message( "Using generic pathways import." )
     object <- gsnImportGenericPathways( object = object, pathways_data = pathways_data, type = type, id_col = id_col, stat_col = stat_col, sig_order = sig_order )

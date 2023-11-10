@@ -28,9 +28,9 @@
 #'
 #' @param n_col (optional) This is the name of the column in the pathways data.frame that contains a value for gene set
 #' size, or any other value intended to be the bases of leaf scaling. When specified, leaf sizes will be scaled by this
-#' value, either as a function argument, or in the \code{object$pathways$stat_col} field. An \code{NA} value can be used
-#' to override the the value in \code{object$pathways$stat_col} and suppress leaf scaling when \code{stat_col} has been
-#' set in the object. (default is the value in \code{object$pathways$stat_col}).
+#' value, either as a function argument, or in the \code{object$pathways$n_col} field. An \code{NA} value can be used
+#' to override the the value in \code{object$pathways$n_col} and suppress leaf scaling when \code{n_col} has been
+#' set in the object. (default is the value in \code{object$pathways$n_col}).
 #'
 #' @param optimal_extreme (optional) This indicates the behavior of the statistic used to generate the distance metric,
 #' specifically whether low values (\code{'min'}) or high values \code{'max'} are to be regarded as close. This is used
@@ -330,6 +330,12 @@ gsnPlotNetwork <- function( object,
     }
     if( is.null(sig_order_2) ) sig_order_2 <- object$pathways$sig_order_2
     if( is.null(sig_order_2) ) sig_order_2 <- object$pathways$sig_order
+
+    if( is.null(n_col) ){
+      n_col <- object$pathways$n_col
+    } else if( is.na( n_col ) ){
+      n_col <- NULL
+    }
     #
     rownames(pathways_dat) <- pathways_dat[[id_col]]
 
