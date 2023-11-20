@@ -30,7 +30,8 @@
 #' (default if filename is not specified). For more information, see Details.
 #' @param width (optional) Used to specify the width of the output in inches. If not specified, defaults to the current figure width.
 #' @param height (optional) Used to specify the height of the output in inches. If not specified, defaults to the current figure height.
-#' @param pathways_dat
+#' @param pathways_dat (optional) data.frame containing associated pathways data. This defaults to whatever pathways
+#' data has already been imported into this GSNData object in \code{object$pathways$data}.
 #' @param id_col (optional) Character vector of length 1 indicating the name of the column to be used
 #' as an ID key in the pathways dataframe (or modules data if that is used, see below). This column should contain
 #' the same values as the names of the gene sets. This defaults to the value of the pathways id_col field.
@@ -56,7 +57,7 @@
 #' size, or any other value intended to be the bases of leaf scaling. When specified, leaf sizes will be scaled by this
 #' value. (default is the value in \code{object$pathways$n_col}). An \code{NA} value can be used to override the
 #' the value in \code{object$pathways$n_col} and suppress leaf scaling.
-#' @param sig_transform_function (optional) Function to transform significance values for conversion to a color scale.
+#' @param transform_function (optional) Function to transform significance values for conversion to a color scale.
 #' Normally, significance values are *p*-values, and need log transformation. If there are significance values of 0,
 #' these are converted to \code{-Inf} by log-transformation, so the function \code{nzLog10()} adds a small pseudocount
 #' to the values to mitigate this problem, prior to log10 transformation, but for other types of data, other transformations
@@ -81,6 +82,7 @@
 #' @param na.color (optional) The color used for NA values. (default: "#CCCCCC")
 #' @param leaf_border_color (optional) For R's open plot symbols \code{pch ∈ ( 21, 22, 23, 24, 25 )}, supporting fill
 #' with a 'bg' color, leaf border may be specified with this option. (default: "#666666")
+#' @param legend.leaf.col (optional) Leaf fill color for the legend. (default: "#CCCCCC")
 #' @param combine_method (optional) For dual channel plots this is a string used to indicate how colors are combined to
 #' generate a two dimensional color scale. Options are "scaled_geomean" (same as "default"), "standard" (same as "euclidean" ),
 #' "negative_euclidean", "mean", and "additive". See details.
@@ -167,14 +169,18 @@
 #'
 #' @examples
 #' \dontrun{
-#'   gsnHierarchicalDendrogram.old( object  = analysis.GSN, pathways_title_col = NA )
+#'   gsnHierarchicalDendrogram( object  = analysis.GSN, pathways_title_col = NA )
 #' }
 #'
-#' @seealso \code{\link{gsnPareNetGenericHierarchic}}, \code{\link{gsnPlotNetwork}}
+#' @seealso
+#'  \code{\link{gsnPareNetGenericHierarchic}}
+#'  \code{\link{gsnPlotNetwork}}
 #'
 #' @importFrom grDevices svg dev.off png pdf
-#' @importFrom graphics par
+#' @importFrom graphics par strwidth
 #' @importFrom dendextend labels<-
+#' @importFrom utils packageVersion
+#'
 #'
 gsnHierarchicalDendrogram <- function( object,
                                        distance = NULL,
@@ -212,7 +218,7 @@ gsnHierarchicalDendrogram <- function( object,
                                        n_col = NULL,
 
                                        #optimal_extreme = NULL,
-                                       sig_transform_function = nzLog10,
+                                       transform_function = nzLog10,
 
                                        leaf_colors = c("white","yellow","red"),
                                        leaf_colors.1 = c("#FFFFFF", "red" ),
@@ -277,7 +283,7 @@ gsnHierarchicalDendrogram <- function( object,
   if(DO_BROWSER) browser()
 
   stopifnot( "GSNData" %in% class( object ) )
-  sig_transform_function.name <- deparse( substitute( sig_transform_function ) )
+  transform_function.name <- deparse( substitute( transform_function ) )
 
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( distance ) ) stop( 'Need distance argument.' )
@@ -397,12 +403,12 @@ gsnHierarchicalDendrogram <- function( object,
 
   # Calculate the figure height and width, if not specified.
   # Start with the width of the labels:
-  max_label_width.in <- max( strwidth( s = stats:::labels.dendrogram(GSN.dend),
-                                       units = "inches",
-                                       cex = sapply( dendextend::get_leaves_nodePar( GSN.dend ) ,
-                                                     function(x) ifelse( ! is.null( x[['lab.cex']] ), x[['lab.cex']], lab.cex )),
-                                       family = font_face,
-                                       font = par.font ), na.rm = TRUE )
+  max_label_width.in <- max( graphics::strwidth( s = stats:::labels.dendrogram(GSN.dend),
+                                                 units = "inches",
+                                                 cex = sapply( dendextend::get_leaves_nodePar( GSN.dend ) ,
+                                                               function(x) ifelse( ! is.null( x[['lab.cex']] ), x[['lab.cex']], lab.cex )),
+                                                 family = font_face,
+                                                 font = par.font ), na.rm = TRUE )
 
   x_size_needed.in <-( tree_x_size.in +                                     # Set in arguments
                        max_label_width.in +                                 # Calculated on the basis of the labels
@@ -469,8 +475,8 @@ gsnHierarchicalDendrogram <- function( object,
   if( show.leaves ){
     if( ! is.null( pathways_dat ) ){
       if( !is.null( stat_col_2 ) ){
-        numbers.1 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * sig_transform_function(pathways_dat[[stat_col]])
-        numbers.2 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order_2)]] * sig_transform_function(pathways_dat[[stat_col_2]])
+        numbers.1 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways_dat[[stat_col]])
+        numbers.2 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order_2)]] * transform_function(pathways_dat[[stat_col_2]])
 
         twoColorEncode.fun <- makeTwoColorEncodeFunction( numbers.1 = numbers.1,
                                                           numbers.2 = numbers.2,
@@ -483,7 +489,7 @@ gsnHierarchicalDendrogram <- function( object,
         legend.xlab <- stat_col_2
         legend.ylab <- stat_col
       } else {
-        numbers <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * sig_transform_function(pathways_dat[[stat_col]] )
+        numbers <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways_dat[[stat_col]] )
         oneColorEncode.fun <- makeOneColorEncodeFunction( numbers = numbers, colors = leaf_colors, na.color = na.color )
         pathways_dat$leaf_color <- oneColorEncode.fun( numbers = numbers, output_as = "rgb" )
         legend.ylab <- stat_col
@@ -506,13 +512,13 @@ gsnHierarchicalDendrogram <- function( object,
     if( is.null( leaves_pch ) ){
       if( geometry == "circular" ){
         leaves_pch <- 16
-      } else if( packageVersion("dendextend") < '1.16.0' || ! use_leaf_border ){
+      } else if( utils::packageVersion("dendextend") < '1.16.0' || ! use_leaf_border ){
         leaves_pch <- 15
       } else {
         leaves_pch <- 22
       }
     } else if( leaves_pch %in% c( 21, 22, 23, 24, 25 ) &&
-               packageVersion("dendextend") < '1.16.0' & use_leaf_border ) {
+               utils::packageVersion("dendextend") < '1.16.0' & use_leaf_border ) {
       warning("Warning: Open circles not supported with dendextend version < 1.16.0, substituting a solid.")
       leaves_pch <- c("21" = 19, "22" = 15, "23" = 18, "24" = 17, "25" = 18 )[[as.character(leaves_pch)]]
     }
@@ -611,22 +617,22 @@ gsnHierarchicalDendrogram <- function( object,
         # Figure out position of subnets indicator brackets, calculate .plt.bar:
         cex_multiplier <- 1
 
-        label_shift.fig <- strwidth( s = label_shift,
-                                     units = "figure",
-                                     cex = lab.cex,
-                                     family = font_face,
-                                     font = par.font ) # Width of label_shift
+        label_shift.fig <- graphics::strwidth( s = label_shift,
+                                               units = "figure",
+                                               cex = lab.cex,
+                                               family = font_face,
+                                               font = par.font ) # Width of label_shift
 
-        label_widths.fig <- strwidth( s = stats:::labels.dendrogram(GSN.dend),
-                                      units = "figure",
-                                      cex = sapply( dendextend::get_leaves_nodePar( GSN.dend ) ,
-                                                    function(x) ifelse( ! is.null( x[['lab.cex']] ), x[['lab.cex']], lab.cex )),
-                                      family = font_face,
-                                      font = par.font )
+        label_widths.fig <- graphics::strwidth( s = stats:::labels.dendrogram(GSN.dend),
+                                                units = "figure",
+                                                cex = sapply( dendextend::get_leaves_nodePar( GSN.dend ) ,
+                                                              function(x) ifelse( ! is.null( x[['lab.cex']] ), x[['lab.cex']], lab.cex )),
+                                                family = font_face,
+                                                font = par.font )
 
-        bar_lmargin.fig <- strwidth( s = "X", units = "figure", cex = cex, family = font_face, font = par.font )
+        bar_lmargin.fig <- graphics::strwidth( s = "X", units = "figure", cex = cex, family = font_face, font = par.font )
 
-        width.bar.fig <- strwidth( s = "12345", units = "figure", cex = cex, family = font_face, font = par.font ) * cex_multiplier
+        width.bar.fig <- graphics::strwidth( s = "12345", units = "figure", cex = cex, family = font_face, font = par.font ) * cex_multiplier
 
         # Figure out position of subnets indicator brackets, calculate .plt.bar
         # starting with current usr and plt:
@@ -681,16 +687,16 @@ gsnHierarchicalDendrogram <- function( object,
     }
 
     if( ! is.null(twoColorEncode.fun) || ! is.null(oneColorEncode.fun) ){
-      if( isTRUE( all.equal(  sig_transform_function, identity )) ){
+      if( isTRUE( all.equal(  transform_function, identity )) ){
         if( ! is.null( sig_order_2 ) )
           legend.xlab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order_2)]], legend.xlab )
         if( ! is.null( sig_order ) )
           legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], legend.ylab )
       } else {
         if( ! is.null( sig_order_2 ) )
-          legend.xlab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order_2)]], sig_transform_function.name, "(", legend.xlab, ")" )
+          legend.xlab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order_2)]], transform_function.name, "(", legend.xlab, ")" )
         if( ! is.null( sig_order ) )
-          legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], sig_transform_function.name, "(", legend.ylab, ")" )
+          legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], transform_function.name, "(", legend.ylab, ")" )
       }
     }
 

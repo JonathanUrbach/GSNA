@@ -1,15 +1,20 @@
 
-#' Title
+#' make2ColorLegendStack
 #'
-#' @param numbers.1
-#' @param numbers.2
-#' @param twoColorEncode.fun
-#' @param n
+#' @details Generates a raster stack for a 2 color legend.
 #'
-#' @return
+#' @param numbers.1 A set of numbers to define the range of channel 1 numerical values to be represented in
+#' the legend. Only the extreme min and max values are necessary.
+#' @param numbers.2 A set of numbers to define the range of channel 2 numerical values to be represented in
+#' the legend. Only the extreme min and max values are necessary.
+#' @param twoColorEncode.fun A function to take two sets of numbers and return a matrix of colors
+#' @param n The number of of color gradations per channel to render. The total number of gradations to render
+#' is the square of this number.
+#'
+#' @return A raster stack for a 2 color legend.
 #' @export
 #'
-#' @examples
+# @examples
 make2ColorLegendStack <- function( numbers.1,
                                    numbers.2,
                                    twoColorEncode.fun,
@@ -31,7 +36,7 @@ make2ColorLegendStack <- function( numbers.1,
   }
 
   # Linearize ln1.mat and ln2.mat and apply twoColorEncode.fun
-  lc12.mat <- twoColorEncode.fun( numbers.1 = as.vector( ln1.mat ), numbers.2 = as.vector( ln2.mat ), output_as = "array" )
+  lc12.mat <- twoColorEncode.fun( numbers.1 = as.vector( ln1.mat ), numbers.2 = as.vector( ln2.mat ), output_as = "matrix" )
 
   # Split the channels into 3 matrices (RGB) with n+1 rows and n+1 columns
   r.mat <- apply( X = matrix( data = round(lc12.mat[,1]), nrow = n+1, ncol = n+1 ), MARGIN = 2, FUN = rev )

@@ -40,7 +40,11 @@
 #' gsn_object <- gsnImportCERNO( object = gsn_object, pathways_data = dat.cerno )
 #' }
 #'
-#' @seealso \code{\link{gsnAddPathwaysData}}, \code{\link{gsnImportGSEA}}, \code{\link{gsnImportGSNORA}}, \code{\link{gsnImportGenericPathways}}
+#' @seealso
+#'  \code{\link{gsnAddPathwaysData}}
+#'  \code{\link{gsnImportGSEA}}
+#'  \code{\link{gsnImportGSNORA}}
+#'  \code{\link{gsnImportGenericPathways}}
 #'
 #' @references
 #' 1. Zyla J, Marczyk M, Domaszewska T, Kaufmann SHE, Polanska J, Weiner J. Gene set enrichment for reproducible science: comparison of CERNO and eight other algorithms. *Bioinformatics*. 2019;**35**: 5146–5154. doi:10.1093/bioinformatics/btz447

@@ -1,3 +1,5 @@
+#' @importFrom graphics strwidth
+#'
 renderCircularDendrogram <- function( dendro,
                                       leaf.names, # Names of leaves in proper order. May not be the same as label_names, which is obtained from dendro.
                                       subnets.lf = NULL,
@@ -93,8 +95,8 @@ renderCircularDendrogram <- function( dendro,
 
     dend_height = attr(dendro, "height")
 
-    size_labels_width.in <- max( strwidth( s = label_names , units = "inches", cex = labels.cex, family = family ), na.rm = TRUE )
-    space_width.in <- max( strwidth( s = " " , units = "inches", cex = labels.cex, family = family ), na.rm = TRUE )
+    size_labels_width.in <- max( graphics::strwidth( s = label_names , units = "inches", cex = labels.cex, family = family ), na.rm = TRUE )
+    space_width.in <- max( graphics::strwidth( s = " " , units = "inches", cex = labels.cex, family = family ), na.rm = TRUE )
     space_width.radii <- space_width.in / available_radius
 
     label_scale_factor <- 1

@@ -17,7 +17,7 @@
 #' since not all pch characters are the same size and they tend to be smaller than the corresponding character sizes
 #' in inches. The default should be a good approximation for most pch characters. (default: c(0.125,0.125))
 #'
-#' @param .plt.leg Required plot area where the legend is drawn, specified in the manner of par('plt') as a vector of
+#' @param .plt.leg Required plot area where the legend is drawn, specified in the manner of graphics::par('plt') as a vector of
 #' four values in figure units. This is generally determined before rendering by calling \code{makeNodeSizeLegend()}
 #' and the other legend plot functions with a provisional value for .plt.leg that specifies the maximal available
 #' region for plotting the legend and the arguments \code{render.bool = FALSE}, \code{optimize.legend.size = TRUE} and
@@ -30,7 +30,7 @@
 #' logrithmic scale. If not specified, then this will be decided based on the range of minimum to maximum values
 #' specified in the \code{numbers} argument.
 #'
-#' @param cex.ticks (optional) The font size used for tick labels. (default: par('cex'))
+#' @param cex.ticks (optional) The font size used for tick labels. (default: graphics::par('cex'))
 #'
 #' @param leaf.col (optional) The color of the leaf symbols used in the legend, or for open symbols,
 #' \code{pch ∈ c(21, 22, 23, 24, 25)}, the background fill color. (default: "#999999")
@@ -42,14 +42,14 @@
 #'
 #' @param legend.lab.cex (optional) The font size of the legend labels in cex units. (default: \code{cex.ticks * 1.1})
 #'
-#' @param legend.fg (optional) Legend foreground, used for text and border color. (default: par('fg'))
+#' @param legend.fg (optional) Legend foreground, used for text and border color. (default: graphics::par('fg'))
 #'
-#' @param legend.bg (optional) Legend background. Doesn't currently do anything. (default: par('bg'))
+#' @param legend.bg (optional) Legend background. Doesn't currently do anything. (default: graphics::par('bg'))
 #'
-#' @param font_face (optional) The font family used for text in the legend. (default: par( "family" ))
+#' @param font_face (optional) The font family used for text in the legend. (default: graphics::par( "family" ))
 #'
 #' @param .fin (optional) (optional) The width and height of the current figure in inches. It is advisable to allow
-#' this to be automatically determined. (default: par('fin'))
+#' this to be automatically determined. (default: graphics::par('fin'))
 #'
 #' @param order_high_to_low (optional) If TRUE, tells the function to order the vertices in the legend with the largest
 #' first, and the smallest last. Otherwise, vertices are ordered from lowest to highest. (default FALSE)
@@ -105,6 +105,9 @@
 #'              optimize.legend.size = TRUE )
 #' }
 #'
+#' @importFrom grDevices axisTicks
+#'
+#' @importFrom graphics box par plot.window
 #'
 makeLeafSizeLegend <-
   function(numbers,
@@ -116,19 +119,19 @@ makeLeafSizeLegend <-
 
            log_scale = NULL,
 
-           cex.ticks = par( "cex" ),
+           cex.ticks = graphics::par( "cex" ),
            leaf.col = "#999999",          # Symbol col
            leaf_border_color = "#666666", # Symbol border color for symbols that support it c(21:25).
 
            legend.lab = NULL,
            legend.lab.cex = NULL,
 
-           legend.fg = par("fg"),
-           legend.bg = par('bg'),
+           legend.fg = graphics::par("fg"),
+           legend.bg = graphics::par('bg'),
 
-           font_face = par( "family" ),
+           font_face = graphics::par( "family" ),
 
-           .fin = par( "fin" ), # These are best to leave alone
+           .fin = graphics::par( "fin" ), # These are best to leave alone
 
            order_high_to_low = FALSE,
            optimize.legend.size = FALSE,
@@ -278,16 +281,16 @@ makeLeafSizeLegend <-
       }
 
       # First back up original graphical parameters
-      .plt.orig <- par( 'plt' )
-      .usr.orig <- par( 'usr' )
-      .xpd.orig <- par( 'xpd' )
+      .plt.orig <- graphics::par( 'plt' )
+      .usr.orig <- graphics::par( 'usr' )
+      .xpd.orig <- graphics::par( 'xpd' )
 
-      par( "plt" = .plt.adj, xpd = TRUE, new = TRUE )
+      graphics::par( "plt" = .plt.adj, xpd = TRUE, new = TRUE )
 
-      plot.window( xlim = c(0,1), ylim = c( 0, lines_needed ), xaxs = "i", yaxs = "i" )
+      graphics::plot.window( xlim = c(0,1), ylim = c( 0, lines_needed ), xaxs = "i", yaxs = "i" )
 
       if( draw.legend.box.bool ){
-        box( which = "plot", fg = legend.fg, bg = legend.bg )
+        graphics::box( which = "plot", fg = legend.fg, bg = legend.bg )
       }
 
       with( subset( vertices, !is.na( tick.cex ) ),
@@ -323,8 +326,8 @@ makeLeafSizeLegend <-
       )
 
       if( restore.params.bool ){
-        par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
-        plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
+        graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
+        graphics::plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
       }
     }
     invisible(list( .plt.adj = .plt.adj,

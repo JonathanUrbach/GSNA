@@ -421,46 +421,6 @@ pw_type <- function( object ){
   object
 }
 
-####
-
-#' print.GSNData
-#'
-#' @description Print a short description of a \code{GSNData} object.
-#'
-#' @param object A GSNData object.
-#'
-#' @return Invisibly returns the GSNData object.
-#'
-#' @export
-#' @exportS3Method
-print.GSNData <- function( object ){
-  cat( "GSNData object version:", unlist( as.character( object$GSNA_version ) ), "\n" )
-
-  if( !is.null( object$genePresenceAbsence ) ){
-    cat( "  Contains data for:\n" )
-    cat( "    ", nrow( object$genePresenceAbsence ), "genes.\n" )
-    cat( "    ", ncol( object$genePresenceAbsence ), "gene sets.\n" )
-  }
-
-  if( ! is.null( distz <- names(object$distances) ) ){
-    cat( "  Contains the following distance(s):\n" )
-    for( .dist in distz ){
-      cat( paste0( "     ", .dist, "\n" ) )
-    }
-  }
-  if( ! is.null( distz <- names(object$pathways) ) ){
-    .type <- object$pathways$type
-    if( is.null( .type ) ) .type <- "NULL"
-    cat( "  Contains pathways data of type: ", .type , "\n" )
-    for( .datname in c( "id_col", "stat_col", "sig_order", "stat_col_2", "sig_order_2", "n_col" ) )
-    if( !is.null(object$pathways[[.datname]] )  ){
-      cat( "    ",  .datname, "=", object$pathways[[.datname]], "\n" )
-    }
-  }
-  return( invisible( object ) )
-}
-
-
 
 
 
@@ -606,14 +566,14 @@ pick_MappedGeneSymbol <- function( .from, .to ){
 #' read_gmt
 #'
 #' @description This function parses a GMT file, documented
-#' \href{See https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29}{here}.
+#' \href{https://software.broadinstitute.org/cancer/software/gsea/wiki/index.php/Data_formats#GMT:_Gene_Matrix_Transposed_file_format_.28.2A.gmt.29}{here}.
 #'
 #' @param file The path to GMT file to parse.
 #'
 #' @return This returns a GSC (gene set collection) as a name list of vectors, where the names correspond to gene set
 #' identifiers and the vectors are gene symbols.
 #'
-#' @seealso [func(gsc2tmod)]
+#' @seealso [gsc2tmod()]
 #'
 #' @export
 #'
@@ -660,6 +620,9 @@ read_gmt <- function( file ){
 #' }
 #'
 #' @seealso [read_gmt()] [tmod2gsc()]
+#'
+#' @importFrom methods new
+#'
 gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
   if( is.null( MODULES ) )
     MODULES <-
@@ -683,7 +646,7 @@ gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
   if( any( ! unlist( MODULES2GENES ) %in% GENES$ID ) || any( ! GENES$ID %in% unlist( MODULES2GENES ) ) )
     stop("Mismatch beween unlist( MODULES2GENES ) %in% GENES$ID")
 
-  new("tmod", list( MODULES2GENES = MODULES2GENES, MODULES = MODULES, GENES = GENES ) )
+  methods::new("tmod", list( MODULES2GENES = MODULES2GENES, MODULES = MODULES, GENES = GENES ) )
 }
 
 
@@ -723,7 +686,8 @@ tmod2gsc <- function( tmod ){
 #' RGB values in the range of 0 to 255 to 24 bit color specifications in the
 #' form "#FFFFFF".
 #'
-#' @param rgb_v
+#' @param rgb_v An integer or numeric vector of length 3 containing RGB channel
+#' intensities from 0 to 255.
 #'
 #' @return A 24-bit color specification in the form "#FFFFFF".
 #' @export

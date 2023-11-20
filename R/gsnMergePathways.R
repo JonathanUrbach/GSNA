@@ -1,4 +1,7 @@
 
+
+invisible( utils::globalVariables( c("subnet") ) )
+
 #' gsnMergePathways
 #'
 #' @description Merge pathways data and subnets into a data.frame that includes subnet assignment and intra-subnet rank.
@@ -31,8 +34,14 @@
 #' analysis.mergePathways <- gsnMergePathways( object = analysis.GSN )
 #' }
 #'
-#' @seealso \code{\link{gsnAddPathwaysData}}, \code{\link{gsnImportCERNO}}, \code{\link{gsnImportGSNORA}}, \code{\link{gsnImportGSEA}}, \code{\link{gsnImportGenericPathways}}
-#
+#' @seealso
+#'  \code{\link{gsnAddPathwaysData}()}
+#'  \code{\link{gsnImportCERNO}()}
+#'  \code{\link{gsnImportGSNORA}()},
+#'  \code{\link{gsnImportGSEA}()}
+#'  \code{\link{gsnImportGenericPathways}()}
+#'
+#' @importFrom dplyr arrange
 #'
 gsnMergePathways <- function( object, pathways.data = NULL, distance = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL ){
   stopifnot( "GSNData" %in% class( object ) )

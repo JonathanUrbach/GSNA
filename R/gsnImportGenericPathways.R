@@ -41,7 +41,11 @@
 #' gsn_object <- gsnImportGSNORA( object = gsn_object, pathways_data = dat.cerno )
 #' }
 #'
-#' @seealso \code{\link{gsnAddPathwaysData}}, \code{\link{gsnImportCERNO}}, \code{\link{gsnImportGSEA}}, \code{\link{gsnImportGenericPathways}}
+#' @seealso
+#'  \code{\link{gsnAddPathwaysData}}
+#'  \code{\link{gsnImportCERNO}}
+#'  \code{\link{gsnImportGSEA}}
+#'  \code{\link{gsnImportGenericPathways}}
 #'
 #' @importFrom utils read.table
 #'

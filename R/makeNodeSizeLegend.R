@@ -1,4 +1,6 @@
 
+invisible( utils::globalVariables( c("tick_val", "size.usr") ) )
+
 #' get_usr_x_coords_per_inch
 #'
 #' @description Internal GSNA package function to return the ratio of user x coordinates per inch. This number is used
@@ -19,7 +21,7 @@ get_usr_x_coords_per_inch <- function(){
 #' makeNodeSizeLegend
 #'
 #' @description Internal GSNA package function to generate a vertex size legend for GSNA network plots generated
-#' via \code{gsnPlotNetwork()} which uses \code{\link{[igraph]plot.igraph}()} from the igraph package to generate plots.
+#' via \code{gsnPlotNetwork()} which uses \code{\link[igraph]{plot.igraph}()} from the igraph package to generate plots.
 #'
 #' @param numbers A vector containing numerical values to be mapped to a range of vertex sizes. The only really needs
 #' to be a mininimum and a maximum value to establish a set of scale values.

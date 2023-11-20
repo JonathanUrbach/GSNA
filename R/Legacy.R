@@ -116,7 +116,10 @@
 #' gsnPlotNetwork.old( object = analysis.GSN )
 #' }
 #'
-#' @seealso \code{\link{plot.GSNData}}, \code{\link{gsnToIgraph}}, \code{\link[igraph]{plot.igraph}}
+#' @seealso
+#'  \code{\link{plot.GSNData}}
+#'  \code{\link{gsnToIgraph}}
+#'  \code{\link[igraph]{plot.igraph}}
 #'
 #' @importFrom grDevices dev.size svg pdf png
 #'
@@ -413,7 +416,7 @@ myColorF_2color <- function(numbers.1,
 #' the title part of the label is suppressed.
 #' @param substitute_id_col (optional) Character vector of length 1 indicating a column used to substitute an alternative
 #' ID for the labeling gene sets in data set. If set to \code{NA}, the ID in the plot is disabled.
-#' @param font_face: (optional) The font used for leaf labels, which should be a monospaced font like \code{monospace}
+#' @param font_face (optional) The font used for leaf labels, which should be a monospaced font like \code{monospace}
 #' or \code{Courier} for best results. (Default is \code{Courier}.)
 #' @param modules (optional) Either a class \code{tmod} object containing \code{MODULES} annotation, or a
 #' data.frame also containing such data. This is to be used when a pathways data set is not available or
@@ -428,7 +431,9 @@ myColorF_2color <- function(numbers.1,
 #' gsnHierarchicalDendrogram.old( object  = analysis.GSN, pathways_title_col = NA )
 #' }
 #'
-#' @seealso \code{\link{gsnPareNetGenericHierarchic}}, \code{\link{gsnPlotNetwork}}
+#' @seealso
+#'  \code{\link{gsnPareNetGenericHierarchic}}
+#'  \code{\link{gsnPlotNetwork}}
 #'
 #' @importFrom grDevices svg dev.off
 #' @importFrom graphics par
@@ -576,14 +581,16 @@ gsnHierarchicalDendrogram.old <- function( object,
 #' plot( x = analysis.GSN )
 #' }
 #'
-#' @seealso \code{\link{gsnPlotNetwork}}, \code{\link{gsnToIgraph}}, \code{\link[igraph]{plot.igraph}}
+#' @seealso
+#'  \code{\link{gsnPlotNetwork}}
+#'  \code{\link{gsnToIgraph}}
+#'  \code{\link[igraph]{plot.igraph}}
 #'
 #' @export
-#' @exportS3Method
 #'
 plot_GSNData <- function( x, y = NULL,
                           object,
-                          pathways.data = NULL,
+                          pathways_dat = NULL,
                           distance = NULL,
                           id_col = NULL,
                           substitute_id_col = NULL,
@@ -614,7 +621,7 @@ plot_GSNData <- function( x, y = NULL,
                           ...
 ){
   gsnPlotNetwork( object = x,
-                  pathways.data = pathways.data,
+                  pathways_dat = pathways_dat,
                   distance = distance,
                   id_col = id_col,
                   substitute_id_col = substitute_id_col,

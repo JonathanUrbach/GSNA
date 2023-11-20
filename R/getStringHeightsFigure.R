@@ -1,4 +1,6 @@
 
+#' @importFrom graphics strheight
+#'
 getStringHeightsFigure <- function( strings,
                                     cex = par('cex'),
                                     font_face = par("family"),
@@ -13,7 +15,7 @@ getStringHeightsFigure <- function( strings,
     return( sizes )
   }
   if( method %in% c("auto", "strwidth" ) ){
-    sizes <- try( strheight( s = as.character( strings ), units = "figure", cex = cex, family = font_face ), silent = TRUE )
+    sizes <- try( graphics::strheight( s = as.character( strings ), units = "figure", cex = cex, family = font_face ), silent = TRUE )
   }
   if( is.null(sizes) && method == "csi" ||
       ( ( "try-error" %in% class(sizes) ) && method == "auto" )

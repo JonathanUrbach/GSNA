@@ -1,4 +1,4 @@
-#' plot
+#' plot plot.GSNData
 #'
 #' @description Plot method for the networks within GSNData objects, implemented with \code{\link{gsnPlotNetwork}}.
 #'
@@ -6,8 +6,11 @@
 #' @inherit gsnPlotNetwork
 #' @inheritDotParams gsnPlotNetwork
 #' @export
-#' @exportS3Method GSNA::plot
-#' @seealso \code{\link{gsnPlotNetwork}}, \code{\link{gsnToIgraph}}, \code{\link[igraph]{plot.igraph}}
+#' @exportS3Method plot GSNData
+#' @seealso
+#'  \code{\link{gsnPlotNetwork}}
+#'  \code{\link{gsnToIgraph}}
+#'  \code{\link[igraph]{plot.igraph}}
 #'
 plot.GSNData <- function(x,...){
   gsnPlotNetwork( object = x, ... )

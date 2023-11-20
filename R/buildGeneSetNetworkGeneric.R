@@ -48,8 +48,11 @@
 #'                                   )
 #' }
 #'
-#' @seealso \code{\link{buildGeneSetNetworkJaccard}}, \code{\link{buildGeneSetNetworkOC}}, \code{\link{buildGeneSetNetworkLF}},
-#' \code{\link{buildGeneSetNetworkSTLF}}
+#' @seealso
+#'  \code{\link{buildGeneSetNetworkJaccard}}
+#'  \code{\link{buildGeneSetNetworkOC}}
+#'  \code{\link{buildGeneSetNetworkLF}}
+#'  \code{\link{buildGeneSetNetworkSTLF}}
 #'
 #' @importFrom Matrix as.matrix
 buildGeneSetNetworkGeneric <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun, distance, optimal_extreme ){

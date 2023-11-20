@@ -72,7 +72,7 @@ Gene identifiers and or symbols in the **ref.background** vector should match th
 A standard GSNA analysis consists of the following steps:  
 
 1. Create a GSNA object and calculate a distance matrix based on a desired distance metric using one of the following functions: **buildGeneSetNetworkSTLF()** (calculates single tail log-Fisher values), **buildGeneSetNetworkLF()** (calculates partial log Fisher values), **buildGeneSetNetworkJaccard()** (calculates Jaccard indices), **buildGeneSetNetworkOC()** (calculates Szymkiewicz–Simpson or "overlap" coefficient), or **buildGeneSetNetworkGeneric()**.  
-2. Import a pathways dataset. This is typically done using the **gsnAddPathwayData()**.  
+2. Import a pathways dataset. This is typically done using the **gsnAddPathwaysData()**.  
 3. Pare the network using **gsnPareNetGenericHierarchic()** or **gsnPareNetGenericToNearestNNeighbors()**. This removes lower value connections between less-closely related gene sets, retaining the connections between the most closely related gene sets.  
 4. Assign subnets using **gsnAssignSubnets()**. In this step, gene sets that are connected after pairing are formally assigned and tallied (this function may be incorporated into the paring step in the future).
 5. Output tabular data on the subnets using **gsnMergePathways()** or **gsnSubnetSummary()**.
@@ -93,24 +93,28 @@ In this vignette, we will use differential expression and pathways data derived 
 
 In the sample data provided, gene expression in CiHep cells and expression in CiKrt cells are both compared to the fibroblast type 2 cell type, generating two sets of differential expression data to profile both cell type transitions. These two transitions, fibroblast 2 to CiHep and fibroblast 2 to CiKrt cells were further analyzed by performing pathways analysis using a gene set collection containing sets of genes activated or repressed dependent on particular transcription factors derived from MSigDB signatures as well as from the dorothea data set(@garcia-alonso_benchmark_2019). The main signatures observed in this dataset are repressed gene signatures, genes whose expression went down upon treatment with the chemical coctail.   
 
-Here we are performing a single-channel GSNA analysis with gene signatures that were down in CiHep cells relative to fibrinoblast 2 cells. We start by importing the **"Bai_CiHep_DN.cerno"** CERNO results set.
+The Bai results set contains the following data objects:
 
+* **Bai_CiHep_DN.cerno** A CERNO results set **data.frame**, pathways downregulated in CiHep cells versus Fibroblast 2 cells.  
+* **Bai_CiKrt_DN.cerno** A CERNO results set **data.frame**, pathways downregulated in CiKrt cells versus Fibroblast 2 cells.  
+* **Bai_CiKrt_v_Fib2.de** Seurat differential expression results **data.frame** for CiKrt cells versus Fibroblast 2 cells.  
+* **Bai_CiHep_v_Fib2.de** Seurat differential expression results **data.frame** for CiHep cells versus Fibroblast 2 cells.  
+* **Bai_CiHep_dorothea_UP.Gsea** GSEA results **data.frame**, pathways downregulated in CiHep cells versus Fibroblast 2 cells.  
+* **Bai_CiHep_dorothea_DN.Gsea** GSEA results **data.frame**, pathways downregulated in CiKrt cells versus Fibroblast 2 cells.  
+* **Bai_empty_expr_mat** Example empty expression **matrix**, provided to demonstrate the process of extracting gene symbols.  
+* **Bai_gsc.tmod** GSC object of class **tmod** containing the gene sets used in the vignette.  
 
-```{r echo=FALSE, include=FALSE, eval=FALSE}
-# This was meant to have head calls render as scrolling data tables, but the results were not optimal. I may come back to this, though.
-# head <- function( x, ... ){
-#   DT::datatable( utils::head( x, ... ), options = list( autoWidth = FALSE, scrollX = TRUE, digits = 4 ) )
-# }
+When the GSNA library is loaded, these objects are lazy-loaded into the environment, and are then ready for use without calling **data()**.  
 
-```
+For the first example analysis, we are performing a single-channel **GSNA** analysis with gene signatures in CERNO data that were down in CiHep cells relative to fibrinoblast 2 cells. We will use the following data objects for this first analysis:
+
+* **Bai_CiHep_DN.cerno**  
+* **Bai_gsc.tmod**  
+* **Bai_CiHep_v_Fib2.de**  
 
 ## Preparing and Filtering Data  
 
-```{r}
-data("Bai_CiHep_DN.cerno")
-```
-
-We can inspect the structure of this CERNO data set using the head function.
+Let's begin by inspecting the structure of this CERNO data set using the head function.
 
 
 ```{r}
@@ -119,13 +123,7 @@ head( Bai_CiHep_DN.cerno )
 
 This CERNO result set includes a gene set ID as well as several statistical values including the **cerno**, **AUC**, **cES**, and both standard (nominal) and adjusted *p*-values. We will use the adjusted *p*-values in our analysis.  
 
-Having loaded our CERNO data set, we also load the **"Bai_gsc.tmod"** gene set collection.
-
-```{r}
-data("Bai_gsc.tmod")
-```
-
-The gene set collection object included in with the **GSNA** package is a **tmod** class object. However, as of version 0.50.11, the **tmod** package used in this vignette uses a new version of its gene set collection object, a **tmodGS** object. If you're using version 0.50.11 of the **tmod** package, convert the **Bai_gsc.tmod** into a **tmodGS** object.
+The gene set collection (GSC) object included in with the **GSNA** package is a **tmod** class object. However, as of version 0.50.11, the **tmod** package used in this vignette uses a new version of its gene set collection object, a **tmodGS** object. If you're using version 0.50.11 of the **tmod** package, convert the **Bai_gsc.tmod** into a **tmodGS** object. The following code snippet includes a check whether your **tmod** version is "0.50.11" or later, and if so, runs **tmod2tmodGS()** to update the format of **Bai_gsc.tmod** to class **tmodGS**.
 
 ```{r}
 if( utils::packageVersion( pkg = "tmod" ) >= "0.50.11" ){
@@ -167,7 +165,6 @@ Bai_CiHep_DN.sig.tmod
 Now that we have a filtered CERNO data set and a GSC containing only significant gene sets, we need the background of observable genes in our expression set. Typically, this is obtained from the differential expression data. In the case of the Bai dataset, we have expression data in the form of a Seurat data set obtained using Seurat's **FindMarkers()** function, with gene symbols as the row names. In this data, gene symbols are in "title case", with only the first letter capitalized, but gene symbols in the gene set collection are all upper case, so we convert the genes in the Bai data set to upper case too:  
 
 ```{r}
-data("Bai_CiHep_v_Fib2.de")
 Bai_CiHep_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
 ```
 
@@ -191,13 +188,13 @@ Once we have a GSNData object containing a distance matrix, we import the pathwa
 
 
 ```{r}
-Bai_CiHep_DN.sig.GSN <- gsnAddPathwayData( object = Bai_CiHep_DN.sig.GSN,
-                                           pathways_data = Bai_CiHep_DN.cerno.sig )
+Bai_CiHep_DN.sig.GSN <- gsnAddPathwaysData( object = Bai_CiHep_DN.sig.GSN,
+                                            pathways_data = Bai_CiHep_DN.cerno.sig )
 
 Bai_CiHep_DN.sig.GSN
 ```
 
-The **gsnAddPathwayData()** function automatically identifies the data set as a CERNO data set, and selects **'ID'** as the identifier column (**id_col**), **'adj.P.Val'** as the statistical column (**stat_col**) to be used, and the ordering of that colum (**sig_order**) as **'loToHi'** meaning that low values are treated as most significant. This value **'loToHi'** is appropriate when *p*-values or adjusted *p*-values are used as the statistical column.  
+The **gsnAddPathwaysData()** function automatically identifies the data set as a CERNO data set, and selects **'ID'** as the identifier column (**id_col**), **'adj.P.Val'** as the statistical column (**stat_col**) to be used, and the ordering of that colum (**sig_order**) as **'loToHi'** meaning that low values are treated as most significant. This value **'loToHi'** is appropriate when *p*-values or adjusted *p*-values are used as the statistical column.  
 
 Now, pare the network using hierarchical clustering:  
 
@@ -302,7 +299,13 @@ Two channel gene set networks are useful for comparing differential pathway acti
 
 A 2-channel Gene Set Network workflow is very similar to a single channel workflow. The main difference is that two parallel significance statistics are used in the pathways dataset instead of a single significance statistic. These two significance statistics are derived from the two pathways datasets being compared. Subsequent steps for the analysis are nearly the same.  
 
+For the 2-channel analysis, we will use the following data objects for this first analysis:
 
+* **Bai_CiHep_DN.cerno**  
+* **Bai_CiHep_DN.cerno**  
+* **Bai_gsc.tmod**  
+* **Bai_CiHep_v_Fib2.de**  
+* **Bai_CiKrt_v_Fib2.de**  
 
 ## Merging Bai_CiHep_DN.cerno and Bai_CiKrt_DN.cerno
 
@@ -311,8 +314,6 @@ The 2-channel workflow begins with the merging of the two unfiltered parallel pa
 We start with two, complete unfiltered data sets containing all the CERNO results for a given GSC.  
 
 ```{r}
-data( Bai_CiKrt_DN.cerno )
-
 Bai_CiHep_v_CiKrt_DN.merge <- merge( x = Bai_CiHep_DN.cerno,
                                      y = Bai_CiKrt_DN.cerno,
                                      by = 'ID' )
@@ -325,6 +326,7 @@ To clean up this data, we can delete columns not of interest and give the column
 ```{r}
 Bai_CiHep_v_CiKrt_DN.merge$Title.y <- NULL
 
+library( 'dplyr' )
 Bai_CiHep_v_CiKrt_DN.merge <- dplyr::rename( .data = Bai_CiHep_v_CiKrt_DN.merge,
                                              Title = Title.x,
                                              cerno.CiHep = cerno.x,
@@ -399,7 +401,7 @@ The two differential expression data sets have largely overlapping but slightly 
 Bai_CiHep_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
 Bai_CiKrt_genes <- toupper( rownames( Bai_CiKrt_v_Fib2.de ) )
 
-library( gplots )
+library( 'gplots' )
 gplots::venn( list(CiHep = Bai_CiHep_genes, CiKrt = Bai_CiKrt_genes) )
 ```
 
@@ -412,12 +414,12 @@ Bai_CiHep_v_CiKrt_DN.GSN <- GSNA::buildGeneSetNetworkSTLF( geneSetCollection = B
 Adding pathways data is a little different from before, since we will need to explicitly specify stat_col, stat_col_2, sig_order and sig_order_2.
 
 ```{r}
-Bai_CiHep_v_CiKrt_DN.GSN <- gsnAddPathwayData( Bai_CiHep_v_CiKrt_DN.GSN,
-                                               pathways_data = Bai_CiHep_v_CiKrt_DN.filt,
-                                               stat_col = "adj.P.Val.CiHep",
-                                               sig_order = "loToHi",
-                                               stat_col_2 = "adj.P.Val.CiKrt",
-                                               sig_order_2 = "loToHi" )
+Bai_CiHep_v_CiKrt_DN.GSN <- gsnAddPathwaysData( Bai_CiHep_v_CiKrt_DN.GSN,
+                                                pathways_data = Bai_CiHep_v_CiKrt_DN.filt,
+                                                stat_col = "adj.P.Val.CiHep",
+                                                sig_order = "loToHi",
+                                                stat_col_2 = "adj.P.Val.CiKrt",
+                                                sig_order_2 = "loToHi" )
 ```
 
 Lets take a quick look at the GSNData object:  
@@ -515,9 +517,6 @@ When running GSEA, users may specify an output directory; otherwise the data are
 The following figure illustrates the relationship between GSEA's **NES** and nominal *p*-value statistics for a concatenated data set derived from a comparison of CiHep versus fibroblast 2 cells. Non-significant and significant results assessed on the basis of FDR *q*-values are indicated by crosses and solid circles, respectively.    
 
 ```{r, echo=FALSE}
-data( "Bai_CiHep_dorothea_DN.Gsea" )
-data( "Bai_CiHep_dorothea_UP.Gsea" )
-
 Bai_CiHep_dorothea_UD.Gsea <- rbind( Bai_CiHep_dorothea_UP.Gsea, Bai_CiHep_dorothea_DN.Gsea )
 Bai_CiHep_dorothea_UD.Gsea$`Activated In` <- sapply( X = Bai_CiHep_dorothea_UD.Gsea$NES, function(x) ifelse( x > 0, "CiHep", "Fibroblast2" ) )
 Bai_CiHep_dorothea_UD.Gsea$`FDR q-val<=0.05` <- ifelse( Bai_CiHep_dorothea_UD.Gsea$`FDR q-val` <= 0.05, "significant", "not significant" )
@@ -545,16 +544,15 @@ In this current example, we will use the FDR *p*-value as the primary statistic 
 
 ## Generating a single-channel Gene Set Network with GSEA data   
 
-Using GSEA data with GSNA is straightforward and similar to using it with CERNO data. For this example, start by loading the **Bai_CiHep_dorothea_DN.Gsea** and **Bai_CiHep_dorothea_UP.Gsea** data sets into memory, along with an expression matrix containing gene symbols in the rows, **Bai_empty_expr_mat**. (For the sake of illustrating the process, **Bai_empty_expr_mat** is an empty expression matrix containing no columns of data, just the gene symbols in the rows.)  
+Using GSEA data with GSNA is straightforward and similar to using it with CERNO data. For this example, we will use the following data objects:
+
+* **Bai_CiHep_dorothea_UP.Gsea** GSEA data set, Dorothea pathways upregulated in CiHep cells cs Fibroblast 2 cells.  
+* **Bai_CiHep_dorothea_DN.Gsea** GSEA data set, Dorothea pathways downregulated in CiHep cells cs Fibroblast 2 cells.  
+* **Bai_gsc.tmod** GSC Gene set collection containing the significant gene sets in these **GSEA** data sets.
+* **Bai_empty_expr_mat**. An example expression matrix, for the gene background. (For the sake of illustrating the process, this is an empty expression matrix containing no columns of data, just the gene symbols in the rows.)  
 
 
-```{r}
-data( "Bai_CiHep_dorothea_DN.Gsea" )
-data( "Bai_CiHep_dorothea_UP.Gsea" )
-data( "Bai_empty_expr_mat" )
-```
-
-These two data sets are saved as data objects within the **GSNA** package, but for your own data, you could load them into memory with such commands as this:
+Since these two data sets are saved as data objects within the **GSNA** package, it is unnecessary to load them, but for your own data, you could load them into memory with the **read.table()** command as shown here:
 
 ```
 Bai_CiHep_dorothea_UP.Gsea <- read.table( file = file.path( gsea_outputs_dir,
@@ -572,7 +570,6 @@ Bai_CiHep_dorothea_DN.Gsea <- read.table( file = file.path( gsea_outputs_dir,
 ```
 
 These two data sets can be considered together. To do so, we'll use the rbind function to combine the two data sets into one.  
-
 
 ```{r}
 Bai_CiHep_dorothea_UD.Gsea <- rbind( Bai_CiHep_dorothea_UP.Gsea, Bai_CiHep_dorothea_DN.Gsea )
@@ -612,7 +609,7 @@ Bai_gsc.tmod.gsea
 
 **NOTE:** For this step to work properly, the gene set names in the GSEA data set must match those in the GSC. However, there are cases when the name used in the GSEA data set does not match those used as indices in the GSC. This happens particularly when using a GSEA dataset is used with a **tmod** object generated by importing an MSigDB XML database using the **tmod::tmodImportMSigDB()** function. In this case, the **tmod** object generated uses `systematic names` as the key, e.g. 'M22163' whereas the GSEA data set contains `gene set names` (e.g. 'GO_MITOCHONDRIAL_RNA_CATABOLIC_PROCESS').  In such a situation, it is advisable to add a column in the **GSEA** data set containing the `systematic name` or alternatively, convert the names in **tmod** object to appropriate gene set names (which can be more difficult than the first option).    
 
-(TO DO: Add a note about fixing gene set names.)  
+<!--(TO DO: Add a note about fixing gene set names.)-->
  
 Once the GSC has been subsetted, we can obtain a background gene list from the gene expression matrix. Here we extract the background gene set from **Bai_empty_expr_mat**, making sure to convert the gene symbols into upper case.
 
@@ -632,10 +629,10 @@ Next, we import the filtered pathways data set. Since we are opting to use 'FDR 
 The 'sig_order' parameter specifies the order in which subnet membership is assigned, and therefore the order that they are reported. It also specifies how they will be colored for output plots, though users can override the automatic plot coloring behavior. In our case, since the NES values are mostly negative in our dataset, we will assign **sig_order = 'loToHi'**.
 
 ```{r}
-Bai_CiHep_dorothea_UC.GSN <- gsnAddPathwayData( object = Bai_CiHep_dorothea_UD.GSN,
-                                                pathways_data = Bai_CiHep_dorothea_UD.FILT,
-                                                stat_col = 'FDR q-val',
-                                                sig_order = 'loToHi' )
+Bai_CiHep_dorothea_UC.GSN <- gsnAddPathwaysData( object = Bai_CiHep_dorothea_UD.GSN,
+                                                 pathways_data = Bai_CiHep_dorothea_UD.FILT,
+                                                 stat_col = 'FDR q-val',
+                                                 sig_order = 'loToHi' )
 
 Bai_CiHep_dorothea_UC.GSN
 ```
@@ -719,14 +716,14 @@ knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.DEF.NP.svg" )
 
 ```
 
-Now, we can plot the network, coloring nodes on the basis of **NES** values, with a custom blue, white, red color scale to color the extreme values. We also use **sig_transform_function = 'identity'** to suppress the default log-transformation of the significance statistic.  
+Now, we can plot the network, coloring nodes on the basis of **NES** values, with a custom blue, white, red color scale to color the extreme values. We also use **transform_function = 'identity'** to suppress the default log-transformation of the significance statistic.  
 
 ```{r}
 gsnPlotNetwork( object = Bai_CiHep_dorothea_UC.GSN,
                 n_col = "SIZE",
                 stat_col = 'NES',
                 sig_order = 'hiToLo',
-                sig_transform_function = identity,
+                transform_function = identity,
                 vertex_colors = c("blue", "white", "red"), 
                 height = 7,
                 width = 9,
@@ -744,7 +741,7 @@ gsnHierarchicalDendrogram( object = gsnAssignSubnets(gsnPareNetGenericHierarchic
                            stat_col = 'NES',
                            sig_order = 'hiToLo',
                            n_col = "SIZE",
-                           sig_transform_function = identity,
+                           transform_function = identity,
                            show.leaves = TRUE,
                            show.legend = TRUE,
                            leaf_colors =  c("blue", "white", "red"),

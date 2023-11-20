@@ -1,4 +1,5 @@
-
+#' @importFrom graphics strheight
+#'
 # String width in figure coords (0 -> 1)
 getStringWidthsFigure <- function( strings,
                                    cex = par('cex'),
@@ -14,7 +15,7 @@ getStringWidthsFigure <- function( strings,
     return( sizes )
   }
   if( method %in% c("auto", "strwidth" ) ){
-    sizes <- try( strwidth( s = as.character( strings ), units = "figure", cex = cex, family = font_face ), silent = TRUE )
+    sizes <- try( graphics::strwidth( s = as.character( strings ), units = "figure", cex = cex, family = font_face ), silent = TRUE )
   }
   if( is.null(sizes) && method == "cwi" ||
       ( ( "try-error" %in% class(sizes) ) && method == "auto" )

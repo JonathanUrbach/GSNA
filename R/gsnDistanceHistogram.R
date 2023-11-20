@@ -31,7 +31,10 @@ invisible( utils::globalVariables(c("Distance Matrix", "..count..")) )
 #'                       bind = 100 )
 #' }
 #'
-#' @seealso \code{\link{plot.GSNData}}, \code{\link{gsnPlotNetwork}}, \code{\link{gsnHierarchicalDendrogram}}
+#' @seealso
+#'  \code{\link{plot.GSNData}}
+#'  \code{\link{gsnPlotNetwork}}
+#'  \code{\link{gsnHierarchicalDendrogram}}
 #'
 gsnDistanceHistogram <- function( object,
                                   distance = NULL,

@@ -1,15 +1,23 @@
-#' Title
+#' contrasting_color
 #'
-#' @param col
-#' @param type
-#' @param threshold
-#' @param low
-#' @param high
+#' @description Function picks colors to contrast with the colors given as the \code{'col'} argument.
 #'
-#' @return
+#' @param col A character vector of colors.
+#' @param type (optional) Type of contrasting color, i.e. the method of generating the contrasting color.
+#' Valid values are \code{'complement'}, \code{'rotate'}, \code{'yellow'}, \code{'gray'}, \code{'binary'}
+#' and \code{'blackyellow'}.
+#' @param threshold (optional, used only for \code{type='binary'}) The "binary" method works by assessing
+#' the mean value of the RGB channels. If the value is above a threshold, the low color is returned, if it
+#' is below the threshold, the high color is returned.
+#' @param low (optional, used only for \code{type='binary'}) Low color (see \code{threshold} argument).
+#' @param high (optional, used only for \code{type='binary'}) High color (see \code{threshold} argument).
+#'
+#' @return A contrasting color.
 #' @export
 #'
-#' @examples
+#' @importFrom grDevices rgb
+#'
+# @examples
 contrasting_color <- function( col, type = "complement", threshold = 127, low = "#000000", high = "#FFFFFF" ){
   rgbArr <- col2rgb( col )
   if( type == "complement" ) { # type == 1

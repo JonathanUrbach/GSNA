@@ -30,7 +30,10 @@
 #'                                               geneSetCollection = msig.subset )
 #' }
 #'
-#' @seealso \code{\link{buildGeneSetNetworkLFFast}}, \code{\link{buildGeneSetNetworkSTLF}}, \code{\link{buildGeneSetNetworkJaccard}}
+#' @seealso
+#'  \code{\link{buildGeneSetNetworkLFFast}}
+#'  \code{\link{buildGeneSetNetworkSTLF}}
+#'  \code{\link{buildGeneSetNetworkJaccard}}
 #'
 makeFilteredGenePresenceAbsenceMatrix <- function( ref.background, geneSetCollection ){
   # The geneSetCollection argument can be a tmod object or a list of vectors containing appropriate gene symbols,

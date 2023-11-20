@@ -1,7 +1,7 @@
 
 #'
 #' @name buildGeneSetNetworkLF
-#' @title buildGeneSetNetworkLF, buildGeneSetNetworkLF-deprecated
+#' @title buildGeneSetNetworkLF, buildGeneSetNetworkLFFast-deprecated
 #'
 #' @description Using a gene set collection and a background of observable genes, calculate log partial
 #' Fisher *p*-value distances and return the results as a GSNData object. This is equal to
@@ -15,17 +15,17 @@
 #' This statistic behaves approximately like a 2-sided Fisher exact test, but may not be appropriate for
 #' most purposes. It is also somewhat faster to calculate than STLF (single tailed log-Fisher). Unless speed is an issue,
 #' we recommend using \code{buildGeneSetNetworkSTLF} Note: \code{buildGeneSetNetworkLFFast} is deprecated. Please use
-#' \code{buildGeneSetNetworkLF} instead.
+#' \code{buildGeneSetNetworkLF}() instead.
 #'
 #' @param object An object of type GSNData. If NULL, a new one is instantiated.
-#' @param ref.background (required) A character vector corresponding to the genes observable in a differential
-#' expression, ATACSeq or other dataset. This corresponds to the background used in tools like DAVID.
-#' This is **required**, unless object already exists and contains a genePresenceAbsence matrix field.
-#' @param geneSetCollection (required) A gene set collection either in the form of a tmod object, or a list of
-#' gene sets / modules as character vectors containing gene symbols and names corresponding to the
-#' gene module identifier.
-#' This is **required**, unless object already exists and contains a genePresenceAbsence matrix field.
-#'
+#' @param ref.background (required) A character vector corresponding to the genes observable in a
+#' differential expression, ATACSeq or other dataset. This corresponds to the background used in
+#' tools like DAVID. This is **required**, unless object already exists and contains a
+#' genePresenceAbsence matrix field.
+#' @param geneSetCollection (required) A gene set collection either in the form of a tmod object,
+#' or a list of gene sets / modules as character vectors containing gene symbols and names
+#' corresponding to the gene module identifier. This is **required**, unless object already exists
+#' and contains a genePresenceAbsence matrix field.
 #' @param distMatrixFun Function used to calculate distances. Takes a genePresenceAbsence matrix and
 #' returns a distance matrix. (defaults to scoreLFMatrix_C)
 #'
@@ -44,15 +44,23 @@
 #' observable_genes <- rownames(FILTERED_RNASEQ_COUNT_MATRIX)
 #' msig.subset <- msig[cerno_results$ID,]
 #' GSN <- buildGeneSetNetworkLF( object = NULL,
-#'                                   ref.background = observable_genes,
-#'                                   geneSetCollection = msig.subset )
+#'                               ref.background = observable_genes,
+#'                               geneSetCollection = msig.subset )
 #' }
 #'
-#' @seealso \code{\link{scoreLFMatrix_C}}, \code{\link{scoreJaccardMatrix_C}}, \code{\link{scoreOCMatrix_C}}
+#' @seealso
+#'  \code{\link{scoreLFMatrix_C}}
+#'  \code{\link{scoreJaccardMatrix_C}}
+#'  \code{\link{scoreOCMatrix_C}}
 #'
 #' @importFrom Matrix as.matrix
 #'
-buildGeneSetNetworkLF <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = function( geneSetCollection ) scoreLFMatrix_C(geneSetCollection, alternative = 4) ){
+buildGeneSetNetworkLF <- function( object = NULL,
+                                   ref.background = NULL,
+                                   geneSetCollection = NULL,
+                                   distMatrixFun = function( geneSetCollection )
+                                     scoreLFMatrix_C(geneSetCollection, alternative = 4)
+                                   ){
   buildGeneSetNetworkGeneric(object, ref.background, geneSetCollection, distMatrixFun, distance = 'lf', optimal_extreme = "min" )
 }
 
@@ -91,10 +99,19 @@ buildGeneSetNetworkLF.old <- function( object = NULL, ref.background = NULL, gen
 }
 
 
-#' @name buildGeneSetNetworkLFFast
-#' @rdname buildGeneSetNetworkLF
+#' buildGeneSetNetworkLFFast
+#'
+#' @describeIn buildGeneSetNetworkLF
+#' Deprecated, use \code{\link{buildGeneSetNetworkLF}()}.
+#'
+#' @param ... : Arguments passed to \code{\link{buildGeneSetNetworkLF}()}.
+#'
+#' @section \code{buildGeneSetNetworkLFFast}:
+#' For \code{buildGeneSetNetworkLFFast()}, use \code{\link{buildGeneSetNetworkLF}()}.
+#'
+#' @export
 buildGeneSetNetworkLFFast <- function( ... ){
-  warning( "Deprecated. Use buildGeneSetNetworkLF()." )
+  .Deprecated( "buildGeneSetNetworkLF()" )
   buildGeneSetNetworkLF( ... )
 }
 

@@ -20,12 +20,14 @@ Imports:
     circlize,
     DT,
     dendextend,
+    dplyr,
     ggplot2,
     graphics,
     grDevices,
     igraph,
     inline,
     Matrix,
+    methods,
     psych,
     raster,
     stringr,
@@ -39,6 +41,7 @@ Imports:
     Rcpp
 Depends: R (>= 3.0.0)
 Suggests: 
+    gplots,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

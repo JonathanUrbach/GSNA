@@ -87,7 +87,10 @@ invisible(utils::globalVariables( c("DIST", "M1", "M2", "Stat")))
 #'                                                       lower_is_closer = TRUE )
 #' }
 #'
-#' @seealso \code{\link{gsnPareNetGenericToNearestNNeighbors}}, \code{\link{distMat2UnitNormRank}}, \code{\link{gsnParedVsRawDistancePlot}}
+#' @seealso
+#'  \code{\link{gsnPareNetGenericToNearestNNeighbors}}
+#'  \code{\link{distMat2UnitNormRank}}
+#'  \code{\link{gsnParedVsRawDistancePlot}}
 #'
 #' @importFrom stats cutree hclust as.dist
 #' @importFrom tidyr gather
@@ -331,7 +334,10 @@ gsnPareNetGenericHierarchic <- function( object,
 #'                                                       lower_is_closer = TRUE )
 #' }
 #'
-#' @seealso \code{\link{gsnPareNetGenericToNearestNNeighbors}}, \code{\link{distMat2UnitNormRank}}, \code{\link{gsnParedVsRawDistancePlot}}
+#' @seealso
+#'  \code{\link{gsnPareNetGenericToNearestNNeighbors}}
+#'  \code{\link{distMat2UnitNormRank}}
+#'  \code{\link{gsnParedVsRawDistancePlot}}
 #'
 #' @importFrom stats cutree hclust as.dist
 #' @importFrom tidyr gather

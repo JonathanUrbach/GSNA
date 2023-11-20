@@ -17,7 +17,9 @@
 #'
 #' @export
 #'
-#' @seealso \code{\link{gsnPlotNetwork}()}, \code{\link{plot.GSNData}()}
+#' @seealso
+#'  \code{\link{gsnPlotNetwork}()}
+#'  \code{\link{plot.GSNData}()}
 #'
 #' @examples
 #' \dontrun{

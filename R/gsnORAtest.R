@@ -57,7 +57,9 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #'                           geneSetCollection = msig.tmod )
 #'}
 #'
-#' @seealso \code{\link{gsnORAtest_cpp}} \code{\link[stats]{p.adjust}}
+#' @seealso
+#'  \code{\link{gsnORAtest_cpp}}
+#'  \code{\link[stats]{p.adjust}}
 #'
 #' @references
 #' 1. Benjamini, Y., and Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society Series B*, **57**, 289–300. <http://www.jstor.org/stable/2346101>.
@@ -72,7 +74,7 @@ gsnORAtest <- function( l, bg, geneSetCollection, Alpha = 0.05, full = FALSE ){
   } else if ( 'tmodGS' %in% class(geneSetCollection) ){
     m2g <- tmod2gsc( geneSetCollection )
     modules <- geneSetCollection$gs
-  } else if(class(geneSetCollection) == 'list' ){
+  } else if( 'list' %in% class(geneSetCollection) ){
     m2g <- geneSetCollection
     modules <- NULL
   }

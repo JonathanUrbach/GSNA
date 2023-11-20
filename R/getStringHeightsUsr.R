@@ -1,3 +1,6 @@
+
+#' @importFrom graphics strheight
+#'
 # Calculate the string width in usr coordinate units.
 getStringHeightsUsr <- function( strings,
                                  cex = par('cex'),
@@ -14,7 +17,7 @@ getStringHeightsUsr <- function( strings,
     return( sizes )
   }
   if( method %in% c("auto", "strwidth" ) ){
-    sizes <- try( strheight( s = as.character( strings ), units = "user", cex = cex, family = font_face ), silent = TRUE )
+    sizes <- try( graphics::strheight( s = as.character( strings ), units = "user", cex = cex, family = font_face ), silent = TRUE )
   }
   if( is.null(sizes) && method == "csi" ||
       ( ( "try-error" %in% class(sizes) ) && method == "auto" )

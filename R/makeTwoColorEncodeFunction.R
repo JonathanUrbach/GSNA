@@ -1,20 +1,48 @@
 
 
-#' Title
+#' makeTwoColorEncodeFunction
 #'
-#' @param numbers.1
-#' @param numbers.2
-#' @param colors.1
-#' @param colors.2
-#' @param combine_method
-#' @param c1.fun
-#' @param c2.fun
-#' @param na.color
+#' @description Generate a function to take two numerical vector arguments and return a color, either as a vector of
+#' hexadecimal encoded colors, or as a three column matrix.
 #'
-#' @return
+#' @param numbers.1 A set of numbers to define the range of channel 1 numerical values for which the color encode
+#' function will be defined. Only the extreme min and max values are necessary.
+#' @param numbers.2 A set of numbers to define the range of channel 2 numerical values for which the color encode
+#' function will be defined. Only the extreme min and max values are necessary.
+#' @param colors.1 The range of channel 1 colors to be returned by the function function. (default: c("#FFFFFF", "#FF0000"))
+#' @param colors.2 The range of channel 2 colors to be returned by the function function. (default: c("#FFFFFF", "#0000FF"))
+#' @param combine_method (optional) For dual channel plots this is a string used to indicate how colors are combined to
+#' generate a two dimensional color scale. Options are "scaled_geomean" (same as "default"), "standard" (same as "euclidean" ),
+#' "negative_euclidean", "mean", and "additive". See details.
+#' @param c1.fun (optional) A function to convert the numerical in channel 1 into colors. If not specified, this is
+#' generated based on \code{numbers.1} and \code{colors.1}.
+#' @param c2.fun (optional) A function to convert the numerical in channel 2 into colors. If not specified, this is
+#' generated based on \code{numbers.2} and \code{colors.2}.
+#' @param na.color (optional) The color returned from the function for NA values (default: "#CCCCCC").
+#'
+#' @return \code{makeTwoColorEncodeFunction()} returns a function that takes 3 arguments and returns either a vector of
+#' hexadecimal colors or a 3-column matrix of columns. The arguments:
+#' \item{\code{numbers.1}}{A vector of numbers for channel 1, to be encoded as a color value.}
+#' \item{\code{numbers.2}}{A vector of numbers for channel 2, to be encoded as a color value.}
+#' \item{\code{output_as}}{Specifies the type of return value. If \code{'vector'} or \code{'rgb'}, the function returns a vector
+#' of hexadecimal colors (e.g."#FFCCAA"), if 'matrix','array', a three column numeric matrix is returned (Columns are "R", "G", or "B").
+#' Currently, \code{'vector'} are synonyms \code{'rgb'}, as are \code{'matrix'} and \code{'array'}}.
+#'
 #' @export
 #'
 #' @examples
+#'
+#' # Prepare the function:
+#' twoColorEnc.fun <- makeTwoColorEncodeFunction( numbers.1 = c( 0.4, 6 ),
+#'                                                numbers.2 = c(0.6, 20),
+#'                                                colors.1 = c("white", "red"),
+#'                                                colors.2 = c("white", "green" ),
+#'                                                combine_method = "mean" )
+#' # Encode two vectors of numbers as a single vector of colors:
+#' colors_as_vector <- twoColorEnc.fun( numbers.1 = c( 0.4, 1.2, 5, 6 ),
+#'                                      numbers.2 = c( 0.6, 6, 9, 20 ),
+#'                                      output_as = 'vector' )
+#'
 makeTwoColorEncodeFunction <- function( numbers.1,
                                         numbers.2,
                                         colors.1 = c("#FFFFFF", "#FF0000"),
@@ -22,8 +50,7 @@ makeTwoColorEncodeFunction <- function( numbers.1,
                                         combine_method = "mean", #"default"
                                         c1.fun = NULL,
                                         c2.fun = NULL,
-                                        na.color = "#CCCCCC",
-                                        n = 100
+                                        na.color = "#CCCCCC"
 ){
   force( na.color )
   force( colors.1 )
@@ -64,10 +91,12 @@ makeTwoColorEncodeFunction <- function( numbers.1,
 
     c12.mat <- combineRGBMatrices( c1.mat, c2.mat, combine_method )
 
-    if( output_as == 'array' ){
+    if( output_as %in% c('matrix', 'array') ){
       return( c12.mat )
-    } else { # output_as == 'rgb'
+    } else if( output_as %in% c('vector', 'rgb')) { # output_as == 'rgb'
       return( apply(X = c12.mat, MARGIN = 1, FUN = function(x){if(any(is.na(x))) return(na.color); intV2Color( unlist(x) )} ) )
+    } else {
+      stop( "Invalid value: output_as='", output_as, "'" )
     }
   }
 }

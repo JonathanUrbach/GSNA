@@ -1,3 +1,29 @@
+#' adjust_plt
+#'
+#' @details This function adjusts the reserved plot areas legends to the proportions required for rendering.
+#'
+#' @param .plt The current reserved plot area in the format of the 'plt' argument of \code{\link[graphics]{par}()}.
+#' @param y.dim.actual.fu The required y dimension.
+#' @param x.dim.actual.fu The required x dimension.
+#' @param v.adjust (optional) a string telling the function how to adjust the legend plotting area. Acceptable values
+#' are \code{'top'}, \code{'bottom'}, and \code{'middle'}, indicating that the plot area should be
+#' adjusted to be flush with the top or bottom of the available plot area, or otherwise centered, respectively.
+#' (default: \code{'top'})
+#' @param h.adjust (optional) a string telling the function how to adjust the legend plotting area. Acceptable values
+#' are \code{'left'}, \code{'right'}, and \code{'center'}, indicating that the plot area should be
+#' adjusted to be flush with the left or right edge of the available plot area, or otherwise centered, respectively.
+#' (default: \code{'center'})
+#' @param v.strict (optional) Boolean value that if \code{TRUE}, tells the function to check that the available virtical
+#' space is greater or equal to the \code{y.dim.actual.fu}. If \code{FALSE}, than the adjusted vertical dimension may end
+#' up being greater than allocated space. (default: \code{TRUE)}
+#' @param h.strict  (optional) Boolean value that if \code{TRUE}, tells the function to check that the available horizontal
+#' space is greater or equal to the \code{x.dim.actual.fu}. If \code{FALSE}, than the adjusted horizontal dimension may end
+#' up being greater than allocated space. (default: \code{TRUE})
+#' @return The returned value is a plot area boundaries in the format of the \code{'par'} value returned by the
+#' \code{\link[graphics]{par}()} function.
+#'
+# @export
+# @examples
 adjust_plt <- function( .plt,
                         y.dim.actual.fu,
                         x.dim.actual.fu,

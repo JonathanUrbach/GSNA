@@ -101,7 +101,7 @@ yassifyPathways <- function( pathways,
                                       }
                                       url <- try( url_map_list[[column]][[x]] )
                                       if( is.na( url ) ) return( x )
-                                      if( class( url ) == "try-error" ){
+                                      if( "try-error" %in% class( url ) ){
                                         return( x )
                                       }
                                       paste0( "<a href=\"",url,"\" target=\"_blank\">", x, "</a>" )
@@ -202,7 +202,7 @@ yassifyPathways.old <- function( pathways,
                                       }
                                       url <- try( url_map_list[[column]][[x]] )
                                       if( is.na( url ) ) return( x )
-                                      if( class( url ) == "try-error" ){
+                                      if( "try-error" %in% class( url ) ){
                                         return( x )
                                       }
                                       paste0( "<a href=\"",url,"\" target=\"_blank\">", x, "</a>" )

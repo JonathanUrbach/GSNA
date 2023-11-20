@@ -1,6 +1,6 @@
 
 
-#' gsnAddPathwayData
+#' gsnAddPathwaysData
 #'
 #' @description Add pathways search data to a GSNData object.
 #'
@@ -53,13 +53,17 @@
 #' @examples
 #'
 #' \dontrun{
-#' gsn_object <- gsnAddPathwayData( object = gsn_object, pathways_data = dat.cerno )
+#' gsn_object <- gsnAddPathwaysData( object = gsn_object, pathways_data = dat.cerno )
 #' }
 #'
-#' @seealso \code{\link{gsnImportCERNO}}, \code{\link{gsnImportGSEA}}, \code{\link{gsnImportGSNORA}}, \code{\link{gsnImportGenericPathways}}
+#' @seealso
+#'  \code{\link{gsnImportCERNO}}
+#'  \code{\link{gsnImportGSEA}}
+#'  \code{\link{gsnImportGSNORA}}
+#'  \code{\link{gsnImportGenericPathways}}
 #'
 
-gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
+gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
   stopifnot( "GSNData" %in% class( object ) )
   field_names <- colnames( pathways_data )
   # "ID", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val"
@@ -102,3 +106,16 @@ gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL
   object
 }
 
+#' gsnAddPathwayData
+#'
+#' @description A synonym of \code{\link{gsnAddPathwaysData}()}, included to support old code. Use
+#' \code{\link{gsnAddPathwaysData}()} for new code.
+#'
+#' @inheritDotParams gsnAddPathwaysData
+#' @describeIn gsnAddPathwaysData Synonym of \code{\link{gsnAddPathwaysData}()}, included to support old code. Use
+#' \code{\link{gsnAddPathwaysData}()} for new code.
+
+gsnAddPathwayData <- function(...){
+  warning("gsnAddPathwayData() is included to support old code. Use gsnAddPathwaysData() instead.")
+  gsnAddPathwaysData(...)
+}

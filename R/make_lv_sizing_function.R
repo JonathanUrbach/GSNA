@@ -6,7 +6,7 @@ make_lv_sizing_function <- function( numbers, size_range = c( 0.5, 1.5), log_sca
   numbers.domain <- range( numbers )
   force( size_range )
   force( log_scale )
-  #if( log_scale ) axis_ticks <- grDevices::axisTicks( usr = log10( numbers.domain ), log = TRUE )
+
   if( is.null( log_scale ) )
     log_scale <- guessLogScale( numeric_values = numbers, log10threshold = log10threshold )
 

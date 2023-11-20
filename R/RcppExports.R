@@ -64,7 +64,9 @@
 #' log_fisher_p <- lfisher_cpp( a = 16000, b = 200, c = 170, d = 100, alternative = 3 )
 #' }
 #'
-#' @seealso \code{\link{gsIntersectCounts}}, \code{\link{scoreLFMatrix_C}}, \code{\link{scoreSTLFMatrix}}
+#' @seealso
+#'  \code{\link{gsIntersectCounts}}
+#'  \code{\link{scoreLFMatrix_C}}
 #'
 lfisher_cpp <- function(a, b, c, d, e_precision = 12.0, alternative = 1L) {
     .Call(`_GSNA_lfisher_cpp`, a, b, c, d, e_precision, alternative)
@@ -102,7 +104,9 @@ lfisher_cpp <- function(a, b, c, d, e_precision = 12.0, alternative = 1L) {
 #' jaccardMatrix <- scoreJaccardMatrix_C( PresenceAbsMatrix )
 #' }
 #'
-#' @seealso \code{\link{buildGeneSetNetworkJaccard}}, \code{\link{scoreLFMatrix_C}}, \code{\link{scoreSTLFMatrix}}
+#' @seealso
+#'  \code{\link{buildGeneSetNetworkJaccard}()}
+#'  \code{\link{scoreLFMatrix_C}()}
 #'
 scoreJaccardMatrix_C <- function(geneSetCollection_m) {
     .Call(`_GSNA_scoreJaccardMatrix_C`, geneSetCollection_m)
@@ -140,7 +144,9 @@ scoreJaccardMatrix_C <- function(geneSetCollection_m) {
 #' ocMatrix <- scoreOCMatrix_C( PresenceAbsMatrix )
 #' }
 #'
-#' @seealso \code{\link{buildGeneSetNetworkOC}}, \code{\link{scoreLFMatrix_C}}, \code{\link{scoreSTLFMatrix}}
+#' @seealso
+#'  \code{\link{buildGeneSetNetworkOC}}
+#'  \code{\link{scoreLFMatrix_C}}
 #'
 #' @references 1.  M.K V, K K. A Survey on Similarity Measures in Text Mining. MLAIJ. 2016;3: 19–28. doi:10.5121/mlaij.2016.3103
 #'
@@ -160,7 +166,7 @@ scoreOCMatrix_C <- function(geneSetCollection_m) {
 #'
 #' @details This version of the function is used in gsnORAtest_cpp. (In another version of the function, used in
 #' \code{gsnFilterGeneSetCollectionList()} and accessible only from C++ the first argument is gs1Set, a set of strings
-#' of type std::set<std::string>.)
+#' of type \code{std::set<std::string>}.)
 #'
 #' This function does essentially what R's base::intersect does, so it is not necessarily useful to export.
 #'
@@ -191,7 +197,7 @@ gsIntersect <- function(gs1, gs2) {
 #'    \item{\code{4}}{The number of genes in in both gs1 and gs2.}
 #'
 #' @details This version of the function may not be retained since it's not currently used. Two alternative versions of the
-#' function in C++ that find the overlap between a std::set<std::string> and a character vector are used since those versions
+#' function in C++ that find the overlap between a \code{std::set<std::string>} and a character vector are used since those versions
 #' are much faster.
 #'
 #' NOTE: This function assumes that all genes in gs1 and gs2 are present in the background, so to use this properly, gs1
@@ -407,7 +413,9 @@ gsnORAtest_cpp <- function(l, bg, geneSetCollection) {
 #' LFMatrix <- scoreLFMatrix_C( PresenceAbsMatrix )
 #'}
 #'
-#' @seealso \code{\link{buildGeneSetNetworkLFFast}}, \code{\link{scoreSTLFMatrix}}, \code{\link{scoreJaccardMatrix_C}}
+#' @seealso
+#'  \code{\link{buildGeneSetNetworkLFFast}}
+#'  \code{\link{scoreJaccardMatrix_C}}
 #'
 scoreLFMatrix_C <- function(geneSetCollection_m, e_precision = NULL, alternative = as.integer( c( 1 ))) {
     .Call(`_GSNA_scoreLFMatrix_C`, geneSetCollection_m, e_precision, alternative)

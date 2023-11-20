@@ -1,3 +1,51 @@
+
+invisible( utils::globalVariables( c("font_face") ) )
+
+#' make1ColorLegend
+#'
+#' @param numbers  Numbers to set the range of colors.
+#' @param oneColorEncode.fun A function that takes a numeric value and returns an encoded RGB color value.
+#' @param n (optional) The number of color gradations to include in the legend (default 100).
+#' @param lab (optional) The axis label. Since the color scale is vertical, this is a y-axis label.(default: NULL)
+#' @param log_scale Boolean value indicating whether the scale should be log scale. (default: FALSE)
+#' @param .plt.leg A vector of 4 coordinates indicating the region where the legend is to be ploted.
+#' @param .mar.leg.vm A vector of 4 coordinates indicating legend margins. These values are picked
+#' automatically depending on the available geometry, so in general, you won't want to change
+#' this.
+#' @param .fin (optional) Figure width and height of the figure in inches (defaults to \code{par('fin')}).
+#' @param h_w.leg (optional) Height to width ratio of the 1-color legend panel. (default: 1)
+#' @param legend_thickness (optional) The width of the legend in raster matrix cells. (default: approximately 15% of height)
+#' @param legend.lab (optional) The legend label. (default \code{''})
+#' @param cex.lab (optional) Font cex size for labels. If unspecified, then the function will attempt to pick
+#' an appropriate value.
+#' @param cex.axis (optional) Font cex size for axes. If unspecified, then the function will attempt to pick
+#' an appropriate value.
+#' @param axis_lab_ratio (optional) If cex.lab and cex.axis are unspecified, the function will attempt to pick
+#' appropriate values. This argument is the ratio of axis marks to axis labels (default 0.9).
+#' @param legend.fg (optional) The forground color of the legend (by default inherited from \code{par('fg')}).
+#' @param legend.bg (optional) The background color of the legend (by default inherited from \code{par('bg')}).
+#' @param draw.legend.box.bool (optional) Boolean indicated whether a box should be drawn around the legend.
+#' (default: \code{FALSE})
+#' @param v.adjust (optional) When the size of the legend is optimized for the available space, indicates
+#' whether the legend should be adjusted towards the top, bottom, or middle of the available space.
+#' (default: \code{'top'})
+#' @param h.adjust (optional) When the size of the legend is optimized for the available space, indicates
+#' whether the legend should be adjusted towards the left, right or center of the available space. (default"
+#' \code{'center'})
+#' @param render.bool (optional) Boolean indicating whether the legend should be rendered, or just return graphical
+#' parameters. (default: \code{TRUE})
+#' @param restore.params.bool (optional) Boolean indicating whether graphical parameters should be restored to
+#' original values once the legend is drawn. (default: \code{TRUE})
+#' @param optimize.legend.size (optional) Boolean indicated whether the function should attempt to optimize
+#' the size of the legend. (default: \code{FALSE})
+#'
+#' @return Invisible list of graphical parameters.
+#' @export
+#'
+#' @importFrom grDevices axisTicks
+#' @importFrom graphics axis box par plot.window title
+# @examples
+
 make1ColorLegend <- function(numbers,
                              oneColorEncode.fun,
                              n = 100,
@@ -8,7 +56,7 @@ make1ColorLegend <- function(numbers,
                              .plt.leg = c( 0.71, 1.0, 0.70, 1.0 ),
                              #.mar.leg.vm = c( 1.1, 4.1, 1.1, 1.1 ), # Virtual Margins for Legend (Within region set by .plt.leg)
                              .mar.leg.vm = adj_mar_leg_vm(.mar.leg.vm = c( 1.1, 4.1, 1.1, 1.1 ) ),
-                             .fin = par('fin'),
+                             .fin = graphics::par('fin'),
 
                              h_w.leg = 1, # Height to width ratio of the 1-color legend panel.
 
@@ -19,8 +67,8 @@ make1ColorLegend <- function(numbers,
                              cex.axis = NULL,
                              axis_lab_ratio = 0.9,
 
-                             legend.fg = par('fg'),
-                             legend.bg = par('bg'),
+                             legend.fg = graphics::par('fg'),
+                             legend.bg = graphics::par('bg'),
                              draw.legend.box.bool = FALSE,
 
                              v.adjust = 'top',
@@ -61,7 +109,7 @@ make1ColorLegend <- function(numbers,
   y.dim.actual.fu <- y.dim.actual.in / .fin[2]
 
   # Adjust .plt.adj further
-  chi <- par( 'cin' )[2]
+  chi <- graphics::par( 'cin' )[2]
 
   if( optimize.legend.size ){
     .plt.adj <- adjust_plt( .plt = .plt.leg,
@@ -77,10 +125,10 @@ make1ColorLegend <- function(numbers,
 
   # If cex is not set, decide
   if( is.null( cex.lab ) ){
-    cex.lab <- par( 'cex' )
+    cex.lab <- graphics::par( 'cex' )
     # Estimate the dimensions of the raster. We want the label to be at most about that size.
-    #raster.width.est.fu <- ( .plt.adj[2] - .plt.adj[1] ) - par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[1]
-    raster.height.est.fu <- ( .plt.adj[4] - .plt.adj[3] ) - par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[2]
+    #raster.width.est.fu <- ( .plt.adj[2] - .plt.adj[1] ) - graphics::par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[1]
+    raster.height.est.fu <- ( .plt.adj[4] - .plt.adj[3] ) - graphics::par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[2]
 
     if( ! is.null( legend.lab ) ){
       legend.lab.width.fu <- getStringWidthsFigure( strings = legend.lab, cex = cex.lab, font_face = font_face ) * .fin[1] / .fin[2]
@@ -115,13 +163,13 @@ make1ColorLegend <- function(numbers,
 
   if( render.bool ){
     # First back up original graphical parameters
-    .plt.orig <- par( 'plt' )
-    .usr.orig <- par( 'usr' )
-    .xpd.orig <- par( 'xpd' )
+    .plt.orig <- graphics::par( 'plt' )
+    .usr.orig <- graphics::par( 'usr' )
+    .xpd.orig <- graphics::par( 'xpd' )
 
     if( draw.legend.box.bool ){
       graphics::par( plt = .plt.leg,  xpd = TRUE, new = TRUE )
-      box( which = "plot", col = legend.fg, bg = legend.bg )
+      graphics::box( which = "plot", col = legend.fg, bg = legend.bg )
     }
 
     graphics::par( plt = .plt.adj.vm, xpd = TRUE,
@@ -140,19 +188,19 @@ make1ColorLegend <- function(numbers,
                      asp = legend.aspect )
 
     if( ! is.null( lab ) ){
-      title( ylab = lab, mgp=c(2,1,1), cex.lab = cex.lab, col.lab = legend.fg )
+      graphics::title( ylab = lab, mgp=c(2,1,1), cex.lab = cex.lab, col.lab = legend.fg )
     }
 
     if( ! is.null( tick_values ) ){
-      axis( side = 2, at = tick_values, labels = tick_values , tick = TRUE, cex.axis = cex.axis, col = legend.fg, col.axis = legend.fg, col.ticks = legend.fg  )
+      graphics::axis( side = 2, at = tick_values, labels = tick_values , tick = TRUE, cex.axis = cex.axis, col = legend.fg, col.axis = legend.fg, col.ticks = legend.fg  )
     }
 
-    box( col = legend.fg, bg = legend.bg )
+    graphics::box( col = legend.fg, bg = legend.bg )
 
 
     if( restore.params.bool ){
-      par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
-      plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
+      graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
+      graphics::plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
     }
   }
 

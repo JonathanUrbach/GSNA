@@ -38,7 +38,7 @@
 #' (default: object$distances[[distance]]$pared_optimal_extreme or if that's NULL,
 #' object$distances[[distance]]$optimal_extreme)
 #'
-#' @param sig_transform_function (optional) This is a function to transform the values in \code{stat_col} so that they
+#' @param transform_function (optional) This is a function to transform the values in \code{stat_col} so that they
 #' are suitable for amenable to color-scaling. For *p*-values, a log transformation is often useful, but can produce
 #' negative infinities if the transformation is applied to zero. By default the function is the \code{nzLog10}
 #' (non-zero log10) function, provided by this package, which adds a small pseudocount to p-values when log10 transforming
@@ -180,8 +180,8 @@
 #'
 #' @param lines.main (optional) The distance of the main title in lines from the top of the plot. (default: 0.9)
 #'
-#' @param .mai.plot (optional) A parameter specifying the margins of the plot, excluding legends as inches. This is
-#' calculated automatically and for most purposes, will not need to be specified.
+#' @param .mar.plot (optional) The margins of the plot itself. If unnspecified, the function will attempt to reserve
+#' enough room to the right of the plot for the legend or legends.
 #'
 #' @param draw.legend.box.bool (option) Logical indicating whether bounding boxes should be drawn for the legends.
 #'
@@ -232,7 +232,10 @@
 #' gsnPlotNetwork.old( object = analysis.GSN )
 #' }
 #'
-#' @seealso \code{\link{plot.GSNData}}, \code{\link{gsnToIgraph}}, \code{\link[igraph]{plot.igraph}}
+#' @seealso
+#'  \code{\link{plot.GSNData}}
+#'  \code{\link{gsnToIgraph}}
+#'  \code{\link[igraph]{plot.igraph}}
 #'
 #' @importFrom grDevices dev.size svg pdf png
 #'
@@ -247,7 +250,7 @@ gsnPlotNetwork <- function( object,
                             sig_order_2 = NULL,
                             n_col = NULL,
                             optimal_extreme = NULL,
-                            sig_transform_function = nzLog10,
+                            transform_function = nzLog10,
                             pathways_title_col = c("Title", "Name", "NAME", "STANDARD_NAME" ),
                             edge_colors = c("black", "purple", "blue", "green","yellow4", "orange","red"),
                             vertex_colors = c("white","yellow","red"),
@@ -289,6 +292,7 @@ gsnPlotNetwork <- function( object,
                             mar.main = 3.2,   # NEW reserve this many lines for main
                             lines.main = 0.9, # Position Main this many lines from plot
                             .mar.plot = NULL,
+                            #.mai.plot = NULL,
                             draw.legend.box.bool = FALSE,
                             legend.free.cex.bool = FALSE,
                             legend_x_size.in = NULL, #
@@ -426,8 +430,8 @@ gsnPlotNetwork <- function( object,
 
   if( ! is.null( pathways_dat ) ){
     if( !is.null( stat_col_2 ) ){
-      numbers.1 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * sig_transform_function(pathways_dat[[stat_col]])
-      numbers.2 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order_2)]] * sig_transform_function(pathways_dat[[stat_col_2]])
+      numbers.1 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways_dat[[stat_col]])
+      numbers.2 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order_2)]] * transform_function(pathways_dat[[stat_col_2]])
 
       twoColorEncode.fun <- makeTwoColorEncodeFunction( numbers.1 = numbers.1,
                                                         numbers.2 = numbers.2,
@@ -441,7 +445,7 @@ gsnPlotNetwork <- function( object,
       legend.xlab <- stat_col_2
       legend.ylab <- stat_col
     } else {
-      numbers <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * sig_transform_function(pathways_dat[[stat_col]] )
+      numbers <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways_dat[[stat_col]] )
       oneColorEncode.fun <- makeOneColorEncodeFunction( numbers = numbers, colors = vertex_colors, na.color = na.color )
       pathways_dat$vertex.color <- oneColorEncode.fun( numbers = numbers, output_as = "rgb" )
       legend.ylab <- stat_col

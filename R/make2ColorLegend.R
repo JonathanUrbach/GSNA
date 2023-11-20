@@ -1,37 +1,59 @@
 
+invisible( utils::globalVariables( c("font_face") ) )
 
-#' Title
+#' make2ColorLegend
 #'
-#' @param numbers.1
-#' @param numbers.2
-#' @param twoColorEncode.fun
-#' @param n
-#' @param lab.1
-#' @param lab.2
-#' @param cex.lab
-#' @param cex.axis
-#' @param axis_lab_ratio
-#' @param legend.scale.factor
-#' @param legend.ylab
-#' @param legend.xlab
-#' @param legend.fg
-#' @param legend.bg
-#' @param log_scale.1
-#' @param log_scale.2
-#' @param .plt.leg
-#' @param .mar.leg.vm
-#' @param .fin
-#' @param v.adjust
-#' @param h.adjust
-#' @param draw.legend.box.bool
-#' @param optimize.legend.size
-#' @param render.bool
-#' @param restore.params.bool
+#' @description
+#' This function generates a 2-color legend for network plots and dendrograms, consisting of a
+#' square raster with x&y scales and labels.
 #'
-#' @return
+#' @param numbers.1 Numbers to set the range of colors for the y-axis.
+#' @param numbers.2 Numbers to set the range of colors for the x-axis.
+#' @param twoColorEncode.fun A function that takes two numeric values and returns an encoded RGB color value.
+#' @param n (optional) The number of color gradations per channel to include in the legend (default 100)
+#' @param lab.1 (optional) y-axis label (default: NULL)
+#' @param lab.2 (optional) x-axis label (default: NULL)
+#' @param cex.lab (optional) Font cex size for labels. If unspecified, then the function will attempt to pick
+#' an appropriate value.
+#' @param cex.axis (optional) Font cex size for axes. If unspecified, then the function will attempt to pick
+#' an appropriate value.
+#' @param axis_lab_ratio (optional) If cex.lab and cex.axis are unspecified, the function will attempt to pick
+#' appropriate values. This argument is the ratio of axis marks to axis labels (default 0.9).
+#' @param legend.scale.factor (optional) A fudge factor for scaling the legend (default 1.15).
+#' @param legend.ylab (optional) The y label of the legend.
+#' @param legend.xlab (optional) The x label of the legend.
+#' @param legend.fg (optional) The forground color of the legend (by default inherited from \code{graphics::par('fg')}).
+#' @param legend.bg (optional) The background color of the legend (by default inherited from \code{graphics::par('bg')}).
+#' @param log_scale.1 (optional) Indicates whether the y-values are log scale or not. (default: FALSE)
+#' @param log_scale.2 (optional) Indicates whether the x-values are log scale or not. (default: FALSE)
+#' @param .plt.leg A vector of 4 coordinates indicating the region where the legend is to be ploted.
+#' @param .mar.leg.vm (optional) A vector of 4 coordinates indicating legend margins. These values are picked
+#' automatically depending on the available geometry, so in general, you won't want to change
+#' this.
+#' @param .fin (optional) Figure width and height of the figure in inches (defaults to \code{graphics::par('fin')}).
+#' @param v.adjust (optional) When the size of the legend is optimized for the available space, indicates
+#' whether the legend should be adjusted towards the top, bottom, or middle of the available space.
+#' (default: \code{'top'})
+#' @param h.adjust (optional) When the size of the legend is optimized for the available space, indicates
+#' whether the legend should be adjusted towards the left, right or center of the available space. (default"
+#' \code{'center'})
+#' @param draw.legend.box.bool (optional) Boolean indicated whether a box should be drawn around the legend.
+#' (default: \code{FALSE})
+#' @param optimize.legend.size (optional) Boolean indicated whether the function should attempt to optimize
+#' the size of the legend. (default: \code{FALSE})
+#' @param render.bool (optional) Boolean indicating whether the legend should be rendered, or just return graphical
+#' parameters. (default: \code{TRUE})
+#' @param restore.params.bool (optional) Boolean indicating whether graphical parameters should be restored to
+#' original values once the legend is drawn. (default: \code{TRUE})
+#'
+#' @return Invisible list of graphical parameters.
+#'
 #' @export
 #'
-#' @examples
+#' @importFrom grDevices axisTicks
+#' @importFrom graphics axis box par plot.window title
+#'
+# @examples
 make2ColorLegend <- function(numbers.1,
                              numbers.2,
                              twoColorEncode.fun,
@@ -48,8 +70,8 @@ make2ColorLegend <- function(numbers.1,
                              legend.ylab = NULL,
                              legend.xlab = NULL,
 
-                             legend.fg = par('fg'),
-                             legend.bg = par('bg'),
+                             legend.fg = graphics::par('fg'),
+                             legend.bg = graphics::par('bg'),
 
                              log_scale.1 = FALSE,
                              log_scale.2 = FALSE,
@@ -57,7 +79,7 @@ make2ColorLegend <- function(numbers.1,
                              .plt.leg =c( 0.71, 1.0, 0.70, 1.0 ),
                              #.mar.leg.vm = c( 4.1, 4.1, 2.1, 2.1 ), # Virtual Margins for Legend (Within region set by .plt.leg)
                              .mar.leg.vm = adj_mar_leg_vm(.mar.leg.vm = c( 4.1, 4.1, 2.1, 2.1 ) ),
-                             .fin = par('fin'),
+                             .fin = graphics::par('fin'),
 
                              v.adjust = "top",
                              h.adjust = "center",
@@ -108,10 +130,10 @@ make2ColorLegend <- function(numbers.1,
   if( is.null( legend.xlab ) ) legend.xlab <- lab.2
 
   if( is.null( cex.lab ) ){
-    cex.lab <- par( 'cex' )
+    cex.lab <- graphics::par( 'cex' )
     # Estimate the dimensions of the raster. We want the label to be at most about that size.
-    raster.width.est.fu <- ( .plt.adj[2] - .plt.adj[1] ) - par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[1]
-    raster.height.est.fu <- ( .plt.adj[4] - .plt.adj[3] ) - par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[2]
+    raster.width.est.fu <- ( .plt.adj[2] - .plt.adj[1] ) - graphics::par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[1]
+    raster.height.est.fu <- ( .plt.adj[4] - .plt.adj[3] ) - graphics::par('cin')[2] * cex.lab * (.mar.leg.vm[2] + .mar.leg.vm[1]) / .fin[2]
 
     if( ! is.null( legend.xlab ) ){
       legend.xlab.width.fu <- getStringWidthsFigure( strings = legend.xlab, cex = cex.lab, font_face = font_face )
@@ -137,7 +159,7 @@ make2ColorLegend <- function(numbers.1,
 
 
   # Adjust .plt.adj further by using .mar.leg.vm
-  chi <- par( 'cin' )[2]
+  chi <- graphics::par( 'cin' )[2]
   # We need to fit the raster into a square plot space, centered on the center of the region defined by :
   .plt.adj.vm  <- c( .plt.adj[1] + chi * cex.max * .mar.leg.vm[2] / .fin[1],
                      .plt.adj[2] - chi * cex.max * .mar.leg.vm[4] / .fin[1],
@@ -166,14 +188,14 @@ make2ColorLegend <- function(numbers.1,
 
   if( render.bool ){
     # First back up original graphical parameters
-    .plt.orig <- par( 'plt' )
-    .usr.orig <- par( 'usr' )
-    .xpd.orig <- par( 'xpd' )
-    #.cex.orig <- par( 'cex' )
+    .plt.orig <- graphics::par( 'plt' )
+    .usr.orig <- graphics::par( 'usr' )
+    .xpd.orig <- graphics::par( 'xpd' )
+    #.cex.orig <- graphics::par( 'cex' )
 
     if( draw.legend.box.bool ){
       graphics::par( plt = .plt.adj,  xpd = TRUE, new = TRUE )
-      box( which = "plot", col = legend.fg, bg = legend.bg )
+      graphics::box( which = "plot", col = legend.fg, bg = legend.bg )
     }
 
     graphics::par( plt = .plt.adj.vm,
@@ -209,10 +231,10 @@ make2ColorLegend <- function(numbers.1,
       axis( side = 1, at = tick_values.2, labels = tick_values.2, mgp = .mgp, tick = TRUE, cex.axis = cex.axis, col = legend.fg, col.axis = legend.fg, col.ticks = legend.fg )
     }
 
-    box( col = legend.fg, bg = legend.bg )
+    graphics::box( col = legend.fg, bg = legend.bg )
 
     if( restore.params.bool ){
-      par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
+      graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
       plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
     }
   }

@@ -39,7 +39,9 @@ invisible(utils::globalVariables( c("M1", "Stat")))
 #'                                                       cutoff = -90 )
 #' }
 #'
-#' @seealso \code{\link{gsnPareNetGenericHierarchic}}, \code{\link{gsnDistanceHistogram}}
+#' @seealso
+#'  \code{\link{gsnPareNetGenericHierarchic}}
+#'  \code{\link{gsnDistanceHistogram}}
 #'
 #' @importFrom tidyr gather
 #' @importFrom tibble rownames_to_column

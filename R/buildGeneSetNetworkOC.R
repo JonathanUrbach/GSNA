@@ -46,7 +46,11 @@
 #'                               geneSetCollection = msig.subset )
 #' }
 #'
-#' @seealso \code{\link{scoreOCMatrix_C}}, \code{\link{buildGeneSetNetworkJaccard}}, \code{\link{buildGeneSetNetworkLFFast}}, \code{\link{buildGeneSetNetworkSTLF}}
+#' @seealso
+#'  \code{\link{scoreOCMatrix_C}}
+#'  \code{\link{buildGeneSetNetworkJaccard}}
+#'  \code{\link{buildGeneSetNetworkLFFast}}
+#'  \code{\link{buildGeneSetNetworkSTLF}}
 #'
 #' @importFrom Matrix as.matrix
 
