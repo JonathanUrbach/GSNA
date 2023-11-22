@@ -90,11 +90,6 @@ buildGeneSetNetworkLF.old <- function( object = NULL, ref.background = NULL, gen
                                         vertices = colnames(geneSetCollectionFilt.mat) )
   object$default_distance <- distance
 
-  #object$distances$lf <- list( matrix = distMatrixFun(geneSetCollectionFilt.mat),
-  #                             optimal_extreme = "min",
-  #                             vertices = colnames(geneSetCollectionFilt.mat))
-  #object$default_distance <- 'lf'
-
   object
 }
 

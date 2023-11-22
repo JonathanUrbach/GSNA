@@ -26,9 +26,12 @@
 #'
 #' @return This function returns a GSNData object.
 #'
-#' @details In most cases, users will want to run the specific \code{buildGeneSetNetworkSTLF()},
-#' \code{buildGeneSetNetworkLF()}, \code{buildGeneSetNetworkJaccard()} or \code{buildGeneSetNetworkJaccard()}
-#' functions instead of this, but this function can be used for adding support for new distance metrics.
+#' @details In most cases, users will want to run the specific
+#' \code{buildGeneSetNetworkSTLF()},
+#' \code{buildGeneSetNetworkLF()},
+#' \code{buildGeneSetNetworkJaccard()}
+#' or \code{buildGeneSetNetworkJaccard()} functions instead of this, but this function can be used for
+#' adding support for new distance metrics.
 #'
 #' @export
 #'
@@ -50,8 +53,11 @@
 #'
 #' @seealso
 #'  \code{\link{buildGeneSetNetworkJaccard}}
+#'
 #'  \code{\link{buildGeneSetNetworkOC}}
+#'
 #'  \code{\link{buildGeneSetNetworkLF}}
+#'
 #'  \code{\link{buildGeneSetNetworkSTLF}}
 #'
 #' @importFrom Matrix as.matrix
