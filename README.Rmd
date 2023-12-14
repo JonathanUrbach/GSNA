@@ -1,4 +1,5 @@
 ---
+bibliography: vignettes/using_the_gsna_package.bib
 output: github_document
 ---
 
@@ -11,22 +12,80 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+
+require( utils )
 ```
 
-# GSNA
+# GSNA version `r utils::packageVersion(pkg = "GSNA" )` 
+
+**Jonathan M. Urbach**
+
+**Ragon Instute of MGH, MIT, and Harvard**  
+
+**2023-11-22**  
+
+
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-GSNA stands for **G**ene **S**et **N**etwork **A**nalysis. It is a tool for assessing the similarity of different gene sets, and generating networks and subnets from them, that group together genes sets that have similar or associated functions.  
+GSNA stands for **G**ene **S**et **N**etwork **A**nalysis. GSNA is a toolkit for assessing the similarity of gene sets based on metrics of similarity and distance such as the Jaccard and Szymkiewicz–Simpson overlap indices, and log Fisher *p*-values. The intended purpose of the GSNA package is to provide a set of ancillary methods to pathways analysis such as **GSEA** (@subramanian_gene_2005,@mootha_pgc-1-responsive_2003), and **CERNO** (@zyla_gene_2019). GSNA can be used subsequent to pathways analysis methods that generate lists of gene sets with associated significance statistics, e.g. *p*-values. From such data, groups of similar pathways can be inferred, greatly simplifying the task of analyzing complex pathways datasets. On the basis of similarity, networks and clusters (or subnets) can be generated and represented graphically, and statistical parameters can be assessed.
 
-## Installation
 
-You can install the development version of GSNA like so:
+
+## Installation  
+
+We intend to make the **GSNA** package available on CRAN in the near future. However, if you have the **devtools** package installed, you can install the development version of GSNA directly from GitHub like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github( repo = "https://github.com/JonathanUrbach/GSNA" )
 ```
+
+Note: Currently, this method omits installation of the package's Roxygen2 man pages.  
+
+If you have downloaded the source code from GitHub and opened the project in an Rstudio session, the following command can be used to install the package, including documentation:  
+
+``` r
+devtools::install( build_vignettes = TRUE, args = "--no-multiarch --with-keep.source" )
+```
+
+
+## Loading GSNA and Accessing Documentation    
+
+To load GSNA, type the following in your R console:  
+
+``` r 
+library( GSNA )
+```
+
+
+To access a vignette containing additional information and usage examples, run:
+
+``` r
+vignette( "using_the_gsna_package" )
+```
+
+A package description and a list of function documentation can be obtained via:
+
+``` r
+help( package = "GSNA" )
+```
+
+
+# References
+
+<div id="refs"></div>
+
+
+
+```{r echo=FALSE}
+
+knitr::knit_exit()
+
+```
+
+
+**BELOW HERE IS AN OUTLINE OF SOME SECTIONS I WILL CREATE LATER**
 
 ## Example
 

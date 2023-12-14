@@ -62,7 +62,6 @@
 #'  \code{\link{gsnImportGSNORA}}
 #'  \code{\link{gsnImportGenericPathways}}
 #'
-
 gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
   stopifnot( "GSNData" %in% class( object ) )
   field_names <- colnames( pathways_data )
@@ -82,6 +81,12 @@ gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NUL
               (all( c("ID", "Title", "Enrichment", "P.Fisher.2S", "adj.P.Fisher.2S", "P.1S", "adj.P.1S" ) %in% field_names ))){
     message( "Using GSN-ORA import." )
     object <- gsnImportGSNORA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
+  } else if ( (!is.null(type) && type == "david" ) ||
+              (all( c("Category", "Term", "Count", "%", "PValue",
+                      "Genes", "List Total", "Pop Hits", "Pop Total",
+                      "Fold Enrichment", "Bonferroni", "Benjamini", "FDR") %in% field_names ))){
+    message( "Using DAVID import." )
+    object <- gsnImportDAVID( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
   } else {
     message( "Using generic pathways import." )
     object <- gsnImportGenericPathways( object = object, pathways_data = pathways_data, type = type, id_col = id_col, stat_col = stat_col, sig_order = sig_order )
@@ -105,6 +110,7 @@ gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NUL
 
   object
 }
+
 
 #' gsnAddPathwayData
 #'

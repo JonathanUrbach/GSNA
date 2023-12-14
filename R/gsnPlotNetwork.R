@@ -138,7 +138,7 @@
 #'
 #' @param layout (optional) Either a function that generates a layout or a numerical matrix containing a vertex layout
 #' with two columns corresponding to *x* and *y* coordinates. This argument is passed to the \code{igraph} plot method
-#' that is subsequently called by \code{gsnPlotNetwork.old()} (see \code{.plot}, below). The default \code{layout} is
+#' that is subsequently called by \code{gsnPlotNetwork()} (see \code{.plot}, below). The default \code{layout} is
 #' the anonymous function \code{function(x){igraph::layout_with_fr(x, grid = "nogrid" )}}, which calls
 #' \code{igraph::layout_with_fr()} (implementing Fruchterman-Reingold layout) with the \code{grid="nogrid"} option,
 #' enabling proper layout of networks with >= 1000 gene set vertices. Other useful layouts for \code{igraph} networks
@@ -229,7 +229,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' gsnPlotNetwork.old( object = analysis.GSN )
+#' gsnPlotNetwork( object = analysis.GSN )
 #' }
 #'
 #' @seealso
@@ -345,10 +345,12 @@ gsnPlotNetwork <- function( object,
 
     # Scan for pathways_title_column.
     if( ! is.null(pathways_title_col) && ! all(is.na(pathways_title_col)) ){
-      pathways_title_col <- pathways_title_col[pathways_title_col %in% colnames( pathways_dat )][[1]]
+      #pathways_title_col <- pathways_title_col[pathways_title_col %in% colnames( pathways_dat )][[1]]
+      pathways_title_col <- pathways_title_col[pathways_title_col %in% colnames( pathways_dat )]
       if(length(pathways_title_col) == 0)
-        stop("Cannot find pathways Title column.\nSet correct pathways column with pathways_title_column='NAME'",
-             " or opt out with pathways_title_column=NULL.\n")
+        stop("Cannot find pathways Title column.\nSet correct pathways column with pathways_title_col='NAME'",
+             " or opt out with pathways_title_col=NULL.\n")
+      pathways_title_col <- pathways_title_col[[1]]
     }
   }
 
@@ -431,7 +433,9 @@ gsnPlotNetwork <- function( object,
   if( ! is.null( pathways_dat ) ){
     if( !is.null( stat_col_2 ) ){
       numbers.1 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways_dat[[stat_col]])
+      if( is.null( numbers.1 ) ) stop( "Column stat_col: '", stat_col, " contains no data." )
       numbers.2 <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order_2)]] * transform_function(pathways_dat[[stat_col_2]])
+      if( is.null( numbers.2 ) ) stop( "Column stat_col_2: '", stat_col_2, " contains no data." )
 
       twoColorEncode.fun <- makeTwoColorEncodeFunction( numbers.1 = numbers.1,
                                                         numbers.2 = numbers.2,
@@ -446,6 +450,7 @@ gsnPlotNetwork <- function( object,
       legend.ylab <- stat_col
     } else {
       numbers <- c(loToHi=-1, hiToLo = 1)[[as.character(sig_order)]] * transform_function(pathways_dat[[stat_col]] )
+      if( is.null( numbers ) ) stop( "Column stat_col: '", stat_col, " contains no data." )
       oneColorEncode.fun <- makeOneColorEncodeFunction( numbers = numbers, colors = vertex_colors, na.color = na.color )
       pathways_dat$vertex.color <- oneColorEncode.fun( numbers = numbers, output_as = "rgb" )
       legend.ylab <- stat_col
@@ -453,6 +458,7 @@ gsnPlotNetwork <- function( object,
     # If n_col is set, use for the vertex size scale.
     if( !is.null( n_col ) ){
       gs_numbers <- pathways_dat[[n_col]]
+      if( is.null( gs_numbers ) ) stop( "Column n_col: '", n_col, " contains no data." )
       sizeEncode.fun <- make_lv_sizing_function( numbers = gs_numbers, size_range = vertex.size.range )
       pathways_dat$vertex.size <- sizeEncode.fun( x = gs_numbers )
       legend.lab.n_col <- n_col
@@ -481,19 +487,29 @@ gsnPlotNetwork <- function( object,
     igraph::vertex_attr(sigNet, "label.color") <- vertex.label.col
   }
 
+  # Get id from the vertex name. It may require reformatting:
+  id <- igraph::V(sigNet)$name
+  if( ! is.null( substitute_id_col ) )
+    id <- pathways_dat[igraph::V(sigNet)$name, substitute_id_col ]
+
+  # Now, get the Title column if it's not null or na
   if( !is.na( pathways_title_col ) && !is.null( pathways_title_col ) ){
     id <- igraph::V(sigNet)$name
     if( ! is.null( substitute_id_col ) )
-      id <- pathways_dat[igraph::V(sigNet)$name, substitute_id_col ]
+      id <- pathways_dat[ igraph::V(sigNet)$name, substitute_id_col ]
 
-    igraph::V(sigNet)$label <- paste0( id,
+    # igraph::V(sigNet)$label <- paste0( gsub( x = id, pattern = '(.{1,15})([\\s\\~\\:])', replacement = '\\1\n' ),
+    #                                    "\n",
+    #                                    gsub( x = pathways_dat[igraph::V(sigNet)$name, pathways_title_col ],
+    #                                          pattern = '(.{1,15})([\\s\\~\\:])',
+    #                                          replacement = '\\1\n' ) )# Adds converts '\s' to '\n' after up to 1
+
+    igraph::V(sigNet)$label <- paste0( break_long_lines( x = id ),
                                        "\n",
-                                       gsub( x = pathways_dat[igraph::V(sigNet)$name, pathways_title_col ],
-                                             pattern = '(.{1,15})(\\s)',
-                                             replacement = '\\1\n' ) )# Adds converts '\s' to '\n' after up to 1
-  } else if( ! is.null( substitute_id_col ) ){
-    id <- pathways_dat[igraph::V(sigNet)$name, substitute_id_col ]
-    igraph::V(sigNet)$label <- id
+                                       break_long_lines( x = pathways_dat[igraph::V(sigNet)$name, pathways_title_col ] ) )
+                                       # Adds converts '\s' to '\n' after up to 1
+  } else {
+    igraph::V(sigNet)$label <- break_long_lines( x = id )
   }
 
   if( !is.null( pathways_dat[['vertex.size']] ) ){
@@ -776,5 +792,9 @@ gsnPlotNetwork <- function( object,
 
 
 
-
+# Break long lines (greater than 1-15 letters with a preference for longer)
+break_long_lines <- function( x ){
+  gsub( pattern = '(.{1,15})(\\s+)', replacement = '\\1\n',
+        x = gsub( x = x, pattern = '([~:;])', replacement = '\\1 ' ) )
+}
 

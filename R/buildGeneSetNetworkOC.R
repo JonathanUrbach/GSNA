@@ -58,32 +58,4 @@ buildGeneSetNetworkOC <- function( object = NULL, ref.background = NULL, geneSet
   buildGeneSetNetworkGeneric(object, ref.background, geneSetCollection, distMatrixFun, distance = 'oc', optimal_extreme = "max" )
 }
 
-buildGeneSetNetworkOC.old <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun = scoreOCMatrix_C ){
-  if( is.null( object ) ) object <- GSNData()
-
-  if( ! is.null( ref.background ) && !is.null( geneSetCollection ) ){
-    geneSetCollectionFilt.mat <- makeFilteredGenePresenceAbsenceMatrix( ref.background = ref.background,
-                                                                        geneSetCollection = geneSetCollection )
-    object$genePresenceAbsence <- Matrix::Matrix( geneSetCollectionFilt.mat, sparse = TRUE )
-  } else if( ! is.null( object$genePresenceAbsence ) ){
-    geneSetCollectionFilt.mat <- Matrix::as.matrix( object$genePresenceAbsence )
-  } else {
-    stop("Need ref.background and geneSetCollection arguments.")
-  }
-
-  mat <- distMatrixFun(geneSetCollectionFilt.mat)
-  distance <- 'oc'
-  optimal_extreme <- "max"
-  if( ! is.null( attr( x = mat, which = "distance" ) ) ) distance <- attr( x = mat, which = "distance" )
-  if( ! is.null( attr( x = mat, which = "lower_is_closer" ) ) )
-    optimal_extreme = ifelse(attr( x = mat, which = "lower_is_closer" ), "min", "max" )
-  object$distances[[distance]] <- list( matrix = mat,
-                                        optimal_extreme = optimal_extreme,
-                                        vertices = colnames(geneSetCollectionFilt.mat) )
-  object$default_distance <- distance
-
-  object
-}
-
-
 

@@ -384,7 +384,7 @@ gsnHierarchicalDendrogram <- function( object,
 
   # Assign substitute_id_col if unset. We'll be using substitute_id_col henceforth:
   if( is.null(substitute_id_col) ) substitute_id_col <- id_col
-  if( !is.na( substitute_id_col ) && !is.na( pathways_title_col ) ){
+  if( !is.na( substitute_id_col ) && !is.null(pathways_title_col) && !is.na( pathways_title_col ) ){
     if( is.null( id_nchar ) ) id_nchar <- with(pathways_dat[vertex.names,], max( nchar( get(substitute_id_col) ) ) )
     GSN.dend <- dendextend::`labels<-`( GSN.dend,
                                         value = with(pathways_dat[vertex.names,],

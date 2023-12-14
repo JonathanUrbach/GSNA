@@ -12,8 +12,7 @@
 #' @param id_col (optional) A character vector of length 1 indicating the name of the column used as a key for gene
 #' sets or modules. This is normally the \code{NAME} field of GSEA data, which must be the same as the names of gene
 #' sets specified in the tmod object or in the list of gene set vectors specified with the \code{geneSetCollection}
-#' argument used when building the gene set network. By default this value is \code{'NAME'}. However if the user has
-#' added additional IDs to a CERNO results set, such as GO_ACCESSION, that can be specified here. The IDs must correspond
+#' argument used when building the gene set network. By default this value is \code{'NAME'}. The IDs must correspond
 #' to the names of the gene sets provided, or an error will be thrown. **NOTE:** In the tmod::tmodImportMSigDB function
 #' provided by the tmod package, the default ID is an MSigDB accession, but GSEA data sets do not use this accession.
 #' The \code{NAME} column used in GSEA results set corresponds instead to the \code{STANDARD_NAME} field in the MSigDB
