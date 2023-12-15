@@ -108,6 +108,8 @@ lfisher_cpp <- function(a, b, c, d, e_precision = 12.0, alternative = 1L) {
 #'  \code{\link{buildGeneSetNetworkJaccard}()}
 #'  \code{\link{scoreLFMatrix_C}()}
 #'
+#'  @import Rcpp
+#'
 scoreJaccardMatrix_C <- function(geneSetCollection_m) {
     .Call(`_GSNA_scoreJaccardMatrix_C`, geneSetCollection_m)
 }
@@ -149,6 +151,8 @@ scoreJaccardMatrix_C <- function(geneSetCollection_m) {
 #'  \code{\link{scoreLFMatrix_C}}
 #'
 #' @references 1.  M.K V, K K. A Survey on Similarity Measures in Text Mining. MLAIJ. 2016;3: 19–28. doi:10.5121/mlaij.2016.3103
+#'
+#'  @import Rcpp
 #'
 scoreOCMatrix_C <- function(geneSetCollection_m) {
     .Call(`_GSNA_scoreOCMatrix_C`, geneSetCollection_m)

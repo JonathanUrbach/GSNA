@@ -90,37 +90,38 @@ GSNData <- function( distances = list(), ... )
 #'
 #' @description Print a short description of a \code{GSNData} object.
 #'
-#' @param object A GSNData object.
+#' @param x A GSNData object.
+#' @param ... Additional parameters currently ignored, but included for consistency with generic print.
 #'
 #' @return Invisibly returns the GSNData object.
 #'
 #' @export
 #' @exportS3Method print GSNData
-print.GSNData <- function( object ){
-  cat( "GSNData object version:", unlist( as.character( object$GSNA_version ) ), "\n" )
+print.GSNData <- function( x, ... ){
+  cat( "GSNData object version:", unlist( as.character( x$GSNA_version ) ), "\n" )
 
-  if( !is.null( object$genePresenceAbsence ) ){
+  if( !is.null( x$genePresenceAbsence ) ){
     cat( "  Contains data for:\n" )
-    cat( "    ", nrow( object$genePresenceAbsence ), "genes.\n" )
-    cat( "    ", ncol( object$genePresenceAbsence ), "gene sets.\n" )
+    cat( "    ", nrow( x$genePresenceAbsence ), "genes.\n" )
+    cat( "    ", ncol( x$genePresenceAbsence ), "gene sets.\n" )
   }
 
-  if( ! is.null( distz <- names(object$distances) ) ){
+  if( ! is.null( distz <- names(x$distances) ) ){
     cat( "  Contains the following distance(s):\n" )
     for( .dist in distz ){
       cat( paste0( "     ", .dist, "\n" ) )
     }
   }
-  if( ! is.null( distz <- names(object$pathways) ) ){
-    .type <- object$pathways$type
+  if( ! is.null( distz <- names(x$pathways) ) ){
+    .type <- x$pathways$type
     if( is.null( .type ) ) .type <- "NULL"
     cat( "  Contains pathways data of type: ", .type , "\n" )
     for( .datname in c( "id_col", "stat_col", "sig_order", "stat_col_2", "sig_order_2", "n_col" ) )
-      if( !is.null(object$pathways[[.datname]] )  ){
-        cat( "    ",  .datname, "=", object$pathways[[.datname]], "\n" )
+      if( !is.null(x$pathways[[.datname]] )  ){
+        cat( "    ",  .datname, "=", x$pathways[[.datname]], "\n" )
       }
   }
-  return( invisible( object ) )
+  return( invisible( x ) )
 }
 
 

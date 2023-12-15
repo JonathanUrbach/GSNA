@@ -225,6 +225,8 @@ double lfisher_cpp( int a, int b, int c, int d,
 //'  \code{\link{buildGeneSetNetworkJaccard}()}
 //'  \code{\link{scoreLFMatrix_C}()}
 //'
+//'  @import Rcpp
+//'
 // [[Rcpp::export]]
 SEXP scoreJaccardMatrix_C( SEXP geneSetCollection_m ){
   //  scoreJaccardMatrix_C <- inline::rcpp(signature( geneSetCollection_m ="integer"), body='
@@ -310,6 +312,8 @@ SEXP scoreJaccardMatrix_C( SEXP geneSetCollection_m ){
 //'  \code{\link{scoreLFMatrix_C}}
 //'
 //' @references 1.  M.K V, K K. A Survey on Similarity Measures in Text Mining. MLAIJ. 2016;3: 19–28. doi:10.5121/mlaij.2016.3103
+//'
+//'  @import Rcpp
 //'
 // [[Rcpp::export]]
 SEXP scoreOCMatrix_C( SEXP geneSetCollection_m ){

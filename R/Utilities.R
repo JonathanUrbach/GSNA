@@ -610,7 +610,9 @@ read_gmt <- function( file ){
 #' @param GENES (optional) A data frame with gene metadata. Must contain an ID column. If not provided, this will be generated
 #' automatically.
 #'
-#' @return Returns a \code{tmod} object.
+#' @return Returns a \code{tmod} object if the \code{tmod} package version \code{'0.46.2'} or earlier is installed. If the
+#' \code{tmod} package version '0.50.11' or later is installed, it returns a \code{tmodGS} object instead.
+#'
 #' @export
 #'
 #' @examples
@@ -622,6 +624,7 @@ read_gmt <- function( file ){
 #' @seealso [read_gmt()] [tmod2gsc()]
 #'
 #' @importFrom methods new
+#' @importFrom tmod makeTmod
 #'
 gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
   if( is.null( MODULES ) )
@@ -646,9 +649,58 @@ gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
   if( any( ! unlist( MODULES2GENES ) %in% GENES$ID ) || any( ! GENES$ID %in% unlist( MODULES2GENES ) ) )
     stop("Mismatch beween unlist( MODULES2GENES ) %in% GENES$ID")
 
-  methods::new("tmod", list( MODULES2GENES = MODULES2GENES, MODULES = MODULES, GENES = GENES ) )
+  # This should work with versions up to '0.46.2' as well as '0.50.11' and after.
+  tmod::makeTmod( modules = MODULES, modules2genes = MODULES2GENES, genes = GENES )
 }
 
+
+# gsc2tmod.old <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
+#   if( is.null( MODULES ) )
+#     MODULES <-
+#       data.frame( ID = names( MODULES2GENES ),
+#                   Title = stringr::str_to_title( gsub( pattern = "_",
+#                                                        replacement = " ",
+#                                                        x = names( MODULES2GENES ) )
+#                   ),
+#                   row.names = names( MODULES2GENES ),
+#                   stringsAsFactors = FALSE,
+#                   check.names = FALSE
+#       )
+#   if( is.null( GENES ) )
+#     GENES <- data.frame( ID = unique( unlist( MODULES2GENES ) ) )
+#
+#   # Sanity checks:
+#   if( length(names( MODULES2GENES )) != length(MODULES$ID) ||
+#       ! all( names( MODULES2GENES ) == MODULES$ID )  )
+#     stop("Mismatch beween names(MODULES2GENES) and MODULES$ID")
+#
+#   if( any( ! unlist( MODULES2GENES ) %in% GENES$ID ) || any( ! GENES$ID %in% unlist( MODULES2GENES ) ) )
+#     stop("Mismatch beween unlist( MODULES2GENES ) %in% GENES$ID")
+#
+#   #out <- methods::new("tmod", list( MODULES2GENES = MODULES2GENES, MODULES = MODULES, GENES = GENES ) )
+#   # Ability to return a tmod object is now non-dependent on actual tmod package code.
+#   # out <- structure( list( MODULES2GENES = MODULES2GENES, MODULES = MODULES, GENES = GENES ),
+#   #                   class = structure( "tmod" , package = "tmod" ) )
+#
+#   out_fmt = NULL
+#   if( !is.null( out_fmt ) && ! out_fmt[1] %in% c( "tmod", "tmodGS" ) )
+#     stop( "output format '", out_fmt, "' not recognized." )
+#
+#   # Check if tmod version 0.50.11 or later is installed:
+#   if( utils::packageVersion( pkg = "tmod" ) >= "0.50.11" ){
+#     if( is.null(out_fmt) || out_fmt[1] == "tmodGS" ){
+#       out <- tmod::tmod2tmodGS( out )
+#     }
+#   } else if( !is.null(out_fmt) ){
+#     if( out_fmt[1] == "tmodGS" ){
+#       stop( "tmodGS output requires tmod version 0.50.11 or later." )
+#     }
+#   } else {
+#     out <- structure( list( MODULES2GENES = MODULES2GENES, MODULES = MODULES, GENES = GENES ),
+#                       class = structure( "tmod" , package = "tmod" ) )
+#   }
+#   out
+# }
 
 #' tmod2gsc
 #'
@@ -662,6 +714,8 @@ gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
 #' @return The function returns a gene set collection as a named list of character vectors containing gene names.
 #'
 #' @seealso [gsc2tmod()]
+#'
+#' @export
 #'
 tmod2gsc <- function( tmod ){
   if( 'tmod' %in% class( tmod ) ){
