@@ -91,11 +91,7 @@ lfisher_cpp <- function(a, b, c, d, e_precision = 12.0, alternative = 1L) {
 #'
 #' @details The Jaccard index J for two sets A and B is defined as:
 #'
-#' \preformatted{
-#'                     | A ∩ B |
-#'           J(A,B) = -----------
-#'                     | A ∪ B |
-#' }
+#' \deqn{ J(A,B) = \dfrac{\lvert A \cap B \rvert}{\lvert A \cup B \rvert} }
 #'
 #'
 #' @examples
@@ -133,11 +129,7 @@ scoreJaccardMatrix_C <- function(geneSetCollection_m) {
 #'
 #' @details The overlap (or Szymkiewicz–Simpson) coefficient for two sets A and B is defined as:
 #'
-#' \preformatted{
-#'                        | A ∩ B |
-#'          OC(A,B) = ----------------
-#'                     min( |A|, |B| )
-#' }
+#' \deqn{ OC(A,B) = \dfrac{\lvert A \cap B \rvert}{min(\lvert A \rvert, \lvert B \rvert)} }
 #'
 #'
 #' @examples
@@ -421,7 +413,7 @@ gsnORAtest_cpp <- function(l, bg, geneSetCollection) {
 #'  \code{\link{buildGeneSetNetworkLFFast}}
 #'  \code{\link{scoreJaccardMatrix_C}}
 #'
-scoreLFMatrix_C <- function(geneSetCollection_m, e_precision = NULL, alternative = as.integer( c( 1 ))) {
+scoreLFMatrix_C <- function(geneSetCollection_m, e_precision = as.numeric( c(12)), alternative = as.integer( c( 1 ))) {
     .Call(`_GSNA_scoreLFMatrix_C`, geneSetCollection_m, e_precision, alternative)
 }
 

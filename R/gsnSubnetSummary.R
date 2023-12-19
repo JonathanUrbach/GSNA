@@ -221,7 +221,7 @@ calculate_stlf_vector <- function( mat ){
   if( is.null( dim(mat) ) ) return( NA )
   .GS_num <- ncol(mat)
   if( .GS_num < 2 ) return(NA)
-  mat.stlf <- GSNA:::scoreLFMatrix_C( as.matrix(mat) )
+  mat.stlf <- scoreLFMatrix_C( as.matrix(mat) )
   if( .GS_num == 2 ) return( mat.stlf[2,1] )
   stlf.v <- numeric()
   k <- 0

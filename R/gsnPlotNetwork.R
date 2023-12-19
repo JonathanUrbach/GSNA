@@ -593,16 +593,6 @@ gsnPlotNetwork <- function( object,
     close_fun <- grDevices::dev.off
   }
 
-  # Store plotting parameters as GSNA_plot_params attribute.
-  attr( x = sigNet, which = "GSNA_plot_params" ) <- list(width = width,
-                                                         height = height,
-                                                         vertex.size = vertex.size,
-                                                         vertex.label.cex = vertex.label.cex,
-                                                         vertex.shape =  vertex.shape,
-                                                         seed = seed,
-                                                         max_edge_width = max_edge_width
-  )
-
   # Open new output device if appropriate.
   out_fun( file = filename, width = width, height = height  )
 
@@ -785,6 +775,75 @@ gsnPlotNetwork <- function( object,
                                 line = lines.main )
 
   close_fun() -> out
+
+
+  # Store plotting parameters as GSNA_plot_params attribute.
+  attr( x = sigNet, which = "GSNA_plot_params" ) <- list(filename = filename,
+                                                         out_format = out_format,
+
+                                                         width = width,
+                                                         height = height,
+                                                         vertex.size = vertex.size,
+                                                         vertex.size.range = vertex.size.range,
+                                                         vertex.label.cex = vertex.label.cex,
+                                                         vertex.shape =  vertex.shape,
+                                                         seed = seed,
+                                                         max_edge_width = max_edge_width,
+
+                                                         transform_function = deparse(substitute(transform_function)),
+
+                                                         edge_colors = edge_colors,
+                                                         vertex_colors = vertex_colors,
+                                                         vertex_colors.1 = vertex_colors.1,
+                                                         vertex_colors.2 = vertex_colors.2,
+                                                         combine_method = combine_method,
+                                                         na.color = na.color,
+
+                                                         vertex.label.col = vertex.label.col,
+                                                         vertex.frame.color = vertex.frame.color,
+                                                         contrasting_color.fun = deparse(substitute(contrasting_color.fun)),
+                                                         scale_labels_by_vertex = scale_labels_by_vertex,
+                                                         max_edge_width = max_edge_width,
+                                                         scale.edges.by.distance = scale.edges.by.distance,
+                                                         color.edges.by.distance = color.edges.by.distance,
+                                                         edge_arrow_size = edge_arrow_size,
+
+                                                         layout = deparse(substitute(layout)),
+                                                         .plot = deparse(substitute(.plot)),
+                                                         show.legend = show.legend,
+                                                         legend.lab.cex = legend.lab.cex,
+                                                         legend.axis.cex = legend.axis.cex,
+                                                         legend.fg = legend.fg,
+                                                         legend.bg = legend.bg,
+                                                         legend.vertex.fg = legend.vertex.fg,
+                                                         legend.vertex.bg = legend.vertex.bg,
+                                                         font_face = font_face,
+                                                         main = main,
+                                                         cex.main = cex.main,
+                                                         mar.main = mar.main,
+                                                         lines.main = lines.main,
+                                                         .mar.plot = .mar.plot,
+
+                                                         draw.legend.box.bool = draw.legend.box.bool,
+                                                         legend.free.cex.bool = legend.free.cex.bool,
+                                                         legend_x_size.in = legend_x_size.in, #
+                                                         colors.n = colors.n,
+                                                         new = new,
+                                                         legend_spacing.x.in = legend_spacing.x.in,
+                                                         legend_spacing.y.in = legend_spacing.y.in,
+
+                                                         distance = distance,
+                                                         id_col = id_col,
+                                                         substitute_id_col = substitute_id_col,
+                                                         stat_col = stat_col,
+                                                         stat_col_2 = stat_col_2,
+                                                         sig_order = sig_order,
+                                                         sig_order_2 = sig_order_2,
+                                                         n_col = n_col,
+                                                         optimal_extreme = optimal_extreme,
+                                                         pathways_title_col = pathways_title_col
+
+  )
 
   invisible( sigNet )
 } # gsnPlotNetwork

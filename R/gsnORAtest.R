@@ -62,7 +62,7 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #'  \code{\link[stats]{p.adjust}}
 #'
 #' @references
-#' 1. Benjamini, Y., and Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society Series B*, **57**, 289–300. <http://www.jstor.org/stable/2346101>.
+#' 1. Benjamini, Y., and Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society Series B*, **57**, 289–300. <\href{http://www.jstor.org/stable/2346101}{http://www.jstor.org/stable/2346101}>.
 #' 2. Dennis G Jr, Sherman BT, Hosack DA, Yang J, Gao W, Lane HC, Lempicki RA. (2003). DAVID: Database for Annotation, Visualization, and Integrated Discovery. *Genome Biol.*, **4**(5):P3. Epub 2003 Apr 3.
 #'
 #' @importFrom stats p.adjust

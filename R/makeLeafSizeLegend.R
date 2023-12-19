@@ -33,9 +33,9 @@
 #' @param cex.ticks (optional) The font size used for tick labels. (default: graphics::par('cex'))
 #'
 #' @param leaf.col (optional) The color of the leaf symbols used in the legend, or for open symbols,
-#' \code{pch ∈ c(21, 22, 23, 24, 25)}, the background fill color. (default: "#999999")
+#' \code{pch \eqn{\in} c(21, 22, 23, 24, 25)}, the background fill color. (default: "#999999")
 #'
-#' @param leaf_border_color (optional) For open symbols, \code{pch ∈ c(21, 22, 23, 24, 25)}, the color of the symbol
+#' @param leaf_border_color (optional) For open symbols, \code{pch \eqn{\in} c(21, 22, 23, 24, 25)}, the color of the symbol
 #' border. (default: "#666666")
 #'
 #' @param legend.lab (optional) A title for the legend. (default: NULL)

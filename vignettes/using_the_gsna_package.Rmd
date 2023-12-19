@@ -285,7 +285,7 @@ To generate a hierarchical dendrogram of distances between gene sets, the **gsnH
 gsnHierarchicalDendrogram( object = Bai_CiHep_DN.sig.GSN,
                            width = 8,
                            height = 5,
-                           file = "Bai_CiHep_DN.sig.GSN.HD.svg",
+                           filename = "Bai_CiHep_DN.sig.GSN.HD.svg",
                            show.leaves = TRUE,
                            show.legend = TRUE,
                            n_col = 'N1',

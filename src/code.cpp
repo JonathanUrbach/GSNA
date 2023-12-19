@@ -208,11 +208,7 @@ double lfisher_cpp( int a, int b, int c, int d,
 //'
 //' @details The Jaccard index J for two sets A and B is defined as:
 //'
-//' \preformatted{
-//'                     | A ∩ B |
-//'           J(A,B) = -----------
-//'                     | A ∪ B |
-//' }
+//' \deqn{ J(A,B) = \dfrac{\lvert A \cap B \rvert}{\lvert A \cup B \rvert} }
 //'
 //'
 //' @examples
@@ -294,11 +290,7 @@ SEXP scoreJaccardMatrix_C( SEXP geneSetCollection_m ){
 //'
 //' @details The overlap (or Szymkiewicz–Simpson) coefficient for two sets A and B is defined as:
 //'
-//' \preformatted{
-//'                        | A ∩ B |
-//'          OC(A,B) = ----------------
-//'                     min( |A|, |B| )
-//' }
+//' \deqn{ OC(A,B) = \dfrac{\lvert A \cap B \rvert}{min(\lvert A \rvert, \lvert B \rvert)} }
 //'
 //'
 //' @examples
@@ -711,7 +703,7 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 
 
 
-// As of 20220526, this is the best version of scoreLFMatrix_C in C, because it includes 4 alternatives:
+// As of 20220526, this is my best version of scoreLFMatrix_C in C, because it includes 4 alternatives:
 //
 //    1. 'upper tail' (default)
 //    2. 'lower tail'
@@ -851,7 +843,7 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 //'
 // [[Rcpp::export]]
 SEXP scoreLFMatrix_C(SEXP geneSetCollection_m,
-                     Rcpp::Nullable<NumericVector> e_precision = R_NilValue,
+                     Rcpp::Nullable<NumericVector> e_precision = Rcpp::NumericVector::create(12),  //R_NilValue
                      SEXP alternative = Rcpp::IntegerVector::create( 1 )
 ) {
   Rcpp::LogicalMatrix GLCF(geneSetCollection_m);
@@ -923,6 +915,7 @@ SEXP scoreLFMatrix_C(SEXP geneSetCollection_m,
   LF.attr("distance_type") = CharacterVector::create( "ln_pval" );
   return(LF);
 }
+
 
 
 

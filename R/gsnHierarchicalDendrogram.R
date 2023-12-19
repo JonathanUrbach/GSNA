@@ -80,7 +80,7 @@
 #' @param leaf_colors.2 (optional) A vector containing at least 2 colors for generating a color gradient in dual channel
 #' visualizations. (default: c("white", "blue"), see details)
 #' @param na.color (optional) The color used for NA values. (default: "#CCCCCC")
-#' @param leaf_border_color (optional) For R's open plot symbols \code{pch ∈ ( 21, 22, 23, 24, 25 )}, supporting fill
+#' @param leaf_border_color (optional) For R's open plot symbols \code{pch \eqn{\in} ( 21, 22, 23, 24, 25 )}, supporting fill
 #' with a 'bg' color, leaf border may be specified with this option. (default: "#666666")
 #' @param legend.leaf.col (optional) Leaf fill color for the legend. (default: "#CCCCCC")
 #' @param combine_method (optional) For dual channel plots this is a string used to indicate how colors are combined to
@@ -163,7 +163,7 @@
 #' @details Outputs of type pdf, png, and svg are supported for file outputs. File type is automatically detected
 #' from the file suffix, but can be overridden using the \code{out_format} argument.
 #'
-#' Open symbols (with border and a fill color, \code{pch ∈ ( 21, 22, 23, 24, 25 )}) are
+#' Open symbols (with border and a fill color, \code{pch \eqn{\in} ( 21, 22, 23, 24, 25 )}) are
 #' used by default on dendextend versions < '1.16.0' for horizontal dendrograms. For earlier versions, and with circular
 #' dendrograms, open symbols are currently unsupported.
 #'
@@ -181,7 +181,7 @@
 #' @importFrom dendextend labels<-
 #' @importFrom utils packageVersion
 #'
-#'
+# @importFrom stats plot.dendrogram labels.dendrogram
 gsnHierarchicalDendrogram <- function( object,
                                        distance = NULL,
                                        subnet_colors = NULL,
@@ -282,6 +282,11 @@ gsnHierarchicalDendrogram <- function( object,
 ){
   if(DO_BROWSER) browser()
 
+  # This is used to fix the problem of labels.dendrogram and plot.dendrogram not
+  # being exported from stats
+  # Suggested by: Tom Shafer at https://tshafer.com/blog/2020/08/r-packages-s3-methods
+  requireNamespace("stats", quietly = TRUE)
+
   stopifnot( "GSNData" %in% class( object ) )
   transform_function.name <- deparse( substitute( transform_function ) )
 
@@ -373,7 +378,8 @@ gsnHierarchicalDendrogram <- function( object,
 
 
   # Get vertex names first... because we're going to change them.
-  vertex.names <- stats:::labels.dendrogram(GSN.dend)
+  #vertex.names <- stats:::labels.dendrogram(GSN.dend)
+  vertex.names <- labels(GSN.dend)
 
   # Adjust sizes of labels
   if( is.null( lab.cex )) lab.cex <- ifelse( !is.null( cex ), cex * 0.9, 0.9 )
@@ -403,7 +409,8 @@ gsnHierarchicalDendrogram <- function( object,
 
   # Calculate the figure height and width, if not specified.
   # Start with the width of the labels:
-  max_label_width.in <- max( graphics::strwidth( s = stats:::labels.dendrogram(GSN.dend),
+  max_label_width.in <- max( graphics::strwidth( s = labels(GSN.dend),
+                                                 #s = stats:::labels.dendrogram(GSN.dend),
                                                  units = "inches",
                                                  cex = sapply( dendextend::get_leaves_nodePar( GSN.dend ) ,
                                                                function(x) ifelse( ! is.null( x[['lab.cex']] ), x[['lab.cex']], lab.cex )),
@@ -607,12 +614,15 @@ gsnHierarchicalDendrogram <- function( object,
         label_shift <- paste0( rep(" ", leaf_char_shift ), collapse = "" )
 
 
-        stats:::plot.dendrogram( dendextend::`labels<-`( object = GSN.dend,
-                                                         value = paste0( label_shift, stats:::labels.dendrogram( GSN.dend ))),
-                                 cex = max( leaf_cex_range, na.rm = TRUE ),
-                                 horiz = TRUE )
-                                 #height = tree_x_size.in )
+        # stats:::plot.dendrogram( dendextend::`labels<-`( object = GSN.dend,
+        #                                                  value = paste0( label_shift, stats:::labels.dendrogram( GSN.dend ))),
+        #                          cex = max( leaf_cex_range, na.rm = TRUE ),
+        #                          horiz = TRUE )
 
+        plot( dendextend::`labels<-`( object = GSN.dend,
+                                      value = paste0( label_shift, labels( GSN.dend ))),
+              cex = max( leaf_cex_range, na.rm = TRUE ),
+              horiz = TRUE )
 
         # Figure out position of subnets indicator brackets, calculate .plt.bar:
         cex_multiplier <- 1
@@ -623,7 +633,13 @@ gsnHierarchicalDendrogram <- function( object,
                                                family = font_face,
                                                font = par.font ) # Width of label_shift
 
-        label_widths.fig <- graphics::strwidth( s = stats:::labels.dendrogram(GSN.dend),
+        # label_widths.fig <- graphics::strwidth( s = stats:::labels.dendrogram(GSN.dend),
+        #                                         units = "figure",
+        #                                         cex = sapply( dendextend::get_leaves_nodePar( GSN.dend ) ,
+        #                                                       function(x) ifelse( ! is.null( x[['lab.cex']] ), x[['lab.cex']], lab.cex )),
+        #                                         family = font_face,
+        #                                         font = par.font )
+        label_widths.fig <- graphics::strwidth( s = labels(GSN.dend),
                                                 units = "figure",
                                                 cex = sapply( dendextend::get_leaves_nodePar( GSN.dend ) ,
                                                               function(x) ifelse( ! is.null( x[['lab.cex']] ), x[['lab.cex']], lab.cex )),
@@ -869,23 +885,81 @@ gsnHierarchicalDendrogram <- function( object,
     close_fun() -> out
   }
 
-  # # Store plotting parameters as GSNA_plot_params attribute.
-  # attr( x = sigNet, which = "GSNA_plot_params" ) <- list(width = width,
-  #                                                        height = height,
-  #                                                        vertex.size = vertex.size,
-  #                                                        vertex.label.cex = vertex.label.cex,
-  #                                                        vertex.shape =  vertex.shape,
-  #                                                        seed = seed,
-  #                                                        max_edge_width = max_edge_width
-  # )
+  # Store plotting parameters as GSNA_plot_params attribute.
+  attr( x = GSN.dend, which = "GSNA_plot_params" ) <- list( out_format = out_format,
+                                                            geometry = geometry,
+                                                            width = width,
+                                                            height = height,
+                                                            cex = cex,
+                                                            font_face = font_face,
+                                                            lab.cex = lab.cex,
+                                                            leaf_cex = leaf_cex,
+                                                            leaf_cex_range = leaf_cex_range,
+                                                            leaf_colors = leaf_colors,
+                                                            leaf_colors.1 = leaf_colors.1,
+                                                            leaf_colors.2 = leaf_colors.2,
+                                                            leaf_border_color = leaf_border_color,
+                                                            subnet_colors = subnet_colors,
+                                                            subnetColorsFunction = subnetColorsFunction,
+
+                                                            .plt.plot = .plt.plot,
+                                                            leaves_pch = leaves_pch,
+
+                                                            leaf_char_shift = leaf_char_shift,
+                                                            na.color = na.color,
+
+                                                            tree_x_size.in = tree_x_size.in,
+
+                                                            legend_x_size.in = legend_x_size.in,
+                                                            left_margin.in = left_margin.in,
+                                                            right_margin.in = right_margin.in,
+                                                            top_margin.in = top_margin.in,
+                                                            bottom_margin.in = bottom_margin.in,
+
+                                                            legend.downshift.in = legend.downshift.in,
+                                                            bkt_lmargin_chars = bkt_lmargin_chars,
+                                                            legend_spacing.x.in = legend_spacing.x.in,
+                                                            legend_spacing.y.in = legend_spacing.y.in,
+                                                            legend.lab.cex = legend.lab.cex,
+                                                            legend.axis.cex = legend.axis.cex,
+                                                            legend.free.cex.bool = legend.free.cex.bool,
+                                                            main = main,
+                                                            cex.main = cex.main,
+                                                            mar.main = mar.main,
+                                                            lines.main = lines.main,
+                                                            colors.n = colors.n,
+
+                                                            legend.bg = legend.bg,
+                                                            legend.fg = legend.fg,
+
+                                                            draw.legend.box.bool = draw.legend.box.bool,
+                                                            show.leaves = show.leaves,
+                                                            show.legend = show.legend,
+
+                                                            legend.leaf.col = legend.leaf.col,
+                                                            combine_method = combine_method,
+                                                            use_leaf_border = use_leaf_border,
+                                                            render.plot = render.plot,
+                                                            c1.fun = c1.fun,
+                                                            c2.fun = c2.fun,
+                                                            transform_function = transform_function,
+
+                                                            id_col = id_col,
+                                                            id_nchar = id_nchar,
+                                                            pathways_title_col = pathways_title_col,
+                                                            substitute_id_col = substitute_id_col,
+                                                            color_labels_by = color_labels_by,
+                                                            #pathways_dat = pathways_dat,
+                                                            stat_col = stat_col,
+                                                            stat_col_2 = stat_col_2,
+                                                            sig_order = sig_order,
+                                                            sig_order_2 = sig_order_2,
+                                                            n_col = n_col
+
+  )
 
   invisible( GSN.dend )
 } # gsnHierarchicalDendrogram
-
-
-
-
-
 
 
 
