@@ -14,15 +14,16 @@ knitr::opts_chunk$set(
 )
 
 require( utils )
+
 ```
 
-# GSNA version `r utils::packageVersion(pkg = "GSNA" )` 
+# GSNA version `r read.dcf( file = "DESCRIPTION" )[1,'Version']`
 
 **Jonathan M. Urbach**
 
 **Ragon Instute of MGH, MIT, and Harvard**  
 
-**2023-11-22**  
+**`r Sys.Date()`**  
 
 
 
@@ -32,10 +33,47 @@ require( utils )
 GSNA stands for **G**ene **S**et **N**etwork **A**nalysis. GSNA is a toolkit for assessing the similarity of gene sets based on metrics of similarity and distance such as the Jaccard and Szymkiewicz–Simpson overlap indices, and log Fisher *p*-values. The intended purpose of the GSNA package is to provide a set of ancillary methods to pathways analysis such as **GSEA** (@subramanian_gene_2005,@mootha_pgc-1-responsive_2003), and **CERNO** (@zyla_gene_2019). GSNA can be used subsequent to pathways analysis methods that generate lists of gene sets with associated significance statistics, e.g. *p*-values. From such data, groups of similar pathways can be inferred, greatly simplifying the task of analyzing complex pathways datasets. On the basis of similarity, networks and clusters (or subnets) can be generated and represented graphically, and statistical parameters can be assessed.
 
 
+## Dependencies  
+
+Installation of the **GSNA** package depends on other R packages, including the following:
+
+* circlize  
+* DT  
+* dendextend  
+* dplyr  
+* ggplot2  
+* graphics  
+* grDevices  
+* igraph  
+* Matrix  
+* methods  
+* psych  
+* raster  
+* stringr  
+* stringi  
+* stats  
+* tibble  
+* tidyr  
+* tmod  
+* utils  
+* withr  
+* Rcpp
+
+Several of these packages have cascading dependencies, which become particularly important when installing from source. If binary R packages are available, such as for up-to-date Windows and Mac OS X R installations, we recommend installing those. Compiling these packages from source generally requires a C, C++, and/or Fortran compiler, which on Windows means installing Rtools for Windows, and for Mac OS X, Xcode. Linux installations generally include the requred compilers, specifically the GCC compilers.    
+
+**NOTE:** Particular care should be paid to the installation of the R **raster** package. The **raster** package requires the **terra** package, which in turn requires the **GEOS** C++ computational library, available from [https://libgeos.org/](https://libgeos.org/) to compile from source. Binary packages for the **GEOS** library are available for numerous Linux distributions, and may offer a more convenient alternative than installing **GEOS** from source.
 
 ## Installation  
 
-We intend to make the **GSNA** package available on CRAN in the near future. However, if you have the **devtools** package installed, you can install the development version of GSNA directly from GitHub like so:
+We intend to make the **GSNA** package available on CRAN in the near future. If and when it is accepted by CRAN, you will be able to
+install **GSNA using the following command:
+
+``` r
+install.packages('GSNA')
+```
+
+In the meantime, if you have the **devtools** package installed, you can install the development version of GSNA directly from GitHub
+like so:
 
 ``` r
 devtools::install_github( repo = "https://github.com/JonathanUrbach/GSNA" )
@@ -77,37 +115,3 @@ help( package = "GSNA" )
 <div id="refs"></div>
 
 
-
-```{r echo=FALSE}
-
-knitr::knit_exit()
-
-```
-
-
-**BELOW HERE IS AN OUTLINE OF SOME SECTIONS I WILL CREATE LATER**
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(GSNA)
-## basic example code
-```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

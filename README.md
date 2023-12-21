@@ -7,7 +7,7 @@
 
 **Ragon Instute of MGH, MIT, and Harvard**
 
-**2023-11-22**
+**2023-12-21**
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -26,10 +26,61 @@ of analyzing complex pathways datasets. On the basis of similarity,
 networks and clusters (or subnets) can be generated and represented
 graphically, and statistical parameters can be assessed.
 
+## Dependencies
+
+Installation of the **GSNA** package depends on other R packages,
+including the following:
+
+- circlize  
+- DT  
+- dendextend  
+- dplyr  
+- ggplot2  
+- graphics  
+- grDevices  
+- igraph  
+- Matrix  
+- methods  
+- psych  
+- raster  
+- stringr  
+- stringi  
+- stats  
+- tibble  
+- tidyr  
+- tmod  
+- utils  
+- withr  
+- Rcpp
+
+Several of these packages have cascading dependencies, which become
+particularly important when installing from source. If binary R packages
+are available, such as for up-to-date Windows and Mac OS X R
+installations, we recommend installing those. Compiling these packages
+from source generally requires a C, C++, and/or Fortran compiler, which
+on Windows means installing Rtools for Windows, and for Mac OS X, Xcode.
+Linux installations generally include the requred compilers,
+specifically the GCC compilers.
+
+**NOTE:** Particular care should be paid to the installation of the R
+**raster** package. The **raster** package requires the **terra**
+package, which in turn requires the **GEOS** C++ computational library,
+available from <https://libgeos.org/> to compile from source. Binary
+packages for the **GEOS** library are available for numerous Linux
+distributions, and may offer a more convenient alternative than
+installing **GEOS** from source.
+
 ## Installation
 
 We intend to make the **GSNA** package available on CRAN in the near
-future. However, if you have the **devtools** package installed, you can
+future. If and when it is accepted by CRAN, you will be able to install
+\*\*GSNA using the following command:
+
+``` r
+install.packages('GSNA')
+```
+
+In the meantime, if you have the **devtools** package installed, you can
 install the development version of GSNA directly from GitHub like so:
 
 ``` r
@@ -71,7 +122,8 @@ help( package = "GSNA" )
 
 # References
 
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
 
 <div id="ref-mootha_pgc-1-responsive_2003" class="csl-entry">
 

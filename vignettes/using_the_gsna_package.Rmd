@@ -236,18 +236,40 @@ Bai_CiHep_DN.sig.GSN.subnets
 
 Within R markdown documents, data frames can be reformated for output using the **yassifyPathways()** function. In addition to providing a better output format, the values in the ID column can be nested within links to information on the corresponding gene sets using the **url_map_list** argument. The argument takes a list containing named vectors. The vectors are named according to the ID column to be substituted with a link, and the vectors contain name-value pairs in which the names are the IDs to be substituted and the values are the corresponding link URL.
 
-In the following code block, the structure function is used to generate the ID/URL pairs from values in the MODULES slot of the **Bai_gsc.tmod** object. Calling the **yassifyPathways()** function thereby yields a table with improved format and links to the corresponding URLs describing the gene sets in question.
+In the following code block, the structure function is used to generate the ID/URL pairs from values in the MODULES or gv field of the **Bai_gsc.tmod** object, depending on your installed version of **tmod**.
 
 ```{r}
-url_map_l <- list( ID = with( Bai_gsc.tmod$MODULES, structure( URL, names = ID ) ))
-
-yassifyPathways( Bai_CiHep_DN.sig.GSN.subnets,
-                 url_map_list = url_map_l )
+if( utils::packageVersion( pkg = "tmod" ) >= "0.50.11" ){
+  #url_map_l <- list( ID = with( Bai_gsc.tmod$gs, structure( URL, names = ID ) ))
+  # For tmod version 0.50.11 and later.
+  url_from_ID <- with( Bai_gsc.tmod$gs, structure( URL, names = ID ) )
+} else {
+  #url_map_l <- list( ID = with( Bai_gsc.tmod$MODULES, structure( URL, names = ID ) ))
+  # For earlier versions:
+  url_from_ID <- with( Bai_gsc.tmod$MODULES, structure( URL, names = ID ) )
+}
 ```
+
+We can inspect what this vector looks like, by looking at some of the first name/"URL" pairs:  
+
+```{r}
+head( url_from_ID  )
+```
+
+
+Now, calling the **yassifyPathways()** function thereby yields a table with improved format and links to the corresponding URLs describing the gene sets in question. 
+
+```{r}
+yassifyPathways( Bai_CiHep_DN.sig.GSN.subnets,
+                 url_map_list = list( ID = url_from_ID ) )
+```
+
 
 Note the **url_map_list** argument results in links for the gene set IDs.  
 
-Another, more summarized report of subnets can be obtained using **gsnSubnetSummary()**. This report groups subnets together and gives some additional statistics relating to the subnets.
+Another, more summarized report of subnets can be obtained using **gsnSubnetSummary()**. This report groups subnets together and gives some additional statistics relating to the subnets. 
+
+Here we use both the argument **url_map_list = list( Seed.ID = url_from_ID )**, to map names to URLs in the **url_from_ID** vector using the *entire* **Seed.ID** field, and **url_map_by_words_list = list( IDs = url_from_ID )** argument to map using *individual words* within the **IDs** field. Use **url_map_by_words_list** when a data.frame column may contain more than one single mappable ID per row.  
 
 NOTE: In addition to its own arguments, **yassifyPathways** can pass arguments (like **options**) to **DT::datatable()** to allow additional control of table characteristics and formatting. In the example below, the options argument is used to provide horizontal scrolling.  
 
@@ -255,7 +277,8 @@ NOTE: In addition to its own arguments, **yassifyPathways** can pass arguments (
 Bai_CiHep_DN.sig.GSN.subnetSummary <- gsnSubnetSummary( object = Bai_CiHep_DN.sig.GSN )
 
 yassifyPathways( Bai_CiHep_DN.sig.GSN.subnetSummary,
-                 url_map_list = url_map_l,
+                 url_map_list = list( Seed.ID = url_from_ID ),
+                 url_map_by_words_list = list( IDs = url_from_ID ),
                  options =list( autoWidth = FALSE,
                                 scrollX = TRUE
                                 )
@@ -366,7 +389,7 @@ The merged dataset must now be filtered. Typically, this is done using the R **s
 Bai_CiHep_v_CiKrt_DN.filt <- subset( Bai_CiHep_v_CiKrt_DN.merge, adj.P.Val.CiHep <= .alpha | adj.P.Val.CiKrt <= .alpha )
 
 yassifyPathways( Bai_CiHep_v_CiKrt_DN.filt,
-                 url_map_list = url_map_l,
+                 url_map_list = list( ID = url_from_ID ),
                  options =list( autoWidth = FALSE,
                                 scrollX = TRUE
                                 )
@@ -444,7 +467,7 @@ Bai_CiHep_v_CiKrt_DN.GSN <- gsnPareNetGenericHierarchic( Bai_CiHep_v_CiKrt_DN.GS
 Bai_CiHep_v_CiKrt_DN.GSN <- gsnAssignSubnets( Bai_CiHep_v_CiKrt_DN.GSN )
 
 yassifyPathways( gsnMergePathways( Bai_CiHep_v_CiKrt_DN.GSN  ),
-                 url_map_list = url_map_l,
+                 url_map_list = list( ID = url_from_ID ),
                  options =list( autoWidth = FALSE,
                                 scrollX = TRUE
                                 ) )
@@ -455,7 +478,8 @@ Subnets can be output as a table with the **gsnSubnetSummary()** function.
 
 ```{r}
 yassifyPathways( gsnSubnetSummary( Bai_CiHep_v_CiKrt_DN.GSN  ), 
-                 url_map_list = url_map_l,
+                 url_map_list = list( Seed.ID = url_from_ID ),
+                 url_map_by_words_list = list( IDs = url_from_ID ),
                  options =list( autoWidth = FALSE,
                                 scrollX = TRUE
                                 ) )
