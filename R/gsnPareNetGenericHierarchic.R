@@ -68,24 +68,48 @@ invisible(utils::globalVariables( c("DIST", "M1", "M2", "Stat")))
 #' hierarchical clustering. The default, \code{matrix_scaling_fun} argument, \code{\link{distMat2UnitNormRank}()}
 #' scales the data to a range between 0 and 1, and converts it to a uniform distribution. This may be a bit
 #' extreme for some purposes, but it allows the hierarchical clustering method to work simply with default values
-#' for most users obviating the need to transform the data or adjust default parameters in many cases. For a plot
-#' of the relationship between the raw and transformed/scaled pared distances, see
-#' \code{\link{gsnParedVsRawDistancePlot}}.
-#'
-#' @export
+#' for most users obviating the need to transform the data or adjust default parameters in many cases. Other
+#' values for this argument are \code{\link[base]{identity}()} (which can be used when a transformation is not
+#' desired) and \code{\link{complement}()} which for an input value \eqn{x} returns \eqn{1 - x}, useful for
+#' transforming Jaccard indices and Szymkiewicz–Simpson overlap coefficients. To produce a plot of the relationship
+#' between the raw and transformed/scaled pared distances, use \code{\link{gsnParedVsRawDistancePlot}()}.
 #'
 #' @examples
-#' \dontrun{
-#' analysis.GSN <- gsnPareNetGenericHierarchic( object = analysis.GSN,
-#'                                              distance = "lf",
-#'                                              lower_is_closer = TRUE )
 #'
-#' # To perform hierarchical clustering without scaling or transforming the distance matrix:
-#' analysis_unscaled.GSN <- gsnPareNetGenericHierarchic( object = analysis.GSN,
-#'                                                       distance = "custom_dist",
-#'                                                       matrix_scaling_fun = NULL,
-#'                                                       lower_is_closer = TRUE )
-#' }
+#' library(GSNA)
+#'
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkJaccard(geneSetCollection = sig_pathways.tmod,
+#'                               ref.background = background_genes )
+#'
+#' # Now import the CERNO data:
+#' sig_pathways.GSN <- gsnImportCERNO( sig_pathways.GSN,
+#'                                     pathways_data = sig_pathways.cerno )
+#'
+#' # Now we can pare the network. By default, the distances are complemented
+#' # and converted into ranks for the sake of generating a network.
+#' sig_pathways.GSN <- gsnPareNetGenericHierarchic( object = sig_pathways.GSN )
+#'
+#' # However, for similarity metrics such as the Jaccard index or Simkiewicz-
+#' # Simpson overlap coefficient, with a domain of 0 to 1, in which higher
+#' # values are "closer", \code{\link{complement}()} might be a good
+#' # transformation as well.
+#' sig_pathways.GSN <- gsnPareNetGenericHierarchic( object = sig_pathways.GSN,
+#'                                            matrix_scaling_fun = complement )
+#'
 #'
 #' @seealso
 #'  \code{\link{gsnPareNetGenericToNearestNNeighbors}}
@@ -95,6 +119,7 @@ invisible(utils::globalVariables( c("DIST", "M1", "M2", "Stat")))
 #' @importFrom stats cutree hclust as.dist
 #' @importFrom tidyr gather
 #' @importFrom tibble rownames_to_column
+#' @export
 #'
 gsnPareNetGenericHierarchic <- function( object,
                                          distance = NULL,

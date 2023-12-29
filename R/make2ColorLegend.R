@@ -48,11 +48,12 @@ invisible( utils::globalVariables( c("font_face") ) )
 #'
 #' @return Invisible list of graphical parameters.
 #'
-#' @export
 #'
 #' @importFrom grDevices axisTicks
 #' @importFrom graphics axis box par plot.window title
 #'
+#' @noRd
+# @export
 # @examples
 make2ColorLegend <- function(numbers.1,
                              numbers.2,

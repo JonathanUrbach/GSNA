@@ -54,25 +54,25 @@ using namespace Rcpp;
 //'
 //'  Given a 2x2 contingency matrix of the form:
 //'
-//'  \preformatted{
-//'                     | a b |
-//'                     | c d |
-//' }
+//'  \deqn{\biggl[\begin{matrix}a & b \\ c & d\end{matrix}\biggr]}
 //'
 //' The natural log of the partial *p*-values is given by:
 //'
-//' \preformatted{
-//'   log.p  = ln((a+b)!) + ln((c+d)!) + ln((a+c)!) +  ln((b+d)!) -
-//'         ln(a!) - ln(b!) - ln(c!) - ln(d!) - ln( (a + b + c + d)!)
-//' }
+//' \deqn{ln(p)  = ln((a+b)!) + ln((c+d)!) +
+//'                ln((a+c)!) + ln((b+d)!) -
+//'                ln(a!) - ln(b!) - ln(c!) -
+//'                ln(d!) - ln((a + b + c + d)!)}
+//'
 //'
 //' For the single and two-tailed alternatives, partial *p*-values are summed using the so-called 'log-sum-exponent' method.
 //'
 //' @examples
-//' \dontrun{
-//' library( GSNA )
+//'
+//' library(GSNA)
+//'
+//' # Calculate a single natural log Fisher_p value:
 //' log_fisher_p <- lfisher_cpp( a = 16000, b = 200, c = 170, d = 100, alternative = 3 )
-//' }
+//'
 //'
 //' @seealso
 //'  \code{\link{gsIntersectCounts}}
@@ -212,10 +212,18 @@ double lfisher_cpp( int a, int b, int c, int d,
 //'
 //'
 //' @examples
-//' \dontrun{
-//' library( GSNA )
-//' jaccardMatrix <- scoreJaccardMatrix_C( PresenceAbsMatrix )
-//' }
+//'
+//' library(GSNA)
+//'
+//' # Get the background of observable genes set from expression data:
+//' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
+//'
+//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene presence-absence matrix
+//' # filtered for the ref.background of observable genes:
+//' presence_absence.mat <- makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
+//'                                                                geneSetCollection = Bai_gsc.tmod )
+//'
+//' jaccard.mat <- scoreJaccardMatrix_C( presence_absence.mat )
 //'
 //' @seealso
 //'  \code{\link{buildGeneSetNetworkJaccard}()}
@@ -294,10 +302,20 @@ SEXP scoreJaccardMatrix_C( SEXP geneSetCollection_m ){
 //'
 //'
 //' @examples
-//' \dontrun{
-//' library( GSNA )
-//' ocMatrix <- scoreOCMatrix_C( PresenceAbsMatrix )
-//' }
+//'
+//' library(GSNA)
+//'
+//' # Get the background of observable genes set from expression data:
+//' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
+//'
+//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene presence-absence matrix
+//' # filtered for the ref.background of observable genes:
+//' presence_absence.mat <- makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
+//'                                                                geneSetCollection = Bai_gsc.tmod )
+//'
+//' # Now generate an overlap coefficient matrix.
+//' oc.mat <- scoreOCMatrix_C( presence_absence.mat )
+//'
 //'
 //' @seealso
 //'  \code{\link{buildGeneSetNetworkOC}}
@@ -381,9 +399,18 @@ SEXP scoreOCMatrix_C( SEXP geneSetCollection_m ){
 //' This function does essentially what R's base::intersect does, so it is not necessarily useful to export.
 //'
 //' @examples
-//' \dontrun{
-//'   gs12.sharedgenes <- gsIntersect( gs1, gs2 )
-//' }
+//'
+//' library(GSNA)
+//'
+//' # We can extract 2 gene sets from the sample data:
+//' Bai.gsc <- tmod2gsc( Bai_gsc.tmod )
+//' M29994.gs = Bai.gsc[['M29994']]
+//' M40825.gs = Bai.gsc[['M40825']]
+//'
+//' # Find the intersection:
+//' intersect.gs <- gsIntersect( gs1 = M29994.gs, gs2 = M40825.gs )
+//'
+//' @export
 //'
 // [[Rcpp::export]]
 Rcpp::CharacterVector gsIntersect( Rcpp::CharacterVector gs1, Rcpp::CharacterVector gs2 ){
@@ -448,10 +475,10 @@ std::set<std::string> gsMakeSet( Rcpp::CharacterVector gs ){
 //' @param bg_size An integer representing the size of the background, i.e. the total number of observable genes.
 //'
 //' @return A numeric vector of length 4 containing the following 4 elements:
-//'    \item{\code{1}}{The number of genes in the background that are absent in gs1 and gs2.}
-//'    \item{\code{2}}{The number of genes in gs1 but not gs2.}
-//'    \item{\code{3}}{The number of genes in gs2 but not gs1.}
-//'    \item{\code{4}}{The number of genes in in both gs1 and gs2.}
+//'    \item{\code{a}}{The number of genes in the background that are absent in gs1 and gs2.}
+//'    \item{\code{b}}{The number of background genes in gs1 but not gs2.}
+//'    \item{\code{c}}{The number of background genes in gs2 but not gs1.}
+//'    \item{\code{d}}{The number of background genes in in both gs1 and gs2.}
 //'
 //' @details This version of the function may not be retained since it's not currently used. Two alternative versions of the
 //' function in C++ that find the overlap between a \code{std::set<std::string>} and a character vector are used since those versions
@@ -461,9 +488,21 @@ std::set<std::string> gsMakeSet( Rcpp::CharacterVector gs ){
 //' and gs2 must be filtered to include only genes present in the background.
 //'
 //' @examples
-//' \dontrun{
-//'   gs12.sharedgenecount <- gsIntersectCounts( gs1, gs2 )
-//' }
+//'
+//' library( GSNA )
+//'
+//' # We can extract 2 gene sets from the sample data:
+//' Bai.gsc <- tmod2gsc( Bai_gsc.tmod )
+//' M29994.gs = Bai.gsc[['M29994']]
+//' M40825.gs = Bai.gsc[['M40825']]
+//'
+//' # Get background gene cout:
+//' bg_gene_count <- nrow( Bai_empty_expr_mat )
+//'
+//' # Generate a vector containing the number of contents of the 2x2 contingency table:
+//' counts.v <- gsIntersectCounts( gs1 = M29994.gs, gs2 = M40825.gs, bg_size = bg_gene_count )
+//'
+//' @export
 //'
 // [[Rcpp::export]]
 Rcpp::NumericVector gsIntersectCounts( Rcpp::CharacterVector gs1, Rcpp::CharacterVector gs2, int bg_size ){
@@ -553,11 +592,22 @@ Rcpp::NumericVector gsIntersectCounts( Rcpp::CharacterVector gs1, std::set<std::
 //' manually during GSNA analysis.
 //'
 //' @examples
-//' \dontrun{
-//'   bg <- DE_GENES.df$Gene
-//'   msig_subset_l <- msig$MODULES2GENES[gene_set_ids]
-//'   msig_subset_filt_l <- gsnFilterGeneSetCollectionList( bg, msig_subset_l )
-//' }
+//'
+//' library(GSNA)
+//'
+//' # Get the background of observable genes set from expression data:
+//' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
+//'
+//' # Generate a gene set collection as a list of vectors from **Bai_gsc.tmod**, included
+//' # in sample data:
+//' Bai.gsc <- tmod2gsc( Bai_gsc.tmod )
+//'
+//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene set collection
+//' # filtered for the bg of observable genes:
+//' Bai.filt.gsc <- gsnFilterGeneSetCollectionList( bg = gene_background,
+//'                                                 geneSetCollection = Bai.gsc )
+//'
+//' @export
 //'
 // [[Rcpp::export]]
 Rcpp::List gsnFilterGeneSetCollectionList( Rcpp::CharacterVector bg,
@@ -624,7 +674,29 @@ Rcpp::List gsnFilterGeneSetCollectionList( Rcpp::CharacterVector bg,
 //'
 //' @seealso \code{\link{gsnORAtest}}
 //'
+//' @examples
+//'
+//' library(GSNA)
+//'
+//' # From a differential expression data set, we can generate a subset of genes with significant
+//' # differential expression, up or down. Here we will extract genes with significant negative differential
+//' # expression with avg_log2FC < 0 and p_val_adj <= 0.05 from **Seurat** data:
+//'
+//' sig_DN.genes <-
+//'    toupper( rownames(subset( Bai_CiHep_v_Fib2.de, avg_log2FC < 0  & p_val_adj < 0.05 )) )
+//'
+//' # Using all the genes in the differential expression data set, we can obtain a suitable background:
+//' bg <- rownames( Bai_CiHep_v_Fib2.de )
+//'
+//' # Next we need a gene set collection in the form of a list of character vectors. We can convert the
+//' # **Bai_gsc.tmod** object included in the sample data to such a list:
+//' Bai.gsc <- tmod2gsc( Bai_gsc.tmod )
+//'
+//' # Now, we can do a overrepresentation analysis search on this data using **Bai.gsc**:
+//' sig_DN.gsnora <- gsnORAtest_cpp( l = sig_DN.genes, bg = bg, geneSetCollection = Bai.gsc )
+//'
 //' @export
+//'
 //'
 // [[Rcpp::export]]
 SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
@@ -672,7 +744,8 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
   Rcpp::NumericVector P_1S (gsc_len, NA_REAL);
 
   for(int i=0; i<gsc_len; i++){ // Gene sets
-    Rcpp::CharacterVector gs = geneSetCollection[i];
+    //Rcpp::CharacterVector gs = geneSetCollection[i]; // Seems to be a bug
+    Rcpp::CharacterVector gs = gsc_filt[i];
     Rcpp::NumericVector ic = gsIntersectCounts( gs, lSet, bg_len1 );
     a[i] = ic[0];
     b[i] = ic[1];
@@ -776,10 +849,7 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 //'
 //' Consider a 2x2 contingency matrix of the following form:
 //'
-//'\preformatted{
-//'                     | a  b |
-//'                     | c  d |
-//'}
+//'  \deqn{\biggl[\begin{matrix}a & b \\ c & d\end{matrix}\biggr]}
 //'
 //' Given a background of observable genes and two gene sets, *i* and *j* that may overlap, this contingincy
 //' table is used to represent four numbers:
@@ -794,11 +864,7 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 //' The *partial*-Fisher *p*-value, signifying the likelihood of that particular contingency
 //' table is given by:
 //'
-//'\preformatted{
-//'       (a + b)! (c + d)! (a + c)! (b + d)!
-//'  p = -------------------------------------
-//'             a! b! c! d! (a+b+c+d)!
-//'}
+//' \deqn{p = \dfrac{(a + b)! (c + d)! (a + c)! (b + d)!}{a! b! c! d! (a+b+c+d)!}}
 //'
 //' This partial *p*-value is what is returned in the distance matrix when the artgument \code{alternative = 4}
 //' and it is less than, though tracks closely with, the two-tailed p-value, in most cases.
@@ -820,7 +886,7 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 //'
 //' All calculations are done on log-transformed values to avoid numerical underruns:
 //'
-//'\preformatted{
+//'\deqn{
 //'  ln(p) = ln(( a + b )!) + ln(( c + d )!) +
 //'          ln(( a + c )!) + ln(( b + d )!) -
 //'          ln(a!) - ln(b!) - ln(c!) - ln(d!) -
@@ -832,10 +898,18 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 //'
 //'
 //' @examples
-//' \dontrun{
+//'
 //' library( GSNA )
-//' LFMatrix <- scoreLFMatrix_C( PresenceAbsMatrix )
-//'}
+//'
+//' # Get the background of observable genes set from expression data:
+//' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
+//'
+//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene presence-absence matrix
+//' # filtered for the ref.background of observable genes:
+//' presence_absence.mat <- makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
+//'                                                                geneSetCollection = Bai_gsc.tmod )
+//'
+//' lf.mat <- scoreLFMatrix_C( presence_absence.mat,  1 )
 //'
 //' @seealso
 //'  \code{\link{buildGeneSetNetworkLFFast}}
@@ -846,6 +920,9 @@ SEXP scoreLFMatrix_C(SEXP geneSetCollection_m,
                      Rcpp::Nullable<NumericVector> e_precision = Rcpp::NumericVector::create(12),  //R_NilValue
                      SEXP alternative = Rcpp::IntegerVector::create( 1 )
 ) {
+  if( ! Rf_isMatrix(geneSetCollection_m) ){
+    stop("Argument 'geneSetCollection_m' must be a matrix.");
+  }
   Rcpp::LogicalMatrix GLCF(geneSetCollection_m);
 
   double e_precis = 12;

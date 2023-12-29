@@ -47,15 +47,25 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #' If a list of gene sets is provided as the \code{geneSetCollection} argument, it must be structured as a list of
 #' character vectors containing gene symbols (or whatever identifiers are used for the supplied experimental gene set),
 #'
-#'
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' results.ORA <- gsnORAtest(l = DE_GENES_UP,
-#'                           bg = ALL_GENES_IN_DATASET,
-#'                           geneSetCollection = msig.tmod )
-#'}
+#'
+#' library(GSNA)
+#'
+#' # From a differential expression data set, we can generate a subset of genes with significant
+#' # differential expression, up or down. Here we will extract genes with significant negative differential
+#' # expression with avg_log2FC < 0 and p_val_adj <= 0.05 from **Seurat** data:
+#'
+#' sig_DN.genes <-
+#'    toupper( rownames(subset( Bai_CiHep_v_Fib2.de, avg_log2FC < 0  & p_val_adj < 0.05 )) )
+#'
+#' # Using all the genes in the differential expression data set, we can obtain a suitable background:
+#' bg <- toupper(rownames( Bai_CiHep_v_Fib2.de ))
+#'
+#' # Now, we can do a overrepresentation analysis search on this data using the Bai_gsc.tmod gene set
+#' # collection included in the sample data:
+#' sig_DN.gsnora <- gsnORAtest( l = sig_DN.genes, bg = bg, geneSetCollection = Bai_gsc.tmod )
 #'
 #' @seealso
 #'  \code{\link{gsnORAtest_cpp}}
@@ -98,6 +108,8 @@ gsnORAtest <- function( l, bg, geneSetCollection, Alpha = 0.05, full = FALSE ){
 
   if( !full )
     out.df <- within( out.df, {a <- NULL; b <- NULL; c <- NULL; d <- NULL; adj.P.2S <- NULL; P.2S <- NULL } )
+
+  rownames(out.df) <- NULL
 
   return( subset( out.df[ order( out.df$P.1S ), ], adj.P.1S <= Alpha ) )
 }

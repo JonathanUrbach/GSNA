@@ -46,9 +46,29 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#' gsn_object <- gsnImportGSEA( object = gsn_object, pathways_data = dat.cerno )
-#' }
+#' library(GSNA)
+#'
+#' # In this example, we generate a gene set network from GSEA example
+#' # data. We begin by subsetting the GSEA data for significant results:
+#' sig_pathways.gsea <- subset( Bai_CiHep_dorothea_DN.Gsea, `FDR q-val` <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant GSEA results, by subsetting Bai_gsc.tmod using
+#' # the gene set NAME as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.gsea$NAME]
+#'
+#' # And obtain a background gene set from the expression data used
+#' # to generate the gsea results:
+#' background_genes <- toupper( rownames( Bai_empty_expr_mat ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkSTLF(geneSetCollection = sig_pathways.tmod,
+#'                            ref.background = background_genes )
+#'
+#' # Now import the GSEA data.
+#' sig_pathways.GSN <- gsnImportGSEA( sig_pathways.GSN,
+#'                                    pathways_data = sig_pathways.gsea )
 #'
 #' @seealso
 #'  \code{\link{gsnAddPathwaysData}}

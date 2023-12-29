@@ -49,16 +49,34 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#' gsn_object <- gsnImportGenericPathways( object = gsn_object,
-#'                                         pathways_data = dat.cerno,
-#'                                         n_col = "N1.Condition1",
-#'                                         stat_col = "adj.P.Val.Treat1".
-#'                                         sig_order = "loToHi",
-#'                                         stat_col_2 = "adj.P.Val.Treat2".
-#'                                         sig_order_2 = "loToHi"
-#'                                          )
-#' }
+#' library(GSNA)
+#'
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkJaccard(geneSetCollection = sig_pathways.tmod,
+#'                               ref.background = background_genes )
+#'
+#' # Now import the CERNO data. Generic import can work with most types of data,
+#' # and we can manually specify id_col, stat_col, n_col:
+#' sig_pathways.GSN <- gsnImportGenericPathways( sig_pathways.GSN,
+#'                                               pathways_data = sig_pathways.cerno,
+#'                                               id_col = 'ID',
+#'                                               stat_col = 'adj.P.Val',
+#'                                               sig_order = 'loToHi',
+#'                                               n_col = 'N1'
+#'                                                )
 #'
 #' @seealso
 #'  \code{\link{gsnAddPathwaysData}}
@@ -68,7 +86,6 @@
 #'
 #' @importFrom utils read.table
 #'
-
 gsnImportGenericPathways <- function( object,
                                       pathways_data = NULL,
                                       filename = NULL,
@@ -101,8 +118,8 @@ gsnImportGenericPathways <- function( object,
   pathways <- list( data = pathways_data, type = type )
 
   if( any( c("ID","id", "NAME", "Term" ) %in% field_names ) )
-    pathways$id_col <- match.arg( arg = field_names, choices = c("ID","id", "NAME", "Term" ), several.ok = TRUE  )
-
+    pathways$id_col <- field_names[field_names %in% c("ID","id", "NAME", "Term" )][1]
+    #pathways$id_col <- match.arg( arg = field_names, choices = c("ID","id", "NAME", "Term" ), several.ok = TRUE  )
 
   # Find the first column in the data to match a N1/N/SIZE etc. regex. (This is a bit of a guess.)
   if( is.null( n_col ) ){
@@ -118,9 +135,10 @@ gsnImportGenericPathways <- function( object,
 
 
   # Find the first column in the data to match a p-val/q-val/FDR etc. regex. (This is a bit of a guess.)
-  pathways$stat_col = field_names[which(stringi::stri_detect_regex(str = field_names, pattern = "(?:adj|fdr|fwer).[pq][\\s\\-\\.]?val|FDR|Benjamini|Bonferroni", opts_regex=stringi::stri_opts_regex(case_insensitive=TRUE)))[1]]
+  pathways$stat_col = field_names[which(stringi::stri_detect_regex(str = field_names, pattern = "(?:adj|fdr|fwer).[pq][\\s\\-\\.]?val|FDR|Benjamini|Bonferroni|[12]S", opts_regex=stringi::stri_opts_regex(case_insensitive=TRUE)))[1]]
   if( is.na( pathways$stat_col ) ){ # Fix stat_col if NA
     pathways$stat_col <- NULL
+    stop('A stat_col could not be automatically determined. Please specify.')
   } else {
     # P-values and related statistics are loToHi
     pathways$sig_order = "loToHi"
@@ -150,6 +168,8 @@ gsnImportGenericPathways <- function( object,
     mesgs <- c( mesgs, paste0( " sig_order = ", pathways$sig_order ) )
   }
   if( is.null( pathways$id_col ) ) stop( "id_col (ID Column specification) required." )
+  if( is.null( pathways$stat_col ) ) stop( "stat_col (Statistic Column specification) required." )
+  if( is.null( pathways$sig_order ) ) stop( "sig_order (Significance order specification) required." )
 
   # For the optional stat_col_2 and sig_order_2
   if( !is.null(stat_col_2) ){

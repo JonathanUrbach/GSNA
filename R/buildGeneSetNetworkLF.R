@@ -4,9 +4,14 @@
 #' @title buildGeneSetNetworkLF, buildGeneSetNetworkLFFast-deprecated
 #'
 #' @description Using a gene set collection and a background of observable genes, calculate log partial
-#' Fisher *p*-value distances and return the results as a GSNData object. This is equal to
+#' Fisher *p*-value distances and return the results as a GSNData object. For a 2x2 contingency matrix
+#' of the form:
 #'
-#' log(P) = log( (a+b)!(c+d)!(a+c)!(b+d)! / (a!b!c!d!(a+b+c+d)!) )
+#' \deqn{\biggl[\begin{matrix}a & b \\ c & d\end{matrix}\biggr]}
+#'
+#' the log Fisher *p*-value is equal to:
+#'
+#' \deqn{log(P) = log\biggl(\dfrac{(a+b)!(c+d)!(a+c)!(b+d)!}{a!b!c!d!(a+b+c+d)!}\biggr)}
 #'
 #' This differs from the \code{buildGeneSetNetworkSTLF} in that only the one value of P is summed, whereas in
 #' \code{buildGeneSetNetworkSTLF}, all more extreme values are summed (prior to log-transformation), generating an
@@ -35,24 +40,35 @@
 #' @details This function wraps the process of creating a GSNData object and calculating a log Fisher
 #' *p*-value distance matrix. The distance matrix is calculated using \code{scoreLFMatrix_C()}.
 #'
-#' @export
-#'
 #' @examples
 #'
-#' \dontrun{
 #' library(GSNA)
-#' observable_genes <- rownames(FILTERED_RNASEQ_COUNT_MATRIX)
-#' msig.subset <- msig[cerno_results$ID,]
-#' GSN <- buildGeneSetNetworkLF( object = NULL,
-#'                               ref.background = observable_genes,
-#'                               geneSetCollection = msig.subset )
-#' }
+#' library(tmod)
+#'
+#' # With tmod version >= 0.50.11, convert exported Bai_gsc.tmod **tmod** object to **tmodGS**:
+#' if( utils::packageVersion( 'tmod' ) >= '0.50.11' )
+#'   Bai_gsc.tmod <- tmod::tmod2tmodGS( GSNA::Bai_gsc.tmod )
+#'
+#' # Get list of observable genes from expression data:
+#' observable_genes <- toupper( rownames( Bai_empty_expr_mat ) )
+#'
+#' # Subset GSEA data for significant results.
+#' significant.Gsea <- subset( Bai_CiHep_dorothea_DN.Gsea, `FDR q-val` <= 0.05 )
+#'
+#' # Subset tmod object for
+#' gsc_subset.tmod <- Bai_gsc.tmod[ significant.Gsea$NAME ]
+#'
+#' # Now, create a GSN object with partial log Fisher values:
+#' GSN <- buildGeneSetNetworkLF( ref.background = observable_genes,
+#'                               geneSetCollection = gsc_subset.tmod )
+#'
 #'
 #' @seealso
 #'  \code{\link{scoreLFMatrix_C}}
 #'  \code{\link{scoreJaccardMatrix_C}}
 #'  \code{\link{scoreOCMatrix_C}}
 #'
+#' @export
 #' @importFrom Matrix as.matrix
 #'
 buildGeneSetNetworkLF <- function( object = NULL,

@@ -1,5 +1,7 @@
 #' @importFrom graphics strwidth
 #'
+#' @noRd
+#
 renderCircularDendrogram <- function( dendro,
                                       leaf.names, # Names of leaves in proper order. May not be the same as label_names, which is obtained from dendro.
                                       subnets.lf = NULL,

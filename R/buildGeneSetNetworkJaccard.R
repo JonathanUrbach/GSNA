@@ -33,14 +33,24 @@
 #' @examples
 #'
 #' library(GSNA)
+#' library(tmod)
 #'
-#' \dontrun{
-#' observable_genes <- rownames(FILTERED_RNASEQ_COUNT_MATRIX)
-#' msig.subset <- msig[cerno_results$ID,]
-#' GSN <- buildGeneSetNetworkJaccard( object = NULL,
-#'                                    ref.background = observable_genes,
-#'                                    geneSetCollection = msig.subset )
-#' }
+#' # With tmod version >= 0.50.11, convert exported Bai_gsc.tmod **tmod** object to **tmodGS**:
+#' if( utils::packageVersion( 'tmod' ) >= '0.50.11' )
+#'   Bai_gsc.tmod <- tmod::tmod2tmodGS( GSNA::Bai_gsc.tmod )
+#'
+#' # Get list of observable genes from expression data:
+#' observable_genes <- toupper( rownames( Bai_empty_expr_mat ) )
+#'
+#' # Subset GSEA data for significant results.
+#' significant.Gsea <- subset( Bai_CiHep_dorothea_DN.Gsea, `FDR q-val` <= 0.05 )
+#'
+#' # Subset tmod object for
+#' gsc_subset.tmod <- Bai_gsc.tmod[ significant.Gsea$NAME ]
+#'
+#' # Now, create a GSN object with Jaccard indices:
+#' GSN <- buildGeneSetNetworkJaccard( ref.background = observable_genes,
+#'                                    geneSetCollection = gsc_subset.tmod )
 #'
 #' @seealso
 #'  \code{\link{scoreJaccardMatrix_C}}

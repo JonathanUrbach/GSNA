@@ -25,6 +25,7 @@
 #' mat.srjaccard <- negDistMat2UnitNormRank(mat.jaccard)
 #' }
 #' @seealso \code{\link{distMat2Rank}()}
+#' @export
 distMat2UnitNormRank <- function( mat, lower_is_closer = TRUE ){
   if( "dist" %in% class( mat ) ){
     mat <- as.matrix(mat)
@@ -54,5 +55,77 @@ distMat2UnitNormRank <- function( mat, lower_is_closer = TRUE ){
 
 #' negDistMat2UnitNormRank
 #' @describeIn distMat2UnitNormRank Takes the same parameter distMat2UnitNormRank, but multiplies the distance by -1 first.
+#' @export
+#'
 negDistMat2UnitNormRank <-  function( mat ) distMat2UnitNormRank( mat = - mat )
+
+
+#' complement
+#'
+#' @description This function returns the complement of a numeric or integer vector or matrix. This may be suitable as the
+#' \code{matrix_scaling_fun()} argument for \code{gsnPareNetGenericHierarchic()} when being used with such distance metrics
+#' as the Jaccard Index or Szymkiewicz–Simpson Overlap Coefficients to transform them into something more approximating a
+#' distance in behavior.
+#'
+#' @param x A numeric vector or matrix.
+#'
+#' @returns The complement of the x argument, equal to \eqn{1 - x}.
+#'
+#' @details
+#' This function also sets matrix or vector attributes appropriately for negation of the input.
+#'
+#' @export
+complement <- function( x ){
+  if( isTRUE( attr( x, which = "lower_is_closer") ) ){
+    warning( "lower_is_closer attribute already set as TRUE for input matrix." )
+  }
+  if( max( x, na.rm = TRUE ) > 1 )
+    warning( "Some input values are greater than 1. Complement will have negative values." )
+
+  out <- 1 - x
+  attr( x = out, which = "distance_type" ) <- NULL
+  if( !is.null( attr( x = x, which = "lower_is_closer" ) ) )
+    attr( x = out, which = "lower_is_closer" ) <- !attr( x = x, which = "lower_is_closer")
+  if( !is.null( attr( x = x, which = "distance" ) ) )
+  attr( x = out, which = "distance" ) <- paste0( "complement_", attr( x = x, which = "distance" ) )
+  # Remove double complement.
+  attr( x = out, which = "distance" ) <- gsub( x = attr( x = out, which = "distance" ),
+                                               pattern = "^complement_complement_",
+                                               replacement = "" )
+  out
+}
+
+
+#' negative
+#'
+#' @description This function returns the negative of a numeric or integer vector or matrix. This may be suitable as the
+#' \code{matrix_scaling_fun()} argument for \code{gsnPareNetGenericHierarchic()} when being used with such distance metrics
+#' as the Jaccard Index or Szymkiewicz–Simpson Overlap Coefficients to transform them into something more approximating a
+#' distance in behavior.
+#'
+#' @param x A numeric vector or matrix.
+#'
+#' @returns The negative of the x argument, equal to \eqn{- x}.
+#'
+#' @details
+#' This function also sets matrix or vector attributes appropriately for negation of the input.
+#'
+#' @export
+negative <- function( x ){
+  if( isTRUE( attr( x, which = "lower_is_closer") ) ){
+    warn( "lower_is_closer attribute already set as TRUE for input matrix." )
+  }
+  out <- - x
+  attr( x = out, which = "distance_type" ) <- NULL
+  if( ! is.null( attr( x = x, which = "lower_is_closer" ) ) )
+    attr( x = out, which = "lower_is_closer" ) <- ! attr( x = x, which = "lower_is_closer")
+  if( !is.null( attr( x = x, which = "distance" ) ) )
+    attr( x = out, which = "distance" ) <- paste0( "negative_", attr( x = x, which = "distance" ) )
+  # Remove double negative.
+  attr( x = out, which = "distance" ) <- gsub( x = attr( x = out, which = "distance" ),
+                                               pattern = "^negative_negative_",
+                                               replacement = "" )
+
+  out
+}
 

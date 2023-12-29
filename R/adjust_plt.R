@@ -22,6 +22,8 @@
 #' @return The returned value is a plot area boundaries in the format of the \code{'par'} value returned by the
 #' \code{\link[graphics]{par}()} function.
 #'
+#' @noRd
+#'
 # @export
 # @examples
 adjust_plt <- function( .plt,

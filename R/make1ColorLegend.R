@@ -40,10 +40,12 @@ invisible( utils::globalVariables( c("font_face") ) )
 #' the size of the legend. (default: \code{FALSE})
 #'
 #' @return Invisible list of graphical parameters.
-#' @export
 #'
 #' @importFrom grDevices axisTicks
 #' @importFrom graphics axis box par plot.window title
+#'
+#' @noRd
+# @export
 # @examples
 
 make1ColorLegend <- function(numbers,

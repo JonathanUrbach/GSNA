@@ -52,9 +52,26 @@
 #'
 #' @examples
 #'
-#' \dontrun{
-#' gsn_object <- gsnAddPathwaysData( object = gsn_object, pathways_data = dat.cerno )
-#' }
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkJaccard(geneSetCollection = sig_pathways.tmod,
+#'                               ref.background = background_genes )
+#'
+#' # Now import the CERNO data:
+#' sig_pathways.GSN <- gsnAddPathwaysData( sig_pathways.GSN,
+#'                                         pathways_data = sig_pathways.cerno )
 #'
 #' @seealso
 #'  \code{\link{gsnImportCERNO}}
@@ -78,7 +95,7 @@ gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NUL
     message( "Using GSEA import." )
     object <- gsnImportGSEA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
   } else if ( (!is.null(type) && type == "gsnora" ) ||
-              (all( c("ID", "Title", "Enrichment", "P.Fisher.2S", "adj.P.Fisher.2S", "P.1S", "adj.P.1S" ) %in% field_names ))){
+              (all( c("ID", "Title", "Enrichment", "P.1S" ) %in% field_names ))){
     message( "Using GSN-ORA import." )
     object <- gsnImportGSNORA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
   } else if ( (!is.null(type) && type == "david" ) ||

@@ -12,8 +12,9 @@
 #' is the square of this number.
 #'
 #' @return A raster stack for a 2 color legend.
-#' @export
 #'
+#' @noRd
+# @export
 # @examples
 make2ColorLegendStack <- function( numbers.1,
                                    numbers.2,
