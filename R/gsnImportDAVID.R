@@ -78,6 +78,9 @@ gsnImportDAVID <- function( object, pathways_data = NULL, filename = NULL, id_co
   if( length( missing_fieldnames <- david_fieldnames[! david_fieldnames %in% colnames(pathways_data)] ) > 0 ){
     warning( "Data is missing the following DAVID fields:", paste0( missing_fieldnames,  collapse = ", " ) )
   }
+  # Check for id_col
+  .id_col = 'Term'
+  if( ! .id_col %in% colnames(pathways_data) ) .id_col <- NULL
 
   # Scan for standard stat_cols
   .stat_col_names <- c("FDR", "Bonferroni", "Benjamini", "PValue" )
@@ -93,12 +96,13 @@ gsnImportDAVID <- function( object, pathways_data = NULL, filename = NULL, id_co
   .n_col <- .n_col_names[.n_col_names %in% colnames(pathways_data)]
   if( length( .n_col ) == 0 ) .n_col <- NULL else .n_col <- .n_col[1]
 
-  pathways <- list( data = pathways_data, type = "david", id_col = "Term", stat_col = .stat_col, sig_order = .sig_order, n_col = .n_col )
+  pathways <- list( data = pathways_data, type = "david", id_col = .id_col, stat_col = .stat_col, sig_order = .sig_order, n_col = .n_col )
   if( !is.null(id_col) ) pathways$id_col <- id_col
   if( !is.null(stat_col) ) pathways$stat_col <- stat_col
   if( !is.null(sig_order) ) pathways$sig_order <- sig_order
   if( !is.null(n_col) ) pathways$n_col <- n_col
 
+  if( is.null( pathways$id_col ) ) stop("id_col not defined.")
   if( is.null( pathways$stat_col ) ) stop("stat_col not defined.")
   if( is.null( pathways$sig_order ) ) stop("sig_order not defined.")
 

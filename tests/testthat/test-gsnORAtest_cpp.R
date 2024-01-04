@@ -12,6 +12,7 @@ test_that("gsnORAtest_cpp works", {
   testthat::expect_contains( object = colnames( .pw.ora ),
                              expected = c("ID", "a", "b", "c", "d", "N", "Enrichment", "P.1S", "P.2S" ) )
 
+  # Compare against PW.ORA, reference data generated on a seemingly working installation.
   # Reorder data in PW.ORA
   rownames(PW.ORA) <- PW.ORA$ID
   PW.ORA <- PW.ORA[.pw.ora$ID,]

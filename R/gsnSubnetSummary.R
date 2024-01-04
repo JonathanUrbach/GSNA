@@ -194,10 +194,34 @@ gsnSubnetSummary <- function( object,
 
 #### Utility Functions
 
-# Implements the "Log-Sum-Exponential trick" for calculating the log of the sums of exponents without underruns.
+#' lse
+#'
+#' @description
+#'
+#' Implements the "Log-Sum-Exponential trick" for calculating the log of the sums of exponents
+#' without underruns. This allows large numbers to be summed in log space.
+#'
+#' @param a A numeric log value.
+#' @param b Another numeric log value.
+#'
+#' @return The log of the sum of the exponents of a and b.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' A <- 1E-40
+#' B <- 3E-41
+#'
+#' log_AB <- lse( log(A), log(B) )
+#'
+#' # exp( log_AB ) == A + B
+#'
+#'
 lse <- function(a,b){ a + log( 1 + exp( b - a ) ) }
 
 # Calculates the harmonic mean in log space, i.e. the log of the exponentiated values in the vector.
+
 lhm <- function( v ){
   k <- length( v )
   log_arithmetic_mean_of_reciprocols <- - v[1]
@@ -217,6 +241,22 @@ lhm <- function( v ){
 #      lgm.stlf = sum( stlf.v ) / length(stlf.v) )
 # }
 
+
+#' calculate_stlf_vector
+#'
+#' @description
+#' Given a gene presence/absence matrix, this function calculates a vector of unique
+#' single-tail log-Fisher values for the different gene sets. This is for calculating
+#' the similarities/and significance of all genes sets in a group of gene sets.
+#'
+#' @param mat A gene-set to gene presence absence matrix with gene-sets as columns,
+#' genes as rows, TRUE = present and FALSE = absent.
+#'
+#' @return A vector of unique distances.
+#'
+#' @noRd
+# @examples
+# @export
 calculate_stlf_vector <- function( mat ){
   if( is.null( dim(mat) ) ) return( NA )
   .GS_num <- ncol(mat)

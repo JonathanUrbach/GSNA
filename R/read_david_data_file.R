@@ -145,19 +145,21 @@ read_david_data_file <- function( file,
       j <- j + 1
     }
   }
-  for( l in 1:length( data.hl ) ){
-    # Convert data.hl from list of lists to list of data.frames
-    dat.df <- as.data.frame( do.call( what = rbind, args = data.hl[[l]] ) )
+  if( length( data.hl ) > 0 ){
+    for( l in 1:length( data.hl ) ){
+      # Convert data.hl from list of lists to list of data.frames
+      dat.df <- as.data.frame( do.call( what = rbind, args = data.hl[[l]] ) )
 
-    # Test if values are interpretable as numeric, either a numeric, a string containing a numeric, an NA or a ""
-    for( .field in colnames( dat.df ) ){
-      if( all( is.na(dat.df[[.field]]) |
-               dat.df[[.field]] == "" |
-               !is.na( suppressWarnings(as.numeric( dat.df[[.field]] ) ) ) ) )
-        dat.df[[.field]] <- as.numeric(dat.df[[.field]])
+      # Test if values are interpretable as numeric, either a numeric, a string containing a numeric, an NA or a ""
+      for( .field in colnames( dat.df ) ){
+        if( all( is.na(dat.df[[.field]]) |
+                 dat.df[[.field]] == "" |
+                 !is.na( suppressWarnings(as.numeric( dat.df[[.field]] ) ) ) ) )
+          dat.df[[.field]] <- as.numeric(dat.df[[.field]])
 
+      }
+      data.hl[[l]] <- dat.df
     }
-    data.hl[[l]] <- dat.df
   }
 
   # Convert data.fl from list of lists to list of data.frames

@@ -568,7 +568,7 @@ gsnPlotNetwork <- function( object,
       } else if( stringr::str_detect( string =  filename, pattern = stringr::regex( "\\.png$", ignore_case = TRUE) ) ){
         out_format <- "png"
       } else {
-        stop( "Need to specify output type." )
+        stop( "Need to specify out_format." )
       }
     } else {
       out_format <- 'plot'

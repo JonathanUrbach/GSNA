@@ -67,7 +67,9 @@ gsnDistanceHistogram <- function( object,
     }
   }
   if( stat == "percent" ){
-    p <- ggplot2::ggplot( data = data.df, mapping = ggplot2::aes( x = dist, fill = `Distance Matrix` ) ) + ggplot2::geom_histogram(ggplot2::aes(y = 100*(..count..)/sum(..count..), group = `Distance Matrix`), position = "dodge", bins = bins ) + ggplot2::ylab( "%" )
+    # ..count.. is deprecated
+    #p <- ggplot2::ggplot( data = data.df, mapping = ggplot2::aes( x = dist, fill = `Distance Matrix` ) ) + ggplot2::geom_histogram(ggplot2::aes(y = 100*(..count..)/sum(..count..), group = `Distance Matrix`), position = "dodge", bins = bins ) + ggplot2::ylab( "%" )
+    p <- ggplot2::ggplot( data = data.df, mapping = ggplot2::aes( x = dist, fill = `Distance Matrix` ) ) + ggplot2::geom_histogram(ggplot2::aes(y = 100*(ggplot2::after_stat(count))/sum(ggplot2::after_stat(count)), group = `Distance Matrix`), position = "dodge", bins = bins ) + ggplot2::ylab( "%" )
   } else if ( stat == "count" ) {
     p <- ggplot2::ggplot( data = data.df, mapping = ggplot2::aes( x = dist, fill = `Distance Matrix` ) ) + ggplot2::geom_histogram( position = "dodge", bins = bins )
   } else if ( stat == "density" ) {
