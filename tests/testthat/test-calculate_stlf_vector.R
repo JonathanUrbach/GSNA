@@ -1,8 +1,5 @@
 test_that("calculate_stlf_vector works", {
   # Load test data:
-  # testdata_path <- file.path( testthat::test_path(), "testdata" )
-  # rdafiles <- list.files( path = testdata_path, pattern = "\\.Rda$", full.names = TRUE )
-  # for( .f in rdafiles ){ load( .f ) }
   load_test_data()
 
   genePresenceAbsence <- STLF.GSN$genePresenceAbsence

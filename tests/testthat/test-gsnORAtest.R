@@ -4,8 +4,8 @@ test_that("gsnORAtest works", {
   rdafiles <- list.files( path = testdata_path, pattern = "\\.Rda$", full.names = TRUE )
   for( .f in rdafiles ){ load( .f ) }
 
+  # Test gsnORAtest full results:
   .pw.ora <- gsnORAtest( l = SIM_UP_GENES, bg = BACKGROUND_SET, geneSetCollection = GSC, full = TRUE )
-
   # Does the gsnORAtest_cpp return a data.frame?
   testthat::expect_s3_class( object = .pw.ora, class = "data.frame" )
 
@@ -25,17 +25,21 @@ test_that("gsnORAtest works", {
   testthat::expect_equal( object = .pw.ora$c, expected = PW.ORA$c )
   testthat::expect_equal( object = .pw.ora$d, expected = PW.ORA$d )
 
+  # Test with other parameters, full = FALSE
   testthat::expect_no_error( gsnORAtest( l = SIM_UP_GENES, bg = BACKGROUND_SET, geneSetCollection = GSC, full = FALSE ))
   testthat::expect_error( gsnORAtest( l = c(1,2,3,4,5,6,7,8), bg = BACKGROUND_SET, geneSetCollection = GSC, full = FALSE ))
   testthat::expect_error( gsnORAtest( l = SIM_UP_GENES, bg = c(1,2,3,4,5,6,7,8), geneSetCollection = GSC, full = FALSE ))
 
-  # modules <- data.frame( ID = names(GSC), Title = names(GSC) )
-  # if( packageVersion( pkg = "tmod" ) <= '0.46.2' ){
-  #   GSC.tmod <- gsc2tmod( GSC )
-  #   GSC.tmodGS <- structure( list( gs = modules, MODULES2GENES = GSC ), class = "tmodGS" )
-  # } else if(packageVersion( pkg = "tmod" ) <= '0.50.11') {
-  #   GSC.tmod <- structure( list( MODULES = modules, MODULES2GENES = GSC ), class = "tmod" )
-  #   GSC.tmodGS <- gsc2tmod( GSC )
-  # }
+  # Try with tmod object
+  testthat::expect_no_error( .pw.tmod <- gsnORAtest( l = SIM_UP_GENES, bg = BACKGROUND_SET, geneSetCollection = GSC.tmod, full = FALSE ))
+  testthat::expect_false( object = is.null( .pw.tmod$Title ) )
+  # With tmod object, Title should be "character"
+  testthat::expect_equal( object = class( .pw.tmod$Title ), expected = "character" )
+
+  # Try with tmodGS object
+  testthat::expect_no_error(  .pw.tmodGS <- gsnORAtest( l = SIM_UP_GENES, bg = BACKGROUND_SET, geneSetCollection = GSC.tmodGS, full = FALSE ))
+  testthat::expect_false( object = is.null( .pw.tmodGS$Title ) )
+  testthat::expect_equal( object = class( .pw.tmodGS$Title ), expected = "character" )
+
 
 })

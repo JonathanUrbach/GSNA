@@ -1,8 +1,6 @@
 test_that("buildGeneSetNetworkSTLF works", {
-  # Load data files:
-  testdata_path <- file.path( testthat::test_path(), "testdata" )
-  rdafiles <- list.files( path = testdata_path, pattern = "\\.Rda$", full.names = TRUE )
-  for( .f in rdafiles ){ load( .f ) }
+  # Load test data:
+  load_test_data()
 
   .stlf.GSN <- buildGeneSetNetworkSTLF( ref.background = BACKGROUND_SET, geneSetCollection = GSC )
 

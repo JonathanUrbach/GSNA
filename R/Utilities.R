@@ -567,17 +567,20 @@ antiSplit <- function( .l, col.names = c("V1","V2") ){
 #'
 #' @examples
 #' library(GSNA)
-#' gene_symbols.from <- c( "NFH///NEFH///CMT2CC",
-#'                         "C9orf13///CCP22///SELOB///SVEP1",
-#'                         "KIAA0381///NPHS24///DAAM2"
+#' # These gene symbols correspond to the `Gene Symbol` field from a GEO dataset:
+#' gene_symbols.from <- c( "BNS///CSMH///DDS1///THC8///BKRNS///BRWS1///PS1TP5BP1///ACTB",
+#'                         "IP3R///IP3R1///ITPR1",
+#'                         "FOS///p55///AP-1///C-FOS",
+#'                         "MYC///LMYC///MYCL1///bHLHe38///L-Myc///v-myc"
 #'                         )
 #'
-#' gene_symbols.to <- unique( unlist( GSC ) )
+#' # Extract unique genes from the \code{Bai_gsc.tmod} gene set:
+#' gene_symbols.to <- unique( unlist( tmod2gsc( Bai_gsc.tmod ) ) )
 #'
 #' mapped_symbols <- pick_MappedGeneSymbol( .from = gene_symbols.from,
 #'                                          .to = gene_symbols.to )
 #'
-#' # mapped_symbols returns: "NEFH", "SVEP1", "DAAM2"
+#' # mapped_symbols returns: "ACTB", "ITPR1", "FOS", "MYC"
 #'
 #'
 #' # A very simple example:
@@ -701,10 +704,13 @@ read_gmt <- function( file ){
 #'
 #' @param MODULES2GENES A named list of character vectors in which the vectors correspond to gene sets
 #' and contain gene symbols (or other gene identifiers) and the names are the corresponding gene set
-#' identifiers. @param MODULES (optional) A data.frame containing an \code{ID} and a \code{Title} field
+#' identifiers.
+#'
+#' @param MODULES (optional) A data.frame containing an \code{ID} and a \code{Title} field
 #' in the same order as the gene sets in \code{MODULES2GENES}. Furthermore, the row names should
 #' (apparently) correspond to the IDs in the corresponding rows. If not provided, this will be generated
 #' automatically.
+#'
 #' @param GENES (optional) A data frame with gene metadata. Must contain an ID column. If not provided,
 #' this will be generated automatically.
 #'

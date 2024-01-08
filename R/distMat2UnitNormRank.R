@@ -113,7 +113,7 @@ complement <- function( x ){
 #' @export
 negative <- function( x ){
   if( isTRUE( attr( x, which = "lower_is_closer") ) ){
-    warn( "lower_is_closer attribute already set as TRUE for input matrix." )
+    warning( "lower_is_closer attribute already set as TRUE for input matrix." )
   }
   out <- - x
   attr( x = out, which = "distance_type" ) <- NULL

@@ -80,7 +80,7 @@
 #' @param leaf_colors.2 (optional) A vector containing at least 2 colors for generating a color gradient in dual channel
 #' visualizations. (default: c("white", "blue"), see details)
 #' @param na.color (optional) The color used for NA values. (default: "#CCCCCC")
-#' @param leaf_border_color (optional) For R's open plot symbols \code{pch \eqn{\in} ( 21, 22, 23, 24, 25 )}, supporting fill
+#' @param leaf_border_color (optional) For R's open plot symbols \code{pch }\eqn{\in}\code{ ( 21, 22, 23, 24, 25 )}, supporting fill
 #' with a 'bg' color, leaf border may be specified with this option. (default: "#666666")
 #' @param legend.leaf.col (optional) Leaf fill color for the legend. (default: "#CCCCCC")
 #' @param combine_method (optional) For dual channel plots this is a string used to indicate how colors are combined to
@@ -163,7 +163,7 @@
 #' @details Outputs of type pdf, png, and svg are supported for file outputs. File type is automatically detected
 #' from the file suffix, but can be overridden using the \code{out_format} argument.
 #'
-#' Open symbols (with border and a fill color, \code{pch \eqn{\in} ( 21, 22, 23, 24, 25 )}) are
+#' Open symbols (with border and a fill color, \code{pch }\eqn{\in}\code{ ( 21, 22, 23, 24, 25 )}) are
 #' used by default on dendextend versions < '1.16.0' for horizontal dendrograms. For earlier versions, and with circular
 #' dendrograms, open symbols are currently unsupported.
 #'

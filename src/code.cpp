@@ -1,8 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-
-
 #ifndef BEGIN_RCPP
 #define BEGIN_RCPP
 #endif
@@ -80,8 +78,8 @@ using namespace Rcpp;
 //'
 // [[Rcpp::export]]
 double lfisher_cpp( int a, int b, int c, int d,
-                   double e_precision = 12.0,
-                   int alternative = 1
+                    double e_precision = 12.0,
+                    int alternative = 1
 
 ){
   int ab_ = a + b;

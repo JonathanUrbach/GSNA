@@ -61,13 +61,17 @@
 #' if less than one or stretched apart if greater than one. When less than 1, this can result in vertices overlapping.
 #' (default: 1)
 #'
-#' @param v.adjust (optional) This argument, which is passed to the function \code{\link{adjust_plt}()} controls how the
-#' legend position and height are optimized. Valid values are "top", "center", "bottom" and NULL. See
-#' \code{\link{adjust_plt}()} for more details. (default: "top")
+#' @param v.adjust (optional) This argument, which is passed to the internal function \code{adjust_plt()} controls
+#' how the legend's vertical position and height are optimized. The values \code{"top"}, \code{"bottom"}, and
+#' \code{"center"} indicate that the legend-plotting region will be flush with the top, or bottom of the printing
+#' area, or otherwise centered within the available legend plotting. If this argument is set to \code{NULL} no
+#' vertical adjustment is performed. (default: "top")
 #'
-#' @param h.adjust (optional) This argument, which is passed to the function \code{\link{adjust_plt}()} controls how the
-#' legend position and width are optimized. Valid values are "left", "center", "right" and NULL. See
-#' \code{\link{adjust_plt}()} for more details.
+#' @param h.adjust (optional) This argument, which is passed to the function \code{adjust_plt()} controls
+#' how the legend's horizontal position and width are optimized. The values \code{"left"}, \code{"right"}, and
+#' \code{"center"} indicate that the legend-plotting region will be flush with the left, or right of the printing
+#' area, or otherwise centered within the available legend plotting. If this argument is set to \code{NULL} no
+#' horizontal adjustment is performed. (default: "left")
 #'
 #' @param draw.legend.box.bool (optional) This argument is a logical, telling the function to draw a box around the
 #' legend. (default: FALSE)
