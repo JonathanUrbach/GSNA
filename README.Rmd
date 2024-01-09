@@ -109,6 +109,16 @@ help( package = "GSNA" )
 ```
 
 
+# Citing GSNA
+
+```{r echo=FALSE, results="asis"}
+.cites <- readCitationFile( file = file.path( "inst", "CITATION" ) )
+cat("To cite package 'GSNA' in publications, please use:\n\n"  )
+print( .cites, bibtex = FALSE )
+```
+
+
+
 # References
 
 <div id="refs"></div>

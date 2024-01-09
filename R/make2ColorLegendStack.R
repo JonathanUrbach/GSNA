@@ -14,6 +14,7 @@
 #' @return A raster stack for a 2 color legend.
 #'
 #' @noRd
+#' @keywords internal
 # @export
 # @examples
 make2ColorLegendStack <- function( numbers.1,

@@ -29,7 +29,8 @@
 #'                                 width.threshold = 1.8,
 #'                                 height.threshold = 1.8 )
 #' }
-#'
+#' @noRd
+#' @keywords internal
 # @export
 #'
 adj_mar_leg_vm <- function( .mar.leg.vm, width = par('fin')[1], height = par('fin')[2], width.threshold = 5, height.threshold = 2.5 ){

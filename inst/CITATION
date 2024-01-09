@@ -1,0 +1,23 @@
+bibentry(
+  bibtype  = "Article",
+  title    = "Functional impairment of {HIV}-specific {CD8}+ {T} cells precedes aborted spontaneous control of viremia",
+  author   = "Collins, David R. and Urbach, Jonathan M. and Racenet, Zachary J. and Arshad, Umar and Power, Karen A. and Newman, Ruchi M. and Mylvaganam, Geetha H. and Ly, Ngoc L. and Lian, Xiaodong and Rull, Anna and Rassadkina, Yelizaveta and Yanez, Adrienne G. and Peluso, Michael J. and Deeks, Steven G. and Vidal, Francesc and Lichterfeld, Mathias and Yu, Xu G. and Gaiha, Gaurav D. and Allen, Todd M. and Walker, Bruce D.",
+  journal  = "Immunity",
+  year     = "2021",
+  pages    = "S107476132100337X",
+  doi      = "10.1016/j.immuni.2021.08.007",
+  url      = "https://linkinghub.elsevier.com/retrieve/pii/S107476132100337X"
+)
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Cytolytic {CD8}+ {T} cells infiltrate germinal centers to limit ongoing {HIV} replication in spontaneous controller lymph nodes",
+  author   = "Collins, David R. and Hitschfel, Julia and Urbach, Jonathan M. and Mylvaganam, Geetha H. and Ly, Ngoc L. and Arshad, Umar and Racenet, Zachary J. and Yanez, Adrienne G. and Diefenbach, Thomas J. and Walker, Bruce D.",
+  journal  = "Science Immunology",
+  year     = "2023",
+  volume   = "8",
+  number   = "83",
+  pages    = "eade5872",
+  doi      = "10.1126/sciimmunol.ade5872",
+  url      = "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231436/"
+)

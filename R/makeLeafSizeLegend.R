@@ -114,6 +114,7 @@
 #' @importFrom graphics box par plot.window
 #'
 #' @noRd
+#' @keywords internal
 #'
 makeLeafSizeLegend <-
   function(numbers,

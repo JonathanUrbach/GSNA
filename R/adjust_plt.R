@@ -23,6 +23,7 @@
 #' \code{\link[graphics]{par}()} function.
 #'
 #' @noRd
+#' @keywords internal
 #'
 # @export
 # @examples

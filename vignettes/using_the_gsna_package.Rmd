@@ -789,6 +789,13 @@ knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.HD.svg" )
 One interpretation of these results are that changes in expression associated with the differentiation of fibroblast 2 cells into CiHep cells upon chemical induction are characterized mainly by repression of numerous transcriptional programs such as those directed by the Myc, Ar, KLF5 and TP53 transcription factors, and activation of Spi1 and Etv4. 
 
 
+
+# Citing GSNA
+
+```{r echo=FALSE, results="asis"}
+print( citation( package = "GSNA" ), bibtex = FALSE )
+```
+
 # References
 
 <div id="refs"></div>

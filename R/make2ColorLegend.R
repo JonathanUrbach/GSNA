@@ -53,6 +53,7 @@ invisible( utils::globalVariables( c("font_face") ) )
 #' @importFrom graphics axis box par plot.window title
 #'
 #' @noRd
+#' @keywords internal
 # @export
 # @examples
 make2ColorLegend <- function(numbers.1,

@@ -7,7 +7,7 @@
 
 **Ragon Instute of MGH, MIT, and Harvard**
 
-**2023-12-27**
+**2024-01-08**
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -121,6 +121,29 @@ obtained via:
 ``` r
 help( package = "GSNA" )
 ```
+
+# Citing GSNA
+
+To cite package ‘GSNA’ in publications, please use:
+
+Collins, R. D, Urbach, M. J, Racenet, J. Z, Arshad, Umar, Power, A. K,
+Newman, M. R, Mylvaganam, H. G, Ly, L. N, Lian, Xiaodong, Rull, Anna,
+Rassadkina, Yelizaveta, Yanez, G. A, Peluso, J. M, Deeks, G. S, Vidal,
+Francesc, Lichterfeld, Mathias, Yu, G. X, Gaiha, D. G, Allen, M. T,
+Walker, D. B (2021). “Functional impairment of HIV-specific CD8+ T cells
+precedes aborted spontaneous control of viremia.” *Immunity*,
+S107476132100337X. <doi:10.1016/j.immuni.2021.08.007>
+<https://doi.org/10.1016/j.immuni.2021.08.007>,
+<https://linkinghub.elsevier.com/retrieve/pii/S107476132100337X>.
+
+Collins, R. D, Hitschfel, Julia, Urbach, M. J, Mylvaganam, H. G, Ly, L.
+N, Arshad, Umar, Racenet, J. Z, Yanez, G. A, Diefenbach, J. T, Walker,
+D. B (2023). “Cytolytic CD8+ T cells infiltrate germinal centers to
+limit ongoing HIV replication in spontaneous controller lymph nodes.”
+*Science Immunology*, *8*(83), eade5872.
+<doi:10.1126/sciimmunol.ade5872>
+<https://doi.org/10.1126/sciimmunol.ade5872>,
+<https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231436/>.
 
 # References
 

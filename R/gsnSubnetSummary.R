@@ -255,6 +255,7 @@ lhm <- function( v ){
 #' @return A vector of unique distances.
 #'
 #' @noRd
+#' @keywords internal
 # @examples
 # @export
 calculate_stlf_vector <- function( mat ){
