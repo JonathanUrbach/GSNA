@@ -59,7 +59,7 @@ We recommend R version 4.0 and later for **GSNA**, though it may be installable 
 * withr  
 * Rcpp
 
-Several of these packages have cascading dependencies, which become particularly important when installing from source. If binary R packages are available, such as for up-to-date Windows and Mac OS X R installations, we recommend installing those. Compiling these packages from source generally requires a C, C++, and/or Fortran compiler, which on Windows means installing Rtools for Windows, and for Mac OS X, Xcode. Linux installations generally include the requred compilers, specifically the GCC compilers.    
+Several of these packages have cascading dependencies, which become particularly important when installing from source. If binary R packages are available, such as for up-to-date Windows and Mac OS X R installations, we recommend installing those. Compiling these packages from source generally requires a C, C++, and/or Fortran compiler, which on Windows means installing Rtools for Windows, and for Mac OS X, Xcode. Linux installations generally include the required compilers, specifically the GCC compilers.    
 
 **NOTE:** Particular care should be paid to the installation of the R **raster** package. The **raster** package requires the **terra** package, which in turn requires the **GEOS** C++ computational library, available from [https://libgeos.org/](https://libgeos.org/) to compile from source. Binary packages for the **GEOS** library are available for numerous Linux distributions, and may offer a more convenient alternative than installing **GEOS** from source.
 

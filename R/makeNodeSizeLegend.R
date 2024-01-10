@@ -24,7 +24,7 @@ get_usr_x_coords_per_inch <- function(){
 #' via \code{gsnPlotNetwork()} which uses \code{\link[igraph]{plot.igraph}()} from the igraph package to generate plots.
 #'
 #' @param numbers A vector containing numerical values to be mapped to a range of vertex sizes. The only really needs
-#' to be a mininimum and a maximum value to establish a set of scale values.
+#' to be a minimum and a maximum value to establish a set of scale values.
 #'
 #' @param sizeEncode.fun The function used by \code{gsnPlotNetwork()} to convert the value in \code{n_col} (usually
 #' representing gene set sizes) into vertex sizes within the \code{igraph::plot.igraph()} function. For the current
@@ -37,7 +37,7 @@ get_usr_x_coords_per_inch <- function(){
 #' has not been called to create a new user coordinate system.
 #'
 #' @param log_scale (optional) Logical value indicating whether the size values should be incremented in a linear or
-#' logrithmic scale. If not specified, then this will be decided based on the range of minimum to maximum values
+#' logarithmic scale. If not specified, then this will be decided based on the range of minimum to maximum values
 #' specified in the \code{numbers} argument.
 #'
 #' @param cex.ticks (optional) The font size used for tick labels. (default: par('cex'))

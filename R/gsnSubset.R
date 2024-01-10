@@ -7,9 +7,9 @@ invisible( utils::globalVariables( c( "vertex" ) ) )
 #'
 #' @param object A \code{GSNData} object.
 #' @param distance Specifies a distance metric to use for subsetting. Defaults to the \code{default_distance}.
-#' @param vertex_names A chatacter vector specifying the vertex names/gene sets to include in the \code{GSNData}
+#' @param vertex_names A character vector specifying the vertex names/gene sets to include in the \code{GSNData}
 #' subset object.
-#' @param subnet_names  A chatacter vector specifying the names of the subnets to include in the \code{GSNData}
+#' @param subnet_names  A character vector specifying the names of the subnets to include in the \code{GSNData}
 #' subset object.
 #'
 #' @return A new \code{GSNData} object is returned containing a subset of the vertices and subnets from the original
@@ -32,7 +32,7 @@ invisible( utils::globalVariables( c( "vertex" ) ) )
 #' The \code{default_distance} is set as whichever distance matrix is copied. Currently, this function only supports
 #' copying a single distance matrix.
 #'
-#' The following pathwayys data are copied:
+#' The following pathways data are copied:
 #'
 #' \item{\code{$pathways$data}}{Pathways results, subsetted.}
 #' \item{\code{$pathways$type}}{The type of pathways results, copied.}

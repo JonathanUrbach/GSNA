@@ -29,7 +29,7 @@
 #'
 #' Note: An error is thrown if all gene set IDs in the genePresenceAbsense are not present in the CERNO ID column.
 #' On the other hand, if there are gene set IDs present in the pathways data that are absent from the genePresenceAbsence
-#' matrix, then thes methods emit a warning. It also checks for the standard CERNO data set column names, and if some are
+#' matrix, then these methods emit a warning. It also checks for the standard CERNO data set column names, and if some are
 #' missing, it will throw an error. They can still be imported via \code{gsnImportGenericPathways}.
 #'
 #' @export

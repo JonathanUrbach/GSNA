@@ -6,7 +6,7 @@
 #' @description Internal function used by the \code{assignSubnets()} function. When passed the name of a vertex,
 #' this function recursively retrieves a full set of connected vertices to populate a character vector named
 #' \code{vertices.v}. The function requires that the \code{edges.df} data.frame containing an edge list and
-#' the \code{vertices.v} vector, which it populates with the names of connected verticies, to be present in
+#' the \code{vertices.v} vector, which it populates with the names of connected vertices, to be present in
 #' the environment passed using the \code{e} argument. The default environment is the calling environment.
 #'
 #' @param vertx Name of a vertex.

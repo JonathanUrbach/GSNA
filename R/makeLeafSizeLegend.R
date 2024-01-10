@@ -4,7 +4,7 @@
 #' via \code{gsnHierarchicalDendrogram()}.
 #'
 #' @param numbers A vector containing numerical values to be mapped to a range of leaf sizes. The only really needs
-#' to be a mininimum and a maximum value to establish a set of scale values.
+#' to be a minimum and a maximum value to establish a set of scale values.
 #'
 #' @param sizeEncode.fun The function used by \code{gsnPlotNetwork()} to convert the value in \code{n_col} (usually
 #' representing gene set sizes) into leaf sizes in cex units.
@@ -27,7 +27,7 @@
 #' \code{render.bool = TRUE} to actually render the legend.
 #'
 #' @param log_scale (optional) Logical value indicating whether the size values should be incremented in a linear or
-#' logrithmic scale. If not specified, then this will be decided based on the range of minimum to maximum values
+#' logarithmic scale. If not specified, then this will be decided based on the range of minimum to maximum values
 #' specified in the \code{numbers} argument.
 #'
 #' @param cex.ticks (optional) The font size used for tick labels. (default: graphics::par('cex'))

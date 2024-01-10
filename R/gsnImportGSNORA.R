@@ -26,7 +26,7 @@
 #'
 #' Note: An error is thrown if all gene set IDs in the genePresenceAbsense are not present in the GSNORA ID column.
 #' On the other hand, if there are gene set IDs present in the pathways data that are absent from the genePresenceAbsence
-#' matrix, then thes methods emit a warning. It also checks for the standard GSNORA data set column names, and if some are
+#' matrix, then these methods emit a warning. It also checks for the standard GSNORA data set column names, and if some are
 #' missing, it will throw an error.
 #'
 #' @export

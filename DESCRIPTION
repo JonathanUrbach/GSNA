@@ -10,7 +10,8 @@ Description: This package provides functions for performing Gene Set Networking 
   related functions on the basis of shared genes.
     Inputs to GSNA are the outputs of pathways analysis methods: a list of gene sets, modules, pathways or GO-terms with associated
   p-values. Since these pathways analysis methods may be used to analyze many different types of data including transcriptomic,
-  metagenomic, and high-throughput screen data sets, the GSNA pipeline is useful for analysing these data as well.
+  epigenetic, and high-throughput screen data sets, the GSNA pipeline is useful for analyzing these data as well.
+Language: en-US
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true

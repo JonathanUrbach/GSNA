@@ -46,7 +46,7 @@
 #' all gene set IDs in the genePresenceAbsence matrix are present in the ID column of the pathways data. An error
 #' is thrown if all gene set IDs in the genePresenceAbsense are not present in the pathways ID column. On the other
 #' hand, if there are gene set IDs present in the pathways data that are absent from the genePresenceAbsence matrix,
-#' then thes methods emit a warning.
+#' then these methods emit a warning.
 #'
 #' @export
 #'

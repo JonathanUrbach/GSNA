@@ -4,7 +4,7 @@
 #' @description Convert a symmetrical numerical matrix of distances to a matrix of scaled ranks (from 0 to 1).
 #' Note: Only the lower side of the matrix is used. Data on the upper right are assumed to be redundant. These
 #' functions are intended to convert a matrix of distance or similarity values into a proper form for applying
-#' hierachical clustering with the \code{gsnPareNetGenericHierarchic()} function.
+#' hierarchical clustering with the \code{gsnPareNetGenericHierarchic()} function.
 #'
 #' @param mat A numerical matrix containing distances.
 #' @param lower_is_closer Logical indicating that lower is closer.

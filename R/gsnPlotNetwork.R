@@ -51,7 +51,7 @@
 #'
 #' @param edge_colors (optional) A vector of colors included to generate a scale represent the numerical value of the
 #' edge distances. By default, the colors are arranged as a rainbow with black and purple representing the greatest
-#' distannces, and orange and red the nearest distances. This feature (and argument) will likely be deprecated in
+#' distances, and orange and red the nearest distances. This feature (and argument) will likely be deprecated in
 #' future versions. (default: edge_colors = c("black", "purple", "blue", "green","yellow4", "orange","red"))
 #'
 #' @param vertex_colors (optional) This is the standard set of colors used for a standard single color network.
@@ -86,7 +86,7 @@
 #' @param width (optional) Sets the width of the output canvas in inches. Defaults to the width of the present
 #' graphical device.
 #'
-#' @param height (optiona) Sets the height of the output canvas in inches. Defailts to the height of the present
+#' @param height (optional) Sets the height of the output canvas in inches. Defaults to the height of the present
 #' graphical device.
 #'
 #' @param vertex.shape (optional) Shape of the vertex, passed to \code{igraph::plot.igraph}. By default, the value is
@@ -96,7 +96,7 @@
 #' NULL, and the function attempts to pick a reasonable value based on the canvas size and the number of gene sets.
 #'
 #' @param vertex.size.range (optional) The range of vertex sizes used in plots, from low to high. This is used when
-#' \code{n_col} is specified and vertex sizes are inended to be scaled. If this is not specified, then the function
+#' \code{n_col} is specified and vertex sizes are intended to be scaled. If this is not specified, then the function
 #' attempts to select appropriate values based on size of the figure being generated.
 #'
 #' @param vertex.label.cex (optional) Size of vertex labels, passed to \code{igraph::plot.igraph}. As with vertex.size,
@@ -180,7 +180,7 @@
 #'
 #' @param lines.main (optional) The distance of the main title in lines from the top of the plot. (default: 0.9)
 #'
-#' @param .mar.plot (optional) The margins of the plot itself. If unnspecified, the function will attempt to reserve
+#' @param .mar.plot (optional) The margins of the plot itself. If unspecified, the function will attempt to reserve
 #' enough room to the right of the plot for the legend or legends.
 #'
 #' @param draw.legend.box.bool (option) Logical indicating whether bounding boxes should be drawn for the legends.
@@ -199,7 +199,7 @@
 #' TRUE) or that the current device should be cleared and written over (if FALSE). (default: FALSE)
 #'
 #' @param legend_spacing.x.in (optional) Space between plot and legend in inches. This can be used to adjust the horizontal
-#' position and move the legend closer to or farther away from the plot region. Since the netork plot may not fill the
+#' position and move the legend closer to or farther away from the plot region. Since the network plot may not fill the
 #' entire plotting region, it may be useful to use negative values to move the legends closer to the plot.
 #' (default: 2 character widths)
 #'

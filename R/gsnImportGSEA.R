@@ -23,7 +23,7 @@
 #' @param stat_col (optional) A character vector of length 1 indicating the name of the column used as a statistic
 #' to evaluate the quality of pathways results. The function scans through possible \code{stat_col} values
 #' (\code{"FDR q-val"}, \code{"FDR.q.val"}, \code{"FWER p-val"}, \code{"FWER.p.val"}, \code{"NOM p-val"},
-#' \code{"NOM.p.val"}), and uses the first one it finds. (The presence of spaces and hypens in the column names
+#' \code{"NOM.p.val"}), and uses the first one it finds. (The presence of spaces and hyphens in the column names
 #' necessitates flexibility here. Depending on how GSEA results sets are read in, spaces and hyphens may be substituted
 #' with periods.)
 #' @param sig_order (optional) Either \code{'loToHi'} (default) or \code{'hiToLo'} depending on the statistic used to

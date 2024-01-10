@@ -14,7 +14,7 @@
 #'
 #' @return This returns a gene presence/absence matrix with genes corresponding to rows, gene sets/modules
 #' corresponding to columns, and TRUE or FALSE values corresponding to presence or absence of a particular
-#' gene in a particular gene set/module. This matrix has been filtered to only enclude genes observable in
+#' gene in a particular gene set/module. This matrix has been filtered to only include genes observable in
 #' a data set.
 #'
 #' @export

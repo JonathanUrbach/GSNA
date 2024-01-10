@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GSNA version 0.1.0
+# GSNA version 0.1.1
 
 **Jonathan M. Urbach**
 
 **Ragon Instute of MGH, MIT, and Harvard**
 
-**2024-01-08**
+**2024-01-10**
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -61,7 +61,7 @@ are available, such as for up-to-date Windows and Mac OS X R
 installations, we recommend installing those. Compiling these packages
 from source generally requires a C, C++, and/or Fortran compiler, which
 on Windows means installing Rtools for Windows, and for Mac OS X, Xcode.
-Linux installations generally include the requred compilers,
+Linux installations generally include the required compilers,
 specifically the GCC compilers.
 
 **NOTE:** Particular care should be paid to the installation of the R

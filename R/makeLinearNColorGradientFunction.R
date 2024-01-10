@@ -10,7 +10,7 @@
 #' @param x.max The maximal value for the range of numbers to be encoded.
 #'
 #' @return Returns a function encoding a single numerical value as a numerical vector of length 3 containing
-#' RGB balues from 0 to 255.
+#' RGB values from 0 to 255.
 #'
 #' @details Given n colors, where n >=1 and a range of numbers from x.min to x.max, the function breaks
 #' down the range of numbers into n-1 ranges, and then maps numerical values linearly to numbers in each

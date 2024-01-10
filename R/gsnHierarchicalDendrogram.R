@@ -63,7 +63,7 @@
 #' to the values to mitigate this problem, prior to log10 transformation, but for other types of data, other transformations
 #' or even 'identity' may be more suitable. (default, \code{nzLog10})
 #' @param font_face (optional) The font used for plot text, including leaf labels. For best results, this should be a
-#' monospaced font. If not pecified, the system attempts to pick a suitable default: \code{'Andale Mono'} on Mac OS X,
+#' monospaced font. If not specified, the system attempts to pick a suitable default: \code{'Andale Mono'} on Mac OS X,
 #' \code{'Lucida Sans Typewriter'} for Windows, and \code{'mono'} for all other systems.
 #' @param color_labels_by (optional) This parameter tells the plotting function to assign colors to dendrogram
 #' leaf labels on on the basis of this argument. Currently, only 'subnets' and NULL are supported arguments.
@@ -112,15 +112,15 @@
 #' @param tree_x_size.in (optional) For horizontal dendrograms, this is the width of the dendrogram in inches, not including
 #' leaf labels, cluster brackets, or legends. (default: 2)
 #' @param legend_x_size.in (optional) The width of legends in inches. (default: 2)
-#' @param left_margin.in (optional) The width of the left margin in inches. Ignored if .plt.plot or .mai.plot is specifed.
+#' @param left_margin.in (optional) The width of the left margin in inches. Ignored if .plt.plot or .mai.plot is specified.
 #' (default: 0)
 #' @param right_margin.in (optional) The width of the right margin of the dendrogram in inches. Ignored if .plt.plot or
-#' .mai.plot is specifed. If unspecified, this is calculated automatically as \code{width - tree_x_size.in}.
+#' .mai.plot is specified. If unspecified, this is calculated automatically as \code{width - tree_x_size.in}.
 #' @param top_margin.in (optional) The width of the top margin of the dendrogram in inches. Ignored if .plt.plot or
-#' .mai.plot is specifed. (default: if no \code{main} argument is specified, 0. If a \code{main} argument is specified,
-#' then it is calcualted as \code{cex.main * par('cin')[2] * mar.main})
+#' .mai.plot is specified. (default: if no \code{main} argument is specified, 0. If a \code{main} argument is specified,
+#' then it is calculated as \code{cex.main * par('cin')[2] * mar.main})
 #' @param bottom_margin.in (optional) (optional) The width of the bottom margin in inches. Ignored if .plt.plot or
-#' .mai.plot is specifed. (default: 0)
+#' .mai.plot is specified. (default: 0)
 #' @param legend.downshift.in (optional) Argument shifting the legend downward, in inches. This is useful for adjusting
 #' the alignment of the legend(s) with the top of the plot. (default: for horizontal dendrograms, 0; for circular
 #' dendrograms, 0.42)

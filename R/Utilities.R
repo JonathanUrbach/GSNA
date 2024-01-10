@@ -559,7 +559,7 @@ antiSplit <- function( .l, col.names = c("V1","V2") ){
 #'
 #' @param .from Character vector containing concatenated, triple-slash delimited gene symbols/identifiers
 #'  (e.g. "LOC101055758///LOC100041903///Gm2666///Gm7609///Csprs")
-#' @param .to Character vector conrtaining gene symbols to be matched (e.g. "Gm2666")
+#' @param .to Character vector containing gene symbols to be matched (e.g. "Gm2666")
 #'
 #' @return A vector containing the matched symbols.
 #'
@@ -763,7 +763,7 @@ gsc2tmod <- function( MODULES2GENES, MODULES = NULL, GENES = NULL ){
 
 #' tmod2gsc
 #'
-#' @description Function takes a tmod or tmodGS object and converts it to a gene set collecton. In the case of a
+#' @description Function takes a tmod or tmodGS object and converts it to a gene set collection. In the case of a
 #' tmod object, the function merely extracts the \code{$MODULES2GENES} list of character vectors. In the case of
 #' tmodGS objects, the list of vectors of numeric gene identifiers in \code{$gs2gv} is converted to a named list
 #' of character vectors of gene names.
@@ -831,7 +831,7 @@ intV2Color <- function( rgb_v ){
 
 #' color2IntV
 #'
-#' @description Convert a color, either as a name or as a RGB hexedecimal value to an integer vector containing
+#' @description Convert a color, either as a name or as a RGB hexadecimal value to an integer vector containing
 #' the RGB specification.
 #'
 #'

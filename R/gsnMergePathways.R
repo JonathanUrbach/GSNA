@@ -7,7 +7,7 @@ invisible( utils::globalVariables( c("subnet") ) )
 #' @description Merge pathways data and subnets into a data.frame that includes subnet assignment and intra-subnet rank.
 #'
 #' @param object A GSNData object upon which \code{gsnAssignSubnets()} has been called.
-#' @param pathways.data (optiional) data.frame containing a pathways results. Not necessary if pathways data have already
+#' @param pathways.data (optional) data.frame containing a pathways results. Not necessary if pathways data have already
 #' been imported.
 #' @param distance (optional) character vector of length 1 indicating which set of subnets to be used if the GSNData object
 #' contains subnets derived from more than one distance matrix.

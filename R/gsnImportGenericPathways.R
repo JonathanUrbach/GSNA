@@ -12,7 +12,7 @@
 #' @param filename An (optional) filename for data sets read from a text file containing pathways results. This is ignored
 #' if the \code{pathways_data} argument is set.
 #'
-#' @param type A cbaracter vector of length 1 indicating the type of result set. This defaults to \code{'generic'}.
+#' @param type A character vector of length 1 indicating the type of result set. This defaults to \code{'generic'}.
 #'
 #' @param id_col (optional) A character vector of length 1 indicating the name of the column used as a key for gene
 #' sets or modules. This should be the same as the set of names of gene sets in the gene set collection specified by the
@@ -42,7 +42,7 @@
 #'
 #' Note: An error is thrown if all gene set IDs in the \code{$genePresenceAbsence} field are not present in the GSNORA ID
 #' column. On the other hand, if there are gene set IDs present in the pathways data that are absent from the
-#' genePresenceAbsence matrix, then thes methods emit a warning. It also checks for the standard GSNORA data set column
+#' genePresenceAbsence matrix, then these methods emit a warning. It also checks for the standard GSNORA data set column
 #' names, and if some are missing, it will throw an error.
 #'
 #' @export

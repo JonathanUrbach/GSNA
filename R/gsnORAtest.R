@@ -6,7 +6,7 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #' @description Perform an ORA test using an experimentally-derived gene set to query a gene set collection.
 #'
 #' @param l A vector containing an experimentally-derived set of genes. These may be significantly differentially
-#' expressed genes, genes with differential chromatin accessability or positives from a screen.
+#' expressed genes, genes with differential chromatin accessibility or positives from a screen.
 #' @param bg A vector containing a background of observable genes.
 #' @param geneSetCollection A gene set collection to query, either a tmod object or a list of character vectors containing
 #' gene sets for which the list element names are the gene set IDs.
@@ -95,7 +95,7 @@ gsnORAtest <- function( l, bg, geneSetCollection, Alpha = 0.05, full = FALSE ){
 
   out.df <- tibble::add_column( .data = out.df, Title = NA, .after = 'ID' )
 
-  # The out.df may not conatain the full set of IDs since some gene sets may be lost in the filtering step:
+  # The out.df may not contain the full set of IDs since some gene sets may be lost in the filtering step:
   if( ! is.null( modules) ){
     Title4ID <- with( modules, structure( as.character( Title ), names = as.character( ID ) ) )
     #out.df$titles <- modules[names( m2g ), "Title"]

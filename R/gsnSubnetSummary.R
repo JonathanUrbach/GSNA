@@ -16,12 +16,12 @@ invisible( utils::globalVariables( c( "subnetRank" ) ) )
 #' to the names of gene sets. The default value is specified by \code{object$pathways$id_col}.
 #' (See details.)
 #' @param stat_col (optional) Specifies the name of the first statistical column, if not specified,
-#' defefaults to the value in \code{object$pathways$stat_col}.
+#' defaults to the value in \code{object$pathways$stat_col}.
 #' @param sig_order (optional) This indicates the behavior of \code{stat_col}, whether low values
 #' (\code{'loToHi'}) or high values (\code{'hiToLo'}) are most significant. The default value is
 #' specified in \code{object$pathways$sig_order}.
 #' @param stat_col_2 (optional) Specifies the name of the second statistical column, if not specified,
-#' defefaults to the value in \code{object$pathways$stat_col_2}.
+#' defaults to the value in \code{object$pathways$stat_col_2}.
 #' @param sig_order_2 (optional) This indicates the behavior of \code{stat_col_2}, whether low values
 #' (\code{'loToHi'}) or high values (\code{'hiToLo'}) are most significant. The default value is
 #' specified in \code{object$pathways$sig_order_2}.
@@ -38,7 +38,7 @@ invisible( utils::globalVariables( c( "subnetRank" ) ) )
 #' set IDs. For each subnet, summary statistics are calculated, including the harmonic mean of
 #' \code{stat_col} and (if specified) \code{stat_col_2}. In addition, the minimum or maximum of the
 #' \code{stat_col} and \code{stat_col_2} is calculated, depending on the \code{sig_order} and
-#' \code{sig_order_2}. For \code{loToHi}, the minumum is calculated, and for \code{hiToLo}, the
+#' \code{sig_order_2}. For \code{loToHi}, the minimum is calculated, and for \code{hiToLo}, the
 #' maximum.
 #'
 #' @export
@@ -198,8 +198,9 @@ gsnSubnetSummary <- function( object,
 #'
 #' @description
 #'
-#' Implements the "Log-Sum-Exponential trick" for calculating the log of the sums of exponents
-#' without underruns. This allows large numbers to be summed in log space.
+#' Implements the "Log-Sum-Exponential trick" for calculating the log of the sums of
+#' exponents without arithmetic underflows. This allows very small numbers to be
+#' summed in log space.
 #'
 #' @param a A numeric log value.
 #' @param b Another numeric log value.

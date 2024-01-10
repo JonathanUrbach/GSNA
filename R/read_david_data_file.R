@@ -37,8 +37,8 @@
 #' The parser expects the following fields in the data: "Category", "Term", "Count", "%", "PValue",
 #' "Genes", "List Total", "Pop Hits", "Pop Total", "Fold Enrichment", "Bonferroni", "Benjamini", and "FDR".
 #'
-#' To create a data.framme suitable for use with \code{\link{gsnAddPathwaysData}()}, the default options are required,
-#' partucularly \code{output = "flat"} and \code{redundant = FALSE}.
+#' To create a data.frame suitable for use with \code{\link{gsnAddPathwaysData}()}, the default options are required,
+#' particularly \code{output = "flat"} and \code{redundant = FALSE}.
 #'
 #' @return The function returns either a data.frame containing DAVID data, a list of data.frames, or a list of gene sets.
 #' (see documentation for the \code{output} parameter above).

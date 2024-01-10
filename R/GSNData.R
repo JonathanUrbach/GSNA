@@ -30,8 +30,8 @@
 #' # Fields:
 #'
 #' \describe{
-#'   \item{\code{$GSNA_version}}{A character vector of length 1 indicqting the version of GSNA used to generate this GSNData object.}
-#'   \item{\code{$genePresenceAbsence}}{A sparse logical Matrix containing presence(TRUE) or absense (FALSE) calls for genes (rows) in gene sets (columns).}
+#'   \item{\code{$GSNA_version}}{A character vector of length 1 indicating the version of GSNA used to generate this GSNData object.}
+#'   \item{\code{$genePresenceAbsence}}{A sparse logical Matrix containing presence(TRUE) or absence (FALSE) calls for genes (rows) in gene sets (columns).}
 #'   \item{\code{$distances}}{a named list(). Names indicate a distance metric 'lf', 'jaccard', etc. indicated as \code{DIST} below.}
 #'   \item{\code{$distances[[DIST]]$matrix}}{A matrix of raw distances}
 #'   \item{\code{$distances[[DIST]]$optimal_extreme}}{ Significance order where "min" indicates that low values are optimal/
@@ -53,8 +53,8 @@
 #'                                present in the differential expression data set. This is the 'background' of all genes
 #'                                observable in the differential expression data.}
 #'   \item{\code{$pathways}}{A named list containing pathways results data, as follows:}
-#'   \item{\code{$pathways$data}}{A data.frame containg a pathways results set.}
-#'   \item{\code{$pathways$type}}{A character vector of length=1 indicating the type of pahways analysis performed, e.g. CERNO, GSEA, ORA.}
+#'   \item{\code{$pathways$data}}{A data.frame containing a pathways results set.}
+#'   \item{\code{$pathways$type}}{A character vector of length=1 indicating the type of pathways analysis performed, e.g. CERNO, GSEA, ORA.}
 #'   \item{\code{$pathways$id_col}}{Indicates the name of the column in $pathways$data that contains the gene set ID.}
 #'   \item{\code{$pathways$stat_col}}{A character vector of length 1 indicating the statistic used for assessing significance,
 #'                                generally a p-value.}

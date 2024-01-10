@@ -11,11 +11,11 @@ invisible(utils::globalVariables( c("DIST", "M1", "M2", "Stat")))
 #' subnets. This defaults to the 'default_distance'.
 #'
 #' @param extreme (optional) Either \code{min} or \code{max} indicating whether low or high values are most significant,
-#' i.e. to be interpreted as the shortest distance for nearast neighbor paring. This defaults to the value set for the
+#' i.e. to be interpreted as the shortest distance for nearest neighbor paring. This defaults to the value set for the
 #' \code{optimal_extreme} field of the specified \code{distance} matrix.
 #'
 #' @param cutoff (optional) A cutoff specifying a maximal of minimal value that will be retained, dependent on the distance
-#' metric being used. This is not usually necessary to specify for hierachical clustering. (see details)
+#' metric being used. This is not usually necessary to specify for hierarchical clustering. (see details)
 #'
 #' @param keepOrphans A boolean indicating whether 'orphan' gene sets that have no nearest neighbors should be retained in
 #' the final network. (default \code{TRUE} )
@@ -213,7 +213,7 @@ gsnPareNetGenericHierarchic <- function( object,
   edges.df <- data.frame( M1 = c(), M2 = c(), DIST = c(), edgeNo = c(), cluster = c() )
 
   for( cluster.i in unique( clusters.v ) ){
-    # Subset to verticies only in the cluster.i
+    # Subset to vertices only in the cluster.i
     vertices.i = names( clusters.v[clusters.v == cluster.i] )
     if( length( vertices.i ) > 1 ) {
       edges.i <- data.frame( M1 = c(), M2 = c(), DIST = c(), edgeNo = c() )

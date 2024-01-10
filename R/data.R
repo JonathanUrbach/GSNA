@@ -14,7 +14,7 @@
 #'
 #' Recapitulating the computational approach of the original authors, the SRA data set \href{https://www.ncbi.nlm.nih.gov/sra/?term=GSM6435750}{GSM6435750}
 #' containing a sparse matrix of counts was downloaded. Using the \code{Seurat} package(2), the data were normalized and clusters were
-#' identified using \code{Seurat}'s \code{FindCluster()} functionand visualized using its \code{RunUMAP()} and \code{RunPCA()} functions.
+#' identified using \code{Seurat}'s \code{FindCluster()} function and visualized using its \code{RunUMAP()} and \code{RunPCA()} functions.
 #' On the basis of marker genes and comparison with the originally assigned clusters described in the original publication(1). Differential
 #' expression was performed comparing gene expression in CiHep cells with Fibroblast 2 cells, as well as CiKrt cells with Fibroblast 2 cells.
 #' In this way, the \code{Bai_CiHep_v_Fib2.de} and \code{Bai_CiKrt_v_Fib2.de} data sets respectively were generated.
@@ -92,14 +92,14 @@
 #' @format{Bai_CiHep_dorothea_UP.Gsea}{: `r roxygen2::object_format( Bai_CiHep_dorothea_UP.Gsea )`
 #' *  **NAME** Gene set name/ID.
 #' *  **GS<br> follow link to MSigDB** Same as NAME.
-#' *  **GS DETAILS** (Columnn used only in the HTML version of the data set.)
+#' *  **GS DETAILS** (Column used only in the HTML version of the data set.)
 #' *  **SIZE** The number of genes in the gene set observed in the input data set.
 #' *  **ES** GSEA enrichment score.
 #' *  **NES** GSEA normalized enrichment score.
 #' *  **NOM p-val** GSEA nominal *p*-value calculated via a permutation test.
 #' *  **FDR q-val** GSEA FDR-adjusted *q*-value.
 #' *  **FWER p-val** GSEA FWER-adjusted *q*-value.
-#' *  **RANK AT MAX** Position in the ranked list where maximim enrichment score is found.
+#' *  **RANK AT MAX** Position in the ranked list where maximum enrichment score is found.
 #' *  **LEADING EDGE** Three statistics defining "leading edge" subset.
 #' *  **""** Blank column.
 #' }

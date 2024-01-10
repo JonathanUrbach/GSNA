@@ -10,7 +10,7 @@ invisible(utils::globalVariables( c("M1", "Stat")))
 #' @param distance (optional) character vector of length 1 indicating which pared distance matrix is to be used for assigning
 #' subnets. This defaults to the 'default_distance'.
 #' @param extreme (optional) Either \code{min} or \code{max} indicating whether low or high values are most significant,
-#' i.e. to be interpreted as the shortest distance for nearast neighbor paring. This defaults to the value set for the
+#' i.e. to be interpreted as the shortest distance for nearest neighbor paring. This defaults to the value set for the
 #' \code{optimal_extreme} field of the specified \code{distance} matrix.
 #' @param cutoff (optional) A cutoff specifying a maximal of minimal value that will be retained, dependent on the distance
 #' metric being used. The default value is 0, but this is likely incorrect for most purposes. For 'lf' and 'stlf' distances,
@@ -27,7 +27,7 @@ invisible(utils::globalVariables( c("M1", "Stat")))
 #' may be useful for determining a suitable value, since inflection points can guide selection of this cutoff. Such a plot
 #' may be generated using the \code{gsnDistanceHistogram()} method.
 #'
-#' An alternative to this paring method is hierachical clustering implemented in the \code{\link{gsnPareNetGenericHierarchic}}
+#' An alternative to this paring method is hierarchical clustering implemented in the \code{\link{gsnPareNetGenericHierarchic}}
 #' method.
 #'
 #' @export
