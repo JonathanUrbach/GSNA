@@ -33,24 +33,29 @@
 #'
 #' @examples
 #'
-#' # In this example, we run gsnORAtest() to generate a list of significant pathways, which we use to construct
-#' # a gene set network.
+#' # In this example, we run gsnORAtest() to generate a list of significant
+#' # pathways, which we use to construct a gene set network.
 #'
 #' library(GSNA)
 #'
-#' # From a differential expression data set, we can generate a subset of genes with significant
-#' # differential expression, up or down. Here we will extract genes with significant negative differential
-#' # expression with avg_log2FC < 0 and p_val_adj <= 0.05 from **Seurat** data:
+#' # From a differential expression data set, we can generate a subset of genes
+#' # with significant differential expression, up or down. Here we will extract
+#' # genes with significant negative differential expression with
+#' # avg_log2FC < 0 and p_val_adj <= 0.05 from **Seurat** data:
 #'
 #' sig_DN.genes <-
-#'    toupper( rownames(subset( Bai_CiHep_v_Fib2.de, avg_log2FC < 0  & p_val_adj < 0.05 )) )
+#'    toupper( rownames(subset( Bai_CiHep_v_Fib2.de,
+#'                              avg_log2FC < 0  & p_val_adj < 0.05 )) )
 #'
-#' # Using all the genes in the differential expression data set, we can obtain a suitable background:
+#' # Using all the genes in the differential expression data set, we can obtain
+#' # a suitable background:
 #' bg <- toupper(rownames( Bai_CiHep_v_Fib2.de ))
 #'
-#' # Now, we can do a overrepresentation analysis search on this data using the Bai_gsc.tmod gene set
-#' # collection included in the sample data:
-#' sig_DN.gsnora <- gsnORAtest( l = sig_DN.genes, bg = bg, geneSetCollection = Bai_gsc.tmod )
+#' # Now, we can do a overrepresentation analysis search on this data using the
+#' # Bai_gsc.tmod gene set collection included in the sample data:
+#' sig_DN.gsnora <- gsnORAtest( l = sig_DN.genes,
+#'                              bg = bg,
+#'                              geneSetCollection = Bai_gsc.tmod )
 #'
 #' # Generate a GSC (gene set collection) from the significant gene sets:
 #' sig.gsnora.tmod <- Bai_gsc.tmod[sig_DN.gsnora$ID]

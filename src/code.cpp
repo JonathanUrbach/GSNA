@@ -69,7 +69,11 @@ using namespace Rcpp;
 //' library(GSNA)
 //'
 //' # Calculate a single natural log Fisher_p value:
-//' log_fisher_p <- lfisher_cpp( a = 16000, b = 200, c = 170, d = 100, alternative = 3 )
+//' log_fisher_p <- lfisher_cpp( a = 16000,
+//'                              b = 200,
+//'                              c = 170,
+//'                              d = 100,
+//'                              alternative = 3 )
 //'
 //'
 //' @seealso
@@ -213,13 +217,16 @@ double lfisher_cpp( int a, int b, int c, int d,
 //'
 //' library(GSNA)
 //'
-//' # Get the background of observable genes set from expression data:
+//' # Get the background of observable genes set from
+//' # expression data:
 //' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
 //'
-//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene presence-absence matrix
-//' # filtered for the ref.background of observable genes:
-//' presence_absence.mat <- makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
-//'                                                                geneSetCollection = Bai_gsc.tmod )
+//' # Using the sample gene set collection **Bai_gsc.tmod**,
+//' # generate a gene presence-absence matrix filtered for the
+//' # ref.background of observable genes:
+//' presence_absence.mat <-
+//'  makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
+//'                                         geneSetCollection = Bai_gsc.tmod )
 //'
 //' jaccard.mat <- scoreJaccardMatrix_C( presence_absence.mat )
 //'
@@ -303,13 +310,16 @@ SEXP scoreJaccardMatrix_C( SEXP geneSetCollection_m ){
 //'
 //' library(GSNA)
 //'
-//' # Get the background of observable genes set from expression data:
+//' # Get the background of observable genes set from
+//' # expression data:
 //' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
 //'
-//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene presence-absence matrix
-//' # filtered for the ref.background of observable genes:
-//' presence_absence.mat <- makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
-//'                                                                geneSetCollection = Bai_gsc.tmod )
+//' # Using the sample gene set collection **Bai_gsc.tmod**,
+//' # generate a gene presence-absence matrix filtered for the
+//' # ref.background of observable genes:
+//' presence_absence.mat <-
+//'   makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
+//'                                          geneSetCollection = Bai_gsc.tmod )
 //'
 //' # Now generate an overlap coefficient matrix.
 //' oc.mat <- scoreOCMatrix_C( presence_absence.mat )
@@ -497,8 +507,11 @@ std::set<std::string> gsMakeSet( Rcpp::CharacterVector gs ){
 //' # Get background gene cout:
 //' bg_gene_count <- nrow( Bai_empty_expr_mat )
 //'
-//' # Generate a vector containing the number of contents of the 2x2 contingency table:
-//' counts.v <- gsIntersectCounts( gs1 = M29994.gs, gs2 = M40825.gs, bg_size = bg_gene_count )
+//' # Generate a vector containing the number of contents of
+//' # the 2x2 contingency table:
+//' counts.v <- gsIntersectCounts( gs1 = M29994.gs,
+//'                                gs2 = M40825.gs,
+//'                                bg_size = bg_gene_count )
 //'
 //' @export
 //'
@@ -593,17 +606,19 @@ Rcpp::NumericVector gsIntersectCounts( Rcpp::CharacterVector gs1, std::set<std::
 //'
 //' library(GSNA)
 //'
-//' # Get the background of observable genes set from expression data:
+//' # Get the background of observable genes set from
+//' # expression data:
 //' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
 //'
-//' # Generate a gene set collection as a list of vectors from **Bai_gsc.tmod**, included
-//' # in sample data:
+//' # Generate a gene set collection as a list of vectors from
+//' # **Bai_gsc.tmod**, included in sample data:
 //' Bai.gsc <- tmod2gsc( Bai_gsc.tmod )
 //'
-//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene set collection
-//' # filtered for the bg of observable genes:
+//' # Using the sample gene set collection **Bai_gsc.tmod**,
+//' # generate a gene set collection filtered for the bg of
+//' # observable genes:
 //' Bai.filt.gsc <- gsnFilterGeneSetCollectionList( bg = gene_background,
-//'                                                 geneSetCollection = Bai.gsc )
+//'                                          geneSetCollection = Bai.gsc )
 //'
 //' @export
 //'
@@ -676,22 +691,30 @@ Rcpp::List gsnFilterGeneSetCollectionList( Rcpp::CharacterVector bg,
 //'
 //' library(GSNA)
 //'
-//' # From a differential expression data set, we can generate a subset of genes with significant
-//' # differential expression, up or down. Here we will extract genes with significant negative differential
-//' # expression with avg_log2FC < 0 and p_val_adj <= 0.05 from **Seurat** data:
+//' # From a differential expression data set, we can generate a
+//' # subset of genes with significant differential expression,
+//' # up or down. Here we will extract genes with significant
+//' # negative differential expression with
+//' # avg_log2FC < 0 and p_val_adj <= 0.05 from **Seurat** data:
 //'
 //' sig_DN.genes <-
-//'    toupper( rownames(subset( Bai_CiHep_v_Fib2.de, avg_log2FC < 0  & p_val_adj < 0.05 )) )
+//'    toupper( rownames(subset( Bai_CiHep_v_Fib2.de,
+//'                       avg_log2FC < 0  & p_val_adj < 0.05 )) )
 //'
-//' # Using all the genes in the differential expression data set, we can obtain a suitable background:
+//' # Using all the genes in the differential expression data set,
+//' # we can obtain a suitable background:
 //' bg <- rownames( Bai_CiHep_v_Fib2.de )
 //'
-//' # Next we need a gene set collection in the form of a list of character vectors. We can convert the
-//' # **Bai_gsc.tmod** object included in the sample data to such a list:
+//' # Next we need a gene set collection in the form of a list of
+//' # character vectors. We can convert the **Bai_gsc.tmod** object
+//' # included in the sample data to such a list:
 //' Bai.gsc <- tmod2gsc( Bai_gsc.tmod )
 //'
-//' # Now, we can do a overrepresentation analysis search on this data using **Bai.gsc**:
-//' sig_DN.gsnora <- gsnORAtest_cpp( l = sig_DN.genes, bg = bg, geneSetCollection = Bai.gsc )
+//' # Now, we can do a overrepresentation analysis search on this
+//' # data using **Bai.gsc**:
+//' sig_DN.gsnora <- gsnORAtest_cpp( l = sig_DN.genes,
+//'                                  bg = bg,
+//'                                  geneSetCollection = Bai.gsc )
 //'
 //' @export
 //'
@@ -788,9 +811,15 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 //' a matrix of log-transformed Fisher *p*-values.
 //'
 //' @usage
-//' scoreLFMatrix_C( geneSetCollection_m,
-//'                  e_precision = 12,
-//'                  alternative = 1 )
+//'  scoreLFMatrix_C( geneSetCollection_m,
+//'                   e_precision = as.numeric(c(12)),
+//'                   alternative = as.integer(c(1)))
+//'
+//' # # NOTE: The following also works and may be preferable for
+//' # # many users:
+//' # scoreLFMatrix_C( geneSetCollection_m,
+//' #                  e_precision = 12,
+//' #                  alternative = 1 )
 //'
 //' @param geneSetCollection_m (required) A logical presence/absence matrix representation of a gene set collection
 //' in which columns correspond to gene sets, rows correspond to genes and values are \code{TRUE} if a gene is present
@@ -899,13 +928,16 @@ SEXP gsnORAtest_cpp( Rcpp::CharacterVector l,
 //'
 //' library( GSNA )
 //'
-//' # Get the background of observable genes set from expression data:
+//' # Get the background of observable genes set from
+//' # expression data:
 //' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
 //'
-//' # Using the sample gene set collection **Bai_gsc.tmod**, generate a gene presence-absence matrix
-//' # filtered for the ref.background of observable genes:
-//' presence_absence.mat <- makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
-//'                                                                geneSetCollection = Bai_gsc.tmod )
+//' # Using the sample gene set collection **Bai_gsc.tmod**,
+//' # generate a gene presence-absence matrix filtered for the
+//' # ref.background of observable genes:
+//' presence_absence.mat <-
+//'   makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
+//'                                          geneSetCollection = Bai_gsc.tmod )
 //'
 //' lf.mat <- scoreLFMatrix_C( presence_absence.mat,  1 )
 //'
