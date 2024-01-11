@@ -16,7 +16,7 @@
 0 errors | 0 warnings | 3 notes
 
 * The windows check, using **devtools::check_win_devel()** had 3 notes, two of which were the same as above.  
-  + In the third Windows note, the check function complains of a possible 'Lost braces; missing escapes or markup?' in the Rd file for the sample data, Bai_data.Rd. This may be because @@format tags were used that span multiple lines and have embedded itemized lists. Despite the note, the resulting Rd data displays properly.   
+  + In the third Windows note, the check function complains of a possible 'Lost braces; missing escapes or markup?' in the Rd file for the sample data, Bai_data.Rd. This may be because @format tags were used that span multiple lines and have embedded itemized lists. Despite the note, the resulting Rd data displays properly.   
 
 
 
