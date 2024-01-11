@@ -1,5 +1,5 @@
 
-invisible( utils::globalVariables(c("Distance Matrix", "..count..")) )
+invisible( utils::globalVariables(c("Distance Matrix", "..count..", "count")) )
 
 
 #' gsnDistanceHistogram
