@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GSNA version 0.1.1
+# GSNA version 0.1.2
 
 **Jonathan M. Urbach**
 
