@@ -29,20 +29,20 @@ invisible( utils::globalVariables( "adj.P.1S" ) )
 #'          if \code{full == TRUE})}
 #'   \item{*N*: the number of observed genes the queried gene set.}
 #'   \item{*Enrichment*: The fold overrepresentation of genes in the overlap set *d* calculated as:
-#'       \item{\code{E = (d / (c+d)) / ((b+d)/(a+b+c+d))}}
+#'       \deqn{E = (d / (c+d)) / ((b+d)/(a+b+c+d))}
 #'        }
 #'   \item{*P_2S*: 2-sided Fisher *p*-value. (*NOT* log-transformed, present only if \code{full == TRUE})}
-#'   \item{*adj.P.2S*: 2-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg^1 and implemented in
+#'   \item{*adj.P.2S*: 2-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg(1) and implemented in
 #'         the \code{stats} package. (present only if \code{full == TRUE})}
 #'   \item{*P_1S*: 1-sided Fisher *p*-value. (*NOT* log-transformed.)}
-#'   \item{*adj.P.1S*: 1-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg^1 and implemented in
+#'   \item{*adj.P.1S*: 1-sided Fisher *p*-value corrected using the method of Benjamini & Hochberg(1) and implemented in
 #'         the \code{stats} package. (present only if \code{full == TRUE})}
 #' }
 #'
 #' @details This function is provided to allow rapid and easy overrepresentation analysis using an unordered experimental
 #' gene set to query a gene set collection that may be either an arbitrary list of gene-sets, or an \code{tmod} class
 #' gene set collection. The statistical tests provided include both the standard two-sided Fisher and a 1-sided Fisher
-#' test, similar to what is provided by the DAVID pathways analysis web application^2.
+#' test, similar to what is provided by the DAVID pathways analysis web application(2).
 #'
 #' If a list of gene sets is provided as the \code{geneSetCollection} argument, it must be structured as a list of
 #' character vectors containing gene symbols (or whatever identifiers are used for the supplied experimental gene set),

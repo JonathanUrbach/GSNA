@@ -3,14 +3,15 @@ Type: Package
 Title: Gene Set Networking Analysis Package (Title Case)
 Version: 0.1.1
 Authors@R: 
-    person("Jonathan", "Urbach", "M", email = "jurbach@mgh.harvard.edu", role = c("aut", "cre"),
+    person(given = "Jonathan M", family = "Urbach", email = "jurbach@mgh.harvard.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0597-2848"))
-Description: This package provides functions for performing Gene Set Networking Analysis (GSNA). It is designed to work in tandem
-  with standard pathways analysis methods, such as CERNO, GSEA and others, for simplifying such data sets by grouping together
-  related functions on the basis of shared genes.
-    Inputs to GSNA are the outputs of pathways analysis methods: a list of gene sets, modules, pathways or GO-terms with associated
-  p-values. Since these pathways analysis methods may be used to analyze many different types of data including transcriptomic,
-  epigenetic, and high-throughput screen data sets, the GSNA pipeline is useful for analyzing these data as well.
+Description: Functions for performing Gene Set Networking Analysis (GSNA) and visualizing the results.
+  It is designed to work in tandem with standard pathways analysis methods, such as CERNO, GSEA and
+  others, for simplifying such data sets by grouping together related functions on the basis of shared
+  genes. Inputs to GSNA are the outputs of pathways analysis methods: a list of gene sets, modules,
+  pathways or GO-terms with associated p-values. Since these pathways analysis methods may be used to
+  analyze many different types of data including transcriptomic, epigenetic, and high-throughput screen
+  data sets, the GSNA pipeline is useful for analyzing these data as well.
 Language: en-US
 License: GPL (>= 3)
 Encoding: UTF-8

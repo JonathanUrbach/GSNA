@@ -46,7 +46,7 @@
 #' * Gene sets included herein derived from the \code{dorothea} package are included herein under the terms and conditions of the
 #'   GPL 3+ license.
 #'
-#' @format{Bai_CiHep_DN.cerno}{: `r roxygen2::object_format( Bai_CiHep_DN.cerno )`
+#' @format **Bai_CiHep_DN.cerno:** `r roxygen2::object_format( Bai_CiHep_DN.cerno )`
 #'  * **ID** Gene set ID.
 #'  * **Title** Human-interpretable gene set title.
 #'  * **cerno** CERNO statistic used in calculating significance.
@@ -55,7 +55,7 @@
 #'  * **cES** CERNO enrichment score.
 #'  * **P.Value** *P*-value calculated from the cerno statistic using the Fisher method.
 #'  * **adj.P.Val** FDR-adjusted.
-#' }
+#'
 #'
 #' @references
 #' \enumerate{
@@ -84,12 +84,12 @@
 
 
 #' @rdname Bai_data
-#' @format{Bai_CiKrt_DN.cerno}{: `r roxygen2::object_format( Bai_CiKrt_DN.cerno )`
-#' Same data format as \code{Bai_CiHep_DN.cerno}, above.}
+#' @format **Bai_CiKrt_DN.cerno:** `r roxygen2::object_format( Bai_CiKrt_DN.cerno )`
+#' Same data format as \code{Bai_CiHep_DN.cerno}, above.
 "Bai_CiKrt_DN.cerno"
 
 #' @rdname Bai_data
-#' @format{Bai_CiHep_dorothea_UP.Gsea}{: `r roxygen2::object_format( Bai_CiHep_dorothea_UP.Gsea )`
+#' @format **Bai_CiHep_dorothea_UP.Gsea:** `r roxygen2::object_format( Bai_CiHep_dorothea_UP.Gsea )`
 #' *  **NAME** Gene set name/ID.
 #' *  **GS<br> follow link to MSigDB** Same as NAME.
 #' *  **GS DETAILS** (Column used only in the HTML version of the data set.)
@@ -102,41 +102,41 @@
 #' *  **RANK AT MAX** Position in the ranked list where maximum enrichment score is found.
 #' *  **LEADING EDGE** Three statistics defining "leading edge" subset.
 #' *  **""** Blank column.
-#' }
+#'
 #'
 "Bai_CiHep_dorothea_UP.Gsea"
 
 #' @rdname Bai_data
-#' @format{Bai_CiHep_dorothea_DN.Gsea}{: `r roxygen2::object_format( Bai_CiHep_dorothea_DN.Gsea )`
-#' Same data format as \code{Bai_CiHep_dorothea_UP.Gsea}.}
+#' @format **Bai_CiHep_dorothea_DN.Gsea:** `r roxygen2::object_format( Bai_CiHep_dorothea_DN.Gsea )`
+#' Same data format as \code{Bai_CiHep_dorothea_UP.Gsea}.
 #'
 "Bai_CiHep_dorothea_DN.Gsea"
 
 #' @rdname Bai_data
-#' @format{Bai_CiHep_v_Fib2.de}{ `r roxygen2::object_format( Bai_CiHep_v_Fib2.de )`
+#' @format **Bai_CiHep_v_Fib2.de:** `r roxygen2::object_format( Bai_CiHep_v_Fib2.de )`
 #' * **(row names)** Gene name.
 #' * **p_val** The calculated *p*-value for differential expression in Seurat.
 #' * **avg_log2FC** Average log fold change of gene expression.
 #' * **pct.1** The percentage of cells where the feature is detected in the first group.
 #' * **pct.2** The percentage of cells where the feature is detected in the second group.
-#' * **p_val_adj** Adjusted *p*-value.}
+#' * **p_val_adj** Adjusted *p*-value.
 #'
 "Bai_CiHep_v_Fib2.de"
 
 #' @rdname Bai_data
-#' @format{Bai_CiKrt_v_Fib2.de}{ `r roxygen2::object_format( Bai_CiKrt_v_Fib2.de )`
-#' Same data format as \code{Bai_CiHep_v_Fib2.de}.}
+#' @format **Bai_CiKrt_v_Fib2.de:** `r roxygen2::object_format( Bai_CiKrt_v_Fib2.de )`
+#' Same data format as \code{Bai_CiHep_v_Fib2.de}.
 #'
 "Bai_CiKrt_v_Fib2.de"
 
 
 #' @rdname Bai_data
-#' @format{Bai_empty_expr_mat}{: `r roxygen2::object_format( Bai_empty_expr_mat )`
-#' * **(row name)** The gene names in the expression data set.}
+#' @format **Bai_empty_expr_mat:** `r roxygen2::object_format( Bai_empty_expr_mat )`
+#' * **(row name)** The gene names in the expression data set.
 #'
 "Bai_empty_expr_mat"
 
 #' @rdname Bai_data
-#' @format{Bai_gsc.tmod}{: A tmod class object containing 94 gene sets. }
+#' @format **Bai_gsc.tmod:** A tmod class object containing 94 gene sets.
 #'
 "Bai_gsc.tmod"

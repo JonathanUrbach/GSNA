@@ -1,8 +1,8 @@
 #' makeLinearNColorGradientFunction
 #'
 #' @description Given a set of colors and a range of values, generate a function to encode numbers in
-#' the specified range of colors. This serves as a backend for \code{\link{makeOneColorEncodeFunction}()}
-#' \code{\link{makeTwoColorEncodeFunction}()} allowing more than 2 color intervals can be specified, so
+#' the specified range of colors. This serves as a backend for \code{makeOneColorEncodeFunction()}
+#' \code{makeTwoColorEncodeFunction()} allowing more than 2 color intervals can be specified, so
 #' that color encodings consisting of 3 or more colors per color-dimension/channel can be created.
 #'
 #' @param colors A vector of colors, either by name or as hexadecimal colors.
@@ -14,10 +14,8 @@
 #'
 #' @details Given n colors, where n >=1 and a range of numbers from x.min to x.max, the function breaks
 #' down the range of numbers into n-1 ranges, and then maps numerical values linearly to numbers in each
-#' range bounded by successive colors. This is used by \code{\link{makeOneColorEncodeFunction}()} and
-#' \code{\link{makeTwoColorEncodeFunction}()}.
-#'
-#' @export
+#' range bounded by successive colors. This is used by the functions \code{\link{makeOneColorEncodeFunction}()}
+#' and \code{\link{makeTwoColorEncodeFunction}()}.
 #'
 #' @examples
 #'
@@ -28,8 +26,10 @@
 #' three_col_mat <- t( sapply( c(0, 25, 50, 75, 100 ) ,three_col_fun ) )
 #'
 #' @seealso
-#'  [makeOneColorEncodeFunction](),
-#'  [makeTwoColorEncodeFunction]().
+#'  \code{\link{makeOneColorEncodeFunction}()},
+#'  \code{\link{makeTwoColorEncodeFunction}()}.
+#'
+#' @export
 #'
 makeLinearNColorGradientFunction <- function( colors = c("#000000",
                                                          "#CCCC00",

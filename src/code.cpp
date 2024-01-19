@@ -483,11 +483,12 @@ std::set<std::string> gsMakeSet( Rcpp::CharacterVector gs ){
 //' @param bg_size An integer representing the size of the background, i.e. the total number of observable genes.
 //'
 //' @return A numeric vector of length 4 containing the following 4 elements:
-//'    \item{\code{a}}{The number of genes in the background that are absent in gs1 and gs2.}
-//'    \item{\code{b}}{The number of background genes in gs1 but not gs2.}
-//'    \item{\code{c}}{The number of background genes in gs2 but not gs1.}
-//'    \item{\code{d}}{The number of background genes in in both gs1 and gs2.}
-//'
+//' \itemize{
+//'    \item{\code{a}: The number of genes in the background that are absent in gs1 and gs2.}
+//'    \item{\code{b}: The number of background genes in gs1 but not gs2.}
+//'    \item{\code{c}: The number of background genes in gs2 but not gs1.}
+//'    \item{\code{d}: The number of background genes in in both gs1 and gs2.}
+//'}
 //' @details This version of the function may not be retained since it's not currently used. Two alternative versions of the
 //' function in C++ that find the overlap between a \code{std::set<std::string>} and a character vector are used since those versions
 //' are much faster.
@@ -674,7 +675,7 @@ Rcpp::List gsnFilterGeneSetCollectionList( Rcpp::CharacterVector bg,
 //'   \item{*d*: the number of observed genes in both *l* and the queried gene set, i.e. the overlap.}
 //'   \item{*N*: the number of observed genes the queried gene set.}
 //'   \item{*Enrichment*: The fold overrepresentation of genes in the overlap set *d* calculated as:
-//'       \item{\code{E = (d / (c+d)) / ((b+d)/(a+b+c+d))}}
+//'       \deqn{E = (d / (c+d)) / ((b+d)/(a+b+c+d))}
 //'        }
 //'   \item{*P_2S*: 2-sided Fisher *p*-value. (*NOT* log-transformed.)}
 //'   \item{*P_1S*: 1-sided Fisher *p*-value. (*NOT* log-transformed.)}
@@ -991,7 +992,7 @@ SEXP scoreLFMatrix_C(SEXP geneSetCollection_m,
           set_ij++;
       }
       // Calculate log Fisher p-value
-      double lf2s = lfisher_cpp( set_bg, set_i, set_j, set_ij, 12.0, alternative_ );
+      double lf2s = lfisher_cpp( set_bg, set_i, set_j, set_ij, e_precis, alternative_ );
       LF(j,i) = lf2s;
       LF(i,j) = lf2s;
     }

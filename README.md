@@ -7,7 +7,7 @@
 
 **Ragon Instute of MGH, MIT, and Harvard**
 
-**2024-01-10**
+**2024-01-18**
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -143,7 +143,7 @@ limit ongoing HIV replication in spontaneous controller lymph nodes.”
 *Science Immunology*, *8*(83), eade5872.
 <doi:10.1126/sciimmunol.ade5872>
 <https://doi.org/10.1126/sciimmunol.ade5872>,
-<https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231436/>.
+<https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231436>.
 
 # References
 

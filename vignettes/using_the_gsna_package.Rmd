@@ -2,7 +2,10 @@
 title: "Using the GSNA Package"
 author: "Jonathan M. Urbach"
 date: "2023-10-11"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    fig_width: 6
+    fig_height: 6
 bibliography: using_the_gsna_package.bib
 csl: plos-computational-biology.csl
 link-citations: true
@@ -30,6 +33,7 @@ Pathways analysis methods such as GSEA(@subramanian_gene_2005,@mootha_pgc-1-resp
 
 Strategies exist to address this problem. TopGO (@alexa_improved_2006) maps hits against nested gene ontology gene sets to the predefined hierarchies of GO terms, and scores gene sets within the hierarchy. However it's utility is limited to gene ontology gene sets. DAVID (@sherman_david_2022,@huang_systematic_2009) uses kappa statisics to group gene sets together, but this feature is only usable within the DAVID web application and is not presently applicable to other methods or gene sets beyond those present in DAVID's online database. The **Enrichment Map** plugin for **Cytoscape** (@merico_enrichment_2010) uses Jaccard or Szymkiewicz–Simpson coefficients as distance metrics to group gene sets together, but it does not actually divide the gene sets into clusters, and is meant primarily for GSEA data. Here, we present a general method for associating gene sets that (1) is modular and independent of pathways-analysis method*, (2) works with arbitrary gene sets/combinations of gene sets, (3) can generate tabular gene set associations and graphical visualizations from pathways data and (4) is accessible via an application programming interface (API). We call this method Gene Set Network Analysis (GSNA).  
 
+For best results with this vignette, we suggest running the code blocks listed herein in an R markdown environment in Rstudio. Some commands in this document are specific to R markdown, particularly knitr::include_graphics().
 
 # Getting Started with GSNA      
 
@@ -290,13 +294,22 @@ Try horizontally scrolling this table to see all columns.
 
 ## Plotting the Network    
 
-Once the gene set network has been pared and subnets assigned, the **plot.GSNData()** method (called simply as **plot()**) can be used to generate plots of GSNData objects as a circular network plot. Generating a plot directly within an R graphical environment can work, but for R markdown, output to an SVG file and reading the image in through **knitr::include_graphics()** often produces better results. (Work is currently underway to improve automatic setting of graphical parameters by GSNA, but currently, tweaking graphical parameters can improve rendering.)
+Once the gene set network has been pared and subnets assigned, the **plot.GSNData()** method (called simply as **plot()**) can be used to generate plots of GSNData objects as a circular network plot. Generating a plot directly within an R graphical environment can work, but for R markdown, output to an file and reading the image in through **knitr::include_graphics()** often produces better results. In this vignette, because of package space limitations, we're generating PNG bitmap formats, but for high quality vector images, SVG or PDF outputs may be preferable. **NOTE:** The \code{plot.GSNData()}, \code{gsnPlotNetwork()}, and \code{gsnHierarchicalDendrogram()} functions can select an output format based on the presence of a supported file name suffix (.pdf, .png, .svg), so to output an SVG format to a file, you could simply give the file a name ending in \code{'.svg'}.  (Work is currently underway to improve automatic setting of graphical parameters by GSNA, but currently, tweaking graphical parameters can improve rendering.)
 
 
-```{r}
+```{r eval=FALSE, include=FALSE, echo=FALSE}
+# SVG version of this function, but the output SVG is too large for inclusion in the vignette.
 plot( x = Bai_CiHep_DN.sig.GSN, filename = "Bai_CiHep_DN.sig.GSN.PL.svg", width = 9, height = 7, n_col = 'N1' ) -> out
 
 knitr::include_graphics( "Bai_CiHep_DN.sig.GSN.PL.svg" )
+```
+
+
+
+```{r}
+gsnPlotNetwork( object = Bai_CiHep_DN.sig.GSN, filename = "Bai_CiHep_DN.sig.GSN.PL.png", width = 9, height = 7, n_col = 'N1' ) -> out
+
+knitr::include_graphics( "Bai_CiHep_DN.sig.GSN.PL.png" )
 ```
 
 Note that the **n_col = 'N1'** argument tells the plot function to scale the size of vertices according to the values of the 'N1' column of the pathways data, which indicates the number of genes in a given gene signature.  
@@ -308,13 +321,13 @@ To generate a hierarchical dendrogram of distances between gene sets, the **gsnH
 gsnHierarchicalDendrogram( object = Bai_CiHep_DN.sig.GSN,
                            width = 8,
                            height = 5,
-                           filename = "Bai_CiHep_DN.sig.GSN.HD.svg",
+                           filename = "Bai_CiHep_DN.sig.GSN.HD.png",
                            show.leaves = TRUE,
                            show.legend = TRUE,
                            n_col = 'N1',
                            leaf_cex_range = c(0.3,1.6) )
 
-knitr::include_graphics( path = "Bai_CiHep_DN.sig.GSN.HD.svg" )
+knitr::include_graphics( path = "Bai_CiHep_DN.sig.GSN.HD.png" )
 
 ```
 
@@ -492,9 +505,9 @@ In 2-Channel network plots, gene set nodes can be color-scaled in two dimensions
 
 
 ```{r}
-gsnPlotNetwork( Bai_CiHep_v_CiKrt_DN.GSN, n_col = "N1.CiHep", filename = "Bai_CiHep_v_CiKrt_DN.GSN.NP.svg", width = 7, height = 5 )
+gsnPlotNetwork( Bai_CiHep_v_CiKrt_DN.GSN, n_col = "N1.CiHep", filename = "Bai_CiHep_v_CiKrt_DN.GSN.NP.png", width = 7, height = 5 )
 
-knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.NP.svg" )
+knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.NP.png" )
 ```
 
 From this analysis, it may be concluded that about 7 subnets or clusters of related gene sets are downregulated in CiHep and CiKrt cells upon chemical induction of fibroblast 2 cells. In particular, the Psmb5 downregulation signature is strong in CiHeps (strong red), whereas the Hes2 signature (strong blue) is strongest in CiKrt cells.  
@@ -508,7 +521,7 @@ From this analysis, it may be concluded that about 7 subnets or clusters of rela
 gsnPlotNetwork( object = Bai_CiHep_v_CiKrt_DN.GSN,
                 width = 8,
                 height = 5,
-                file = "Bai_CiHep_v_CiKrt_DN.GSN.NP_AUC.svg",
+                file = "Bai_CiHep_v_CiKrt_DN.GSN.NP_AUC.png",
                 show.legend = TRUE,
                 n_col = "N1.CiHep",
                 stat_col = 'AUC.CiHep',
@@ -517,7 +530,7 @@ gsnPlotNetwork( object = Bai_CiHep_v_CiKrt_DN.GSN,
                 vertex_colors = c('darkblue', 'blue', '#9999FF',  '#DDDDFF', 'white' )
 )
 
-knitr::include_graphics( path = "Bai_CiHep_v_CiKrt_DN.GSN.NP_AUC.svg" )
+knitr::include_graphics( path = "Bai_CiHep_v_CiKrt_DN.GSN.NP_AUC.png" )
 
 ```
 
@@ -527,13 +540,13 @@ A hierarchical dendrogram is also revealing. This time, we'll generate a circula
 ```{r}
 gsnHierarchicalDendrogram( Bai_CiHep_v_CiKrt_DN.GSN,
                            n_col = "N1.CiHep",
-                           filename = "Bai_CiHep_v_CiKrt_DN.GSN.HD.svg",
+                           filename = "Bai_CiHep_v_CiKrt_DN.GSN.HD.png",
                            width = 7,
                            height = 5,
                            show.leaves = TRUE,
                            geometry = 'circular' )
 
-knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.HD.svg" )
+knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.HD.png" )
 ```
 
 
@@ -742,9 +755,9 @@ gsnPlotNetwork( object = Bai_CiHep_dorothea_UC.GSN,
                 n_col = "SIZE",
                 height = 7,
                 width = 9,
-                filename = "Bai_CiHep_dorothea_UC.GSN.DEF.NP.svg" )
+                filename = "Bai_CiHep_dorothea_UC.GSN.DEF.NP.png" )
 
-knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.DEF.NP.svg" )
+knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.DEF.NP.png" )
 
 ```
 
@@ -759,9 +772,9 @@ gsnPlotNetwork( object = Bai_CiHep_dorothea_UC.GSN,
                 vertex_colors = c("blue", "white", "red"), 
                 height = 7,
                 width = 9,
-                filename = "Bai_CiHep_dorothea_UC.GSN.NES.NP.svg" )
+                filename = "Bai_CiHep_dorothea_UC.GSN.NES.NP.png" )
 
-knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.NES.NP.svg" )
+knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.NES.NP.png" )
 
 ```
 
@@ -779,10 +792,10 @@ gsnHierarchicalDendrogram( object = gsnAssignSubnets(gsnPareNetGenericHierarchic
                            leaf_colors =  c("blue", "white", "red"),
                            width = 7,
                            height = 11,
-                           filename = "Bai_CiHep_dorothea_UC.GSN.HD.svg",
+                           filename = "Bai_CiHep_dorothea_UC.GSN.HD.png",
                            lab.cex = 0.8 )
 
-knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.HD.svg" )
+knitr::include_graphics( "Bai_CiHep_dorothea_UC.GSN.HD.png" )
  
 ```
 

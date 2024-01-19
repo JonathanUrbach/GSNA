@@ -150,6 +150,8 @@
 #' (default 100).
 #' @param legend.bg (option) The color of the legend background. (default: \code{par('bg')})
 #' @param legend.fg (option) The color of the legend foreground. (default: \code{par('fg')})
+#' @param resolution Imagee resolution in pixels per inch, only for bitmap image output formats (currently
+#' png only). (default: 72)
 #' @param draw.legend.box.bool (option) Logical indicating whether bounding boxes should be drawn for the legends.
 #' @param DO_BROWSER (option) Logical indicating whether browser() should be run for this function. (For debugging
 #' purposes, will probably remove.)
@@ -276,6 +278,7 @@ gsnHierarchicalDendrogram <- function( object,
                                        legend.bg = par('bg'),
                                        legend.fg = par('fg'),
 
+                                       resolution = 72, # pixels per inch
                                        draw.legend.box.bool = TRUE,
                                        DO_BROWSER = FALSE
 
@@ -577,7 +580,8 @@ gsnHierarchicalDendrogram <- function( object,
       out_fun <- grDevices::pdf
       close_fun <- grDevices::dev.off
     }  else if( out_format == "png" ){
-      out_fun <- grDevices::png
+      #out_fun <- grDevices::png
+      out_fun <- function( height, width, ... ) grDevices::png( height = height * resolution, width = width * resolution, res = resolution, ... )
       close_fun <- grDevices::dev.off
     }
 
@@ -764,10 +768,10 @@ gsnHierarchicalDendrogram <- function( object,
                                         oneColorEncode.fun = oneColorEncode.fun,
                                         n = colors.n,
                                         lab = legend.ylab,
-                                        .plt = c( legend_left_x.fig,
-                                                  legend_left_x.fig + legend_x_size.fig,
-                                                  0,
-                                                  legend_top_y.fig
+                                        .plt.leg = c( legend_left_x.fig,
+                                                      legend_left_x.fig + legend_x_size.fig,
+                                                      0,
+                                                      legend_top_y.fig
                                         ),
                                         cex.lab = legend.lab.cex,
                                         cex.axis = legend.axis.cex,
@@ -794,7 +798,7 @@ gsnHierarchicalDendrogram <- function( object,
                                           ),
                                           legend.lab = n_col,
                                           pch = leaves_pch,
-                                          cex = cex,
+                                          cex.ticks = cex,
                                           leaf_border_color = leaf_border_color,
                                           leaf.col = legend.leaf.col,
                                           legend.fg = legend.fg,
@@ -849,7 +853,7 @@ gsnHierarchicalDendrogram <- function( object,
                           legend.bg = legend.bg,
                           n = colors.n,
                           lab = legend.ylab,
-                          .plt = plt.l[[plt.idx]],
+                          .plt.leg = plt.l[[plt.idx]],
                           draw.legend.box.bool = draw.legend.box.bool,
                           v.adjust = "center"
         )

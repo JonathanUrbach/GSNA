@@ -205,6 +205,9 @@
 #'
 #' @param legend_spacing.y.in (optional) Space between legends in inches. (default: 1 character height)
 #'
+#' @param resolution Imagee resolution in pixels per inch, only for bitmap image output formats (currently
+#' png only). (default: 72)
+#'
 #' @param DO_BROWSER (option) Logical indicating whether browser() should be run for this function. (For debugging
 #' purposes, will probably remove.)
 #'
@@ -302,6 +305,7 @@ gsnPlotNetwork <- function( object,
                             legend_spacing.y.in = par('cin')[2],
                                  #legend_spacing.y.fig = NULL,       # Defaults to par('cin')[2] / height
                                  #legend_spacing.x.fig = NULL,       # Defaults to -10*par('cin')[1] / width
+                            resolution = 72, # pixels per inch
                             DO_BROWSER = FALSE
 
 ){
@@ -589,7 +593,9 @@ gsnPlotNetwork <- function( object,
     out_fun <- grDevices::pdf
     close_fun <- grDevices::dev.off
   }  else if( out_format == "png" ){
-    out_fun <- grDevices::png
+    #resolution <- 72 # pixels per inch
+    #out_fun <- function( height, width, ... ) grDevices::png( units = "in", res = resolution, ... ) # This doesn't work right.
+    out_fun <- function( height, width, ... ) grDevices::png( height = height * resolution, width = width * resolution, res = resolution, ... )
     close_fun <- grDevices::dev.off
   }
 
@@ -660,10 +666,10 @@ gsnPlotNetwork <- function( object,
                                       oneColorEncode.fun = oneColorEncode.fun,
                                       n = colors.n,
                                       lab = legend.ylab,
-                                      .plt = c( legend_left_x.fig,
-                                                legend_left_x.fig + max_legend_x_size.fig,
-                                                0,
-                                                legend_top_y.fig
+                                      .plt.leg = c( legend_left_x.fig,
+                                                    legend_left_x.fig + max_legend_x_size.fig,
+                                                    0,
+                                                    legend_top_y.fig
                                       ),
                                       cex.lab = legend.lab.cex,
                                       draw.legend.box.bool = draw.legend.box.bool,
@@ -742,7 +748,7 @@ gsnPlotNetwork <- function( object,
                         cex.axis = legend.axis.cex,
                         n = colors.n,
                         lab = legend.ylab,
-                        .plt = plt.l[[plt.idx]],
+                        .plt.leg = plt.l[[plt.idx]],
                         draw.legend.box.bool = draw.legend.box.bool,
                         v.adjust = "center",
                         legend.fg = legend.fg,
