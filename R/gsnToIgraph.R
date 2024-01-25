@@ -49,10 +49,11 @@
 #' sig_pathways.GSN <- gsnAssignSubnets( sig_pathways.GSN )
 #'
 #' # Now, create an igraph version of the network:
-#' sig_pathways.igraph <- gsnPlotNetwork( object  = sig_pathways.GSN )
+#' sig_pathways.igraph <- gsnToIgraph( object  = sig_pathways.GSN )
 #'
 #' # This can be plotted via igraph::plot.igraph:
 #' plot( sig_pathways.igraph )
+#'
 #'
 #' @export
 gsnToIgraph <- function( object, distance = NULL ){
