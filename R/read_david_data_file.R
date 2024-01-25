@@ -45,16 +45,6 @@
 #'
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#'     file_path = '/path/to/david_FAC.txt'
-#'     # Get a data.frame containing DAVID results.
-#'     pathways.david <- read_david_data_file( file = file_path )
-#'     # Extract a gene set collection from the DAVID results file:
-#'     pathways.GSC <- read_david_data_file( file = file_path,
-#'                                           output = "GSC" )
-#' }
-#'
 #' @seealso [gsnImportDAVID()]
 #'
 read_david_data_file <- function( file,
@@ -220,11 +210,6 @@ read_david_data_file <- function( file,
 #' @seealso
 #' * \code{\link{gsnAddPathwaysData}()}
 #' * \code{\link{read_david_data_file}()}
-#'
-#' @examples
-#' \dontrun{
-#'    david.GSC <- extract_david_GSC( data = data.david )
-#' }
 #'
 #' @export
 #'

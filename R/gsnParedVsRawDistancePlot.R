@@ -12,12 +12,37 @@ invisible( utils::globalVariables( c( 'Pared/Scaled Distances' ) ) )
 #' subnets. This defaults to the 'default_distance'.
 #' @param ... Additional graphical parameters to be passed to \code{plot.default()}.
 #'
+#' @returns NULL
+#'
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'  gsnParedVsRawDistancePlot( object = analysis.GSN, col = "blue" )
-#'  }
+#'
+#' library(GSNA)
+#'
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkJaccard(geneSetCollection = sig_pathways.tmod,
+#'                               ref.background = background_genes )
+#'
+#' # Now we can pare the network and assign subnets:
+#' sig_pathways.GSN <- gsnPareNetGenericHierarchic( object = sig_pathways.GSN )
+#'
+#' # Create a pared vs raw distance plot to examine the relationship between the
+#' # raw and pared distances:
+#' gsnParedVsRawDistancePlot( sig_pathways.GSN )
 #'
 #' @seealso \code{\link{gsnPareNetGenericHierarchic}}
 #'

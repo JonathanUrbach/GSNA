@@ -82,7 +82,10 @@ make1ColorLegend <- function(numbers,
                              optimize.legend.size = FALSE
 
 ){
-  #browser()
+  # Backup par, so that original settings are restored on exit:
+  .par.orig <- par( no.readonly = TRUE )
+  on.exit( add = TRUE, expr = par(.par.orig) )
+
   # Optimize width so that it's approximately 15% of height.
   if( is.null( legend_thickness ) ) legend_thickness <- ceiling( n * 15 / 100 )
 
@@ -165,18 +168,18 @@ make1ColorLegend <- function(numbers,
   }
 
   if( render.bool ){
-    # First back up original graphical parameters
-    .plt.orig <- graphics::par( 'plt' )
+    # First back up original graphical parameters. # May not be necessary due to on.exit call.
+    #.plt.orig <- graphics::par( 'plt' )
     .usr.orig <- graphics::par( 'usr' )
-    .xpd.orig <- graphics::par( 'xpd' )
+    #.xpd.orig <- graphics::par( 'xpd' )
 
     if( draw.legend.box.bool ){
-      graphics::par( plt = .plt.leg,  xpd = TRUE, new = TRUE )
+      graphics::par( plt = .plt.leg,  xpd = TRUE, new = TRUE ) # This will be restored by on.exit call.
       graphics::box( which = "plot", col = legend.fg, bg = legend.bg )
     }
 
     graphics::par( plt = .plt.adj.vm, xpd = TRUE,
-                   new = TRUE )
+                   new = TRUE ) # This will be restored by on.exit call.
 
     raster::plotRGB( legend.stack,
                      r = 1,
@@ -202,7 +205,7 @@ make1ColorLegend <- function(numbers,
 
 
     if( restore.params.bool ){
-      graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
+      #graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
       graphics::plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
     }
   }

@@ -27,42 +27,57 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'    # Export merged pathways/subnets data:
-#'    analysis.mergePathways <- gsnMergePathways( object = analysis.GSN )
 #'
-#'    # Convert IDs in analysis.mergePathways into a named list of URLs:
-#'    url_map_l <- list()
+#' # The sample data object Bai_CiKrt_DN.cerno contains MSigDB
+#' # systematic names as gene set identifiers in its ID column
+#' # that we can map to URLs on MSigDB's website using the
+#' # 'systematicName' URL parameter:
+#' msig_url <- "http://www.gsea-msigdb.org/gsea/msigdb/geneset_page.jsp"
+#' id2url <- with( Bai_CiKrt_DN.cerno,
+#'                 structure(paste0( msig_url, "?systematicName=", ID),
+#'                           names = ID
+#'                          )
+#'               )
 #'
-#'    # To link to a gene set page on MSigDB's website, this base URL can be used:
-#'    msig_url <- "http://www.gsea-msigdb.org/gsea/msigdb/geneset_page.jsp"
+#' # NOTE: In GSEA data sets against MSigDB,
+#' # MSigDB STANDARD_NAMES (e.g. "GO_RESPONSE_TO_GLUCAGON")
+#' # are often present in the pathways data instead of
+#' # systematic name identifiers. They can be linked to URLs
+#' # using the 'geneSetName' parameter, as follows:
+#' #  sn2url <-
+#' #   with( Bai_CiKrt_DN.gsea,
+#' #       structure( paste0(msig_url, "?geneSetName=", STANDARD_NAME),
+#' #                  names = STANDARD_NAME
+#' #                )
+#' #       )
 #'
-#'    # This method works for MSigDB IDs (e.g. "M5928"), with parameter 'systematicName':
-#'    url_map_l[['ID']] <-
-#'      with( analysis.mergePathways,
-#'        structure(paste0( msig_url, "?systematicName=", ID),
-#'                   names = ID
-#'                )
-#'           )
-#'
-#'    # If MSigDB STANDARD_NAMES (e.g. "GO_RESPONSE_TO_GLUCAGON") are present in the
-#'    # pathways data, they can be linked to URLs using parameter 'geneSetName':
-#'    url_map_l[['STANDARD_NAME']] <-
-#'        with( analysis.mergePathways,
-#'          structure( paste0(msig_url, "?geneSetName=", STANDARD_NAME),
-#'                     names = STANDARD_NAME
-#'                   )
-#'            )
-#'    # Print HTML table:
-#'    yassifyPathways( pathways = analysis.mergePathways,
-#'                     n = 200,
-#'                     url_map_list = url_map_l )
-#'
-#' }
-#'
+#' # The named vector id2url now contains URLs for MSigDB
+#' # gene sets, names with the gene set ID. By passing a
+#' # list containing the id2url named as the column we
+#' # wish to map to a URL, we can have yassifyPathways
+#' # generate an HTML table with links for the gene set IDs.
+#' yassifyPathways( Bai_CiKrt_DN.cerno,
+#'                  n = 200,
+#'                  url_map_list = list(ID = id2url) )
+#' # Here the 'n = 200' argument tells the function to
+#' # generate an HTML table with just the first 200 results,
+#' # and the 'url_map_list = list(ID=id2url)' tells the
+#' # function to link the ID column of Bai_CiKrt_DN.cerno
+#' # to the mapped URLs in the 'id2url' vector. In this case
+#' # the entire ID field is mapped, but if we want to map
+#' # in a word-based fashion, for example when a column
+#' # may contain multiple IDs per row (eg "M40804, M40775" ),
+#' # then the 'url_map_by_words_list = list(ID = id2url)'
+#' # argument works:
+#' yassifyPathways( Bai_CiKrt_DN.cerno,
+#'                  n = 200,
+#'                  url_map_by_words_list = list(ID = id2url) )
+#' # The url_map_list_by_words argument will work in mos
+#' # cases where url_map_list does, so may be fine to use
+#' # generally, but it is less efficient and my sometimes be
+#' # slower.
 #'
 #' @importFrom utils head
-# This version of yassifyPathways allows mapping of IDs by word. It's less efficient and slower, though.
 yassifyPathways <- function( pathways,
                              n = NULL,
                              url_map_list = list(),

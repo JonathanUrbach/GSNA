@@ -1,17 +1,21 @@
 Package: GSNA
 Type: Package
-Title: Gene Set Networking Analysis Package (Title Case)
+Title: Gene Set Networking Analysis Package  
 Version: 0.1.2
 Authors@R: 
     person(given = "Jonathan M", family = "Urbach", email = "jurbach@mgh.harvard.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0597-2848"))
-Description: Functions for performing Gene Set Networking Analysis (GSNA) and visualizing the results.
-  It is designed to work in tandem with standard pathways analysis methods, such as CERNO, GSEA and
-  others, for simplifying such data sets by grouping together related functions on the basis of shared
-  genes. Inputs to GSNA are the outputs of pathways analysis methods: a list of gene sets, modules,
-  pathways or GO-terms with associated p-values. Since these pathways analysis methods may be used to
-  analyze many different types of data including transcriptomic, epigenetic, and high-throughput screen
-  data sets, the GSNA pipeline is useful for analyzing these data as well.
+Description: Create networks of gene sets, infer clusters of functionally-related gene sets based
+  on similarity statistics, and visualize the results. This method simplifies and accelerates
+  interpretation of pathways analysis data sets. It is designed to work in tandem with standard
+  pathways analysis methods, such as 'GSEA' (Gene Set Enrichment Analysis), 'CERNO' (Coincident
+  Extreme Ranks in Numerical Observations) and others. Inputs to 'GSNA' are the outputs of pathways
+  analysis methods: a list of gene sets (or "modules"), pathways or GO-terms with associated p-values.
+  Since these pathways analysis methods may be used to analyze many different types of data including
+  transcriptomic, epigenetic, and high-throughput screen data sets, the 'GSNA' pipeline is applicable
+  to these data as well. The use of the 'GSNA' method was first described in the following papers: 
+  Collins DR, Urbach JM, Racenet ZJ, Arshad U, Power KA, Newman RM, et al. (2021) <doi:10.1016/j.immuni.2021.08.007>,
+  Collins DR, Hitschfel J, Urbach JM, Mylvaganam GH, Ly NL, Arshad U, et al. (2023) <doi:10.1126/sciimmunol.ade5872>.
 Language: en-US
 License: GPL (>= 3)
 Encoding: UTF-8

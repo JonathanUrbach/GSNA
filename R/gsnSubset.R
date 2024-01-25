@@ -48,10 +48,6 @@ invisible( utils::globalVariables( c( "vertex" ) ) )
 #'
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' analysis.GSN.SN1 <- gsnSubset( analysis.GSN, subnet_names=c("1") )
-#' }
 #'
 #' @seealso \code{\link{GSNData}()}
 #'

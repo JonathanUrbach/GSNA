@@ -23,13 +23,6 @@ invisible( utils::globalVariables(c("Distance Matrix", "..count..", "count")) )
 #' @details This function is useful for such purposes as assessing the effects of paring on the distribution of
 #' distances.
 #'
-#' @examples
-#' \dontrun{
-#' gsnDistanceHistogram( object = GSN,
-#'                       distance = c("pared", "raw" ),
-#'                       stat = "percent",
-#'                       bind = 100 )
-#' }
 #'
 #' @seealso
 #'  \code{\link{plot.GSNData}}

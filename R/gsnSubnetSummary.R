@@ -44,16 +44,39 @@ invisible( utils::globalVariables( c( "subnetRank" ) ) )
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'    subnetSummary.df <- gsnSubnetSummary( object = analysis.GSN )
-#' }
+#'
+#' library(GSNA)
+#'
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkJaccard(geneSetCollection = sig_pathways.tmod,
+#'                               ref.background = background_genes )
+#'
+#' # Now import the CERNO data:
+#' sig_pathways.GSN <- gsnImportCERNO( sig_pathways.GSN,
+#'                                     pathways_data = sig_pathways.cerno )
+#'
+#' # Now we can pare the network and assign subnets:
+#' sig_pathways.GSN <- gsnPareNetGenericHierarchic( object = sig_pathways.GSN )
+#' sig_pathways.GSN <- gsnAssignSubnets(  object = sig_pathways.GSN )
+#'
+#' # Now, get a statistacal summary of the subnets:
+#' gsnSubnetSummary( sig_pathways.GSN )
 #'
 #' @importFrom psych harmonic.mean
 #'
-
-######## NEW VERSION: #############
-# REMOVE THE SEED MODULE STATISTICS
-# REPLACE WITH GROUP STATISTICS:
 gsnSubnetSummary <- function( object,
                               pathways.data = NULL,
                               distance = NULL,

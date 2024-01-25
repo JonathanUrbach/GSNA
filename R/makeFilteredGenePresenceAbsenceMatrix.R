@@ -21,14 +21,19 @@
 #'
 #' @examples
 #'
-#' \dontrun{
 #' library(GSNA)
-#' observable_genes <- rownames(FILTERED_RNASEQ_COUNT_MATRIX)
-#' msig.subset <- msig[cerno_results$ID,]
+#'
+#' # And obtain a background of observable genes from differential
+#' # expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Using Bai_gsc.tmod, the tmod format gene set collection in the
+#' # sample data, we can now generate a filtered gene presence
+#' # absence matrix. The columns of the matrix correspond to gene
+#' # sets, whereas the rows are genes.
 #' filteredGenePresenceAbsence_Matrix <-
-#'        makeFilteredGenePresenceAbsenceMatrix( ref.background = observable_genes,
-#'                                               geneSetCollection = msig.subset )
-#' }
+#'           makeFilteredGenePresenceAbsenceMatrix( ref.background = background_genes,
+#'                                                  geneSetCollection = Bai_gsc.tmod )
 #'
 #' @seealso
 #'  \code{\link{buildGeneSetNetworkLFFast}}

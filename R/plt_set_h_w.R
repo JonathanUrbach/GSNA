@@ -7,9 +7,7 @@ plt_set_h_w <- function( plt = graphics::par('plt'),
                          width = grDevices::dev.size("in")[1],
                          height = grDevices::dev.size("in")[2],
                          h_w = 1 ){
-  #h_w.in <- ( plt[2] - plt[1] ) / ( plt[4] - plt[3] ) * (width / height)
   h_w.in <-  (( plt[4] - plt[3] ) / ( plt[2] - plt[1] ) ) * ( height/ width )
-
 
   if( h_w.in < h_w ){ # Limited by height, adjust width
     return( c( (plt[2] + plt[1]) / 2 - h_w.in/ h_w  * (plt[2] - plt[1]) / 2,

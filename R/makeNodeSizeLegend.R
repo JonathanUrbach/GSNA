@@ -8,10 +8,13 @@ invisible( utils::globalVariables( c("tick_val", "size.usr") ) )
 #'
 #' @return The numerical value corresponding to \code{par('usr')[2] - par('usr')[1] ) / par('pin')[1]}
 #'
-#' @examples
-#' \dontrun{
-#'     uxcpi <- get_usr_x_coords_per_inch()
-#'}
+#' @details
+#'
+#' examples:
+#' \code{
+#'    uxcpi <- get_usr_x_coords_per_inch()
+#' }
+#' @noRd
 #'
 get_usr_x_coords_per_inch <- function(){
   ( par('usr')[2] - par('usr')[1] ) / par('pin')[1]
@@ -115,31 +118,35 @@ get_usr_x_coords_per_inch <- function(){
 #' @return The function returns a list with a set of graphic parameters, including the optimized value \code{.plt.leg} if
 #' \code{optimize.legend.size = TRUE}.
 #'
-#' @examples
-#' \dontrun{
-#'     uxcpi <- get_usr_x_coords_per_inch()
+#' @details
 #'
-#'     .plt.leg <- c( legend_left_x.fig,
-#'                    legend_left_x.fig + legend_x_size.fig,
-#'                    legend_bottom_y.fig
-#'                    legend_top_y.fig )
+#' examples
 #'
-#'     legend.list <- makeNodeSizeLegend( numbers = c(10, 240),
-#'                                        sizeEncode.fun = sizeEncode.fun,
-#'                                        .plt.leg = .plt.leg,
-#'                                        legend.lab = "Gene Set Size",
-#'                                        legend.lab.cex = 1,
-#'                                        legend.fg = "black",
-#'                                        legend.vertex.fg = "black",
-#'                                        legend.vertex.bg = "#CCCCCC",
-#'                                        usr_x_coords_per_inch = uxcpi,
-#'                                        draw.legend.box.bool = TRUE,
-#'                                        h.adjust = "left",
-#'                                        render.bool = TRUE,
-#'                                        optimize.legend.size = TRUE  )
+#' \code{
+#'      uxcpi <- get_usr_x_coords_per_inch()
+#'
+#'      .plt.leg <- c( legend_left_x.fig,
+#'                     legend_left_x.fig + legend_x_size.fig,
+#'                     legend_bottom_y.fig,
+#'                     legend_top_y.fig )
+#'
+#'      legend.list <- makeNodeSizeLegend( numbers = c(10, 240),
+#'                                         sizeEncode.fun = sizeEncode.fun,
+#'                                         .plt.leg = .plt.leg,
+#'                                         legend.lab = "Gene Set Size",
+#'                                         legend.lab.cex = 1,
+#'                                         legend.fg = "black",
+#'                                         legend.vertex.fg = "black",
+#'                                         legend.vertex.bg = "#CCCCCC",
+#'                                         usr_x_coords_per_inch = uxcpi,
+#'                                         draw.legend.box.bool = TRUE,
+#'                                         h.adjust = "left",
+#'                                         render.bool = TRUE,
+#'                                         optimize.legend.size = TRUE  )
 #' }
 #'
-#'
+#' @noRd
+#
 makeNodeSizeLegend <-
   function(numbers,
            sizeEncode.fun,
@@ -180,6 +187,10 @@ makeNodeSizeLegend <-
            #debug = FALSE
 
   ){
+    # Backup par, so that original settings are restored on exit:
+    .par.orig <- par( no.readonly = TRUE )
+    on.exit( add = TRUE, expr = par(.par.orig) )
+
     if( is.null( usr_x_coords_per_inch ) ){
       warning( "usr_x_coords_per_inch = NULL. Guessing.\n",
                "For best results, obtain by calling get_usr_x_coords_per_inch() immediately after plot.igraph.\n" )
@@ -328,11 +339,11 @@ makeNodeSizeLegend <-
       }
 
       # Before changing parameters for rendering legend, first back up original graphical parameters
-      .plt.orig <- par( 'plt' )
+      #.plt.orig <- par( 'plt' )
       .usr.orig <- par( 'usr' )
-      .xpd.orig <- par( 'xpd' )
+      #.xpd.orig <- par( 'xpd' )
 
-      par( "plt" = .plt.adj, xpd = TRUE, new = TRUE )
+      par( plt = .plt.adj, xpd = TRUE, new = TRUE ) # This will be restored by an on.exit call.
 
       plot.window( xlim = c(0,1), ylim = c( 0, lines_needed ), xaxs = "i", yaxs = "i" )
 
@@ -365,13 +376,12 @@ makeNodeSizeLegend <-
       )
 
       if( restore.params.bool ){
-        par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
+        #par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
         plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
       }
     }
     invisible(list( .plt.adj = .plt.adj,
                     usr_x_coords_per_inch = usr_x_coords_per_inch,
-                    #cex = min(cex.axis, cex.lab, na.rm = TRUE),
                     cex.ticks = cex.ticks,
                     cex.lab = legend.lab.cex
     ))

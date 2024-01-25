@@ -169,10 +169,6 @@
 #' used by default on dendextend versions < '1.16.0' for horizontal dendrograms. For earlier versions, and with circular
 #' dendrograms, open symbols are currently unsupported.
 #'
-#' @examples
-#' \dontrun{
-#'   gsnHierarchicalDendrogram( object  = analysis.GSN, pathways_title_col = NA )
-#' }
 #'
 #' @seealso
 #'  \code{\link{gsnPareNetGenericHierarchic}}
@@ -284,6 +280,10 @@ gsnHierarchicalDendrogram <- function( object,
 
 ){
   if(DO_BROWSER) browser()
+
+  # Backup par, so that original settings are restored on exit:
+  .par.orig <- par( no.readonly = TRUE )
+  on.exit( add = TRUE, expr = par(.par.orig) )
 
   # This is used to fix the problem of labels.dendrogram and plot.dendrogram not
   # being exported from stats
@@ -666,9 +666,10 @@ gsnHierarchicalDendrogram <- function( object,
           warning( "Label text is too long. Adjust font size." )
         }
         .plt.bar[2] <- .plt.bar[1] + width.bar.fig
-        #warning( "DEBUG:  .plt.bar: ", paste0( collapse = ", ", .plt.bar ) )
 
-        par( plt = .plt.bar, new = TRUE )
+        # Set par for plotting the subnets bar
+        par( plt = .plt.bar, new = TRUE ) # This will be restored by on.exit call
+
         plot.window( xlim = c(0,1), ylim = c(usr[3], usr[4]), yaxs = "i" )
 
         # Generate Brackets to show subnets:
