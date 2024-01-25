@@ -17,13 +17,19 @@
 #' \code{distMat2UnitNormRank()}.
 #'
 #' @examples
-#' \dontrun{
+#'
+#' # For log Fisher values, lower is closer and more significant.
 #' mat.dist <- matrix( c( NA, -400, -600, NA, NA, -120, NA, NA, NA ), nrow = 3, ncol = 3 )
 #' mat.scaledranks <- distMat2UnitNormRank(mat.dist)
 #'
+#' # With metrics for which higher is closer/more similar, use
+#' # negDistMat2UnitNormRank():
 #' mat.jaccard <- matrix( c( NA, 0.2, 0.3, NA, NA, 0.1, NA, NA, NA ), nrow = 3, ncol = 3 )
 #' mat.srjaccard <- negDistMat2UnitNormRank(mat.jaccard)
-#' }
+#'
+#' # This also works:
+#' mat.srjaccard <- distMat2UnitNormRank(mat.jaccard, lower_is_closer=FALSE)
+#'
 #' @seealso \code{\link{distMat2Rank}()}
 #' @export
 distMat2UnitNormRank <- function( mat, lower_is_closer = TRUE ){

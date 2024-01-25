@@ -33,7 +33,9 @@ renderCircularDendrogram <- function( dendro,
                                       xlim_ylim_ratio = NULL
                                       #legend_x_size.in = 2  # NEW # 2 by default, but plot is stull up and left based on a square layout.
 ){
-  #browser() #DEBUG
+  # Backup par, so that original settings are restored on exit:
+  .par.orig <- par( no.readonly = TRUE )
+  on.exit( add = TRUE, expr = par(.par.orig) )
 
   if( is.null(label_names) ) label_names <- labels(dendro) # Labels on the dendrogram. May not be the same as "leaf.names"
   label_cols <- dendextend::labels_colors(dendro)
@@ -64,16 +66,6 @@ renderCircularDendrogram <- function( dendro,
       }
     }
 
-    # canvas.xlim and canvas.ylim seem to map only to the region already defined by plt,
-    # so if plt is alreay correct, then xlim and ylim can be c(-1,1)
-    #
-    # can_x_per_fig_x <- 2 / ( .plt.plot[2] - .plt.plot[1] )
-    # can_y_per_fig_y <- 2 / ( .plt.plot[4] - .plt.plot[3] )
-    # canvas.xlim <- c( -1 - .plt.plot[1] * can_x_per_fig_x,
-    #                   -1 + (1 - .plt.plot[1] )  * can_x_per_fig_x )
-    # canvas.ylim <- c( -1 - .plt.plot[3] * can_y_per_fig_y,
-    #                   -1 + (1 - .plt.plot[3] ) * can_y_per_fig_y )
-
     canvas.xlim <- c( -1, 1 )
     canvas.ylim <- c( -1, 1 )
   }
@@ -83,9 +75,9 @@ renderCircularDendrogram <- function( dendro,
     brackets.coords <- get_brackets_coords( subnets.lf = subnets.lf, leaf.names = leaf.names, labels_colors = label_cols )
   available_radius <- min( ( width - .mai.plot[2] - .mai.plot[4] ) / xlim_ylim_ratio, height - .mai.plot[1] - .mai.plot[3] ) / 2
 
-  #browser() # DEBUG
+  # Plot
   {
-    par( plt = .plt.plot )
+    par( plt = .plt.plot ) # This has been backed up already and will be restored by on.exit call.
     circlize::circos.par(cell.padding = c(0, 0, 0, 0),
                          #circle.margin = c( 0.1, 0.1, 0.1, 0.1 ),
                          circle.margin = .mai.circos + 0.0001, # circle.margin can only be positive.
@@ -176,8 +168,7 @@ renderCircularDendrogram <- function( dendro,
 
     if( clear ) circlize::circos.clear()
   }
-  #attr( x = dendro, which = ".plt.plot" ) <- c( 0, 2 / ( canvas.xlim[2] - canvas.xlim[1] ), 0, 2 / ( canvas.ylim[2] - canvas.ylim[1] ) )
+
   attr( x = dendro, which = ".plt.plot" ) <- .plt.plot
   invisible( dendro )
-  #invisible( dev.off() )
 }

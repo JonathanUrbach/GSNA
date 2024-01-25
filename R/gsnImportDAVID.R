@@ -45,11 +45,6 @@
 #'
 #' @export
 #'
-#' @examples
-#'
-#' \dontrun{
-#' gsn_object <- gsnImportDAVID( object = gsn_object, pathways_data = dat.david )
-#' }
 #'
 #' @seealso
 #'  \code{\link{gsnAddPathwaysData}}

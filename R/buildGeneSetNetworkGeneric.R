@@ -39,17 +39,29 @@
 #'
 #' library(GSNA)
 #'
-#' \dontrun{
-#' observable_genes <- rownames(FILTERED_RNASEQ_COUNT_MATRIX)
-#' msig.subset <- msig[cerno_results$ID,]
-#' GSN <- buildGeneSetNetworkGeneric( object = NULL,
-#'                                    ref.background = observable_genes,
-#'                                    geneSetCollection = msig.subset,
-#'                                    distMatrixFun = scoreLFMatrix_C,
-#'                                    distance = 'stlf',
-#'                                    optimal_extreme = "min"
-#'                                   )
-#' }
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network. This does the same thing as
+#' # buildGeneSetNetworkSTLF(), but can be adapted to novel distance
+#' # metrics by providing a different matrix scoring function, distance
+#' # name, and optimal_extreme:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkGeneric( geneSetCollection = sig_pathways.tmod,
+#'                                ref.background = background_genes,
+#'                                distMatrixFun = scoreLFMatrix_C,
+#'                                distance = 'stlf',
+#'                                optimal_extreme = "min"
+#'                                 )
 #'
 #' @seealso
 #'  \code{\link{buildGeneSetNetworkJaccard}}

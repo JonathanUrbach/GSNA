@@ -231,8 +231,40 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' gsnPlotNetwork( object = analysis.GSN )
+#'
+#' \donttest{
+#' # This example can take >10 seconds to run on some platforms,
+#' # so we won't test it here.
+#'
+#' library(GSNA)
+#'
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkJaccard(geneSetCollection = sig_pathways.tmod,
+#'                               ref.background = background_genes )
+#'
+#' # Now import the CERNO data:
+#' sig_pathways.GSN <- gsnImportCERNO( sig_pathways.GSN,
+#'                                     pathways_data = sig_pathways.cerno )
+#'
+#' # Now we can pare the network and assign subnets:
+#' sig_pathways.GSN <- gsnPareNetGenericHierarchic( object = sig_pathways.GSN )
+#' sig_pathways.GSN <- gsnAssignSubnets( sig_pathways.GSN )
+#'
+#' # Now, produce a network plot:
+#' gsnPlotNetwork( object  = sig_pathways.GSN )
 #' }
 #'
 #' @seealso
@@ -271,8 +303,6 @@ gsnPlotNetwork <- function( object,
                             vertex.label.cex = NULL,
                             vertex.label.col = NULL,
                             vertex.frame.color = par('fg'),
-                            #contrasting_color.fun = function(x) contrasting_color( col = x, type = "yellow" ),
-                            #contrasting_color.fun = function( x ) contrasting_color( col = x, type = "blackyellow" ),
                             contrasting_color.fun = NULL,
                             scale_labels_by_vertex = TRUE,
                             max_edge_width = NULL,
@@ -295,7 +325,6 @@ gsnPlotNetwork <- function( object,
                             mar.main = 3.2,   # NEW reserve this many lines for main
                             lines.main = 0.9, # Position Main this many lines from plot
                             .mar.plot = NULL,
-                            #.mai.plot = NULL,
                             draw.legend.box.bool = FALSE,
                             legend.free.cex.bool = FALSE,
                             legend_x_size.in = NULL, #
@@ -303,15 +332,16 @@ gsnPlotNetwork <- function( object,
                             new = FALSE,
                             legend_spacing.x.in = 2 * par('cin')[1],
                             legend_spacing.y.in = par('cin')[2],
-                                 #legend_spacing.y.fig = NULL,       # Defaults to par('cin')[2] / height
-                                 #legend_spacing.x.fig = NULL,       # Defaults to -10*par('cin')[1] / width
                             resolution = 72, # pixels per inch
                             DO_BROWSER = FALSE
 
 ){
   if(DO_BROWSER) browser()
-
   stopifnot( "GSNData" %in% class( object ) )
+
+  # Backup par, so that original settings are restored on exit:
+  .par.orig <- par( no.readonly = TRUE )
+  on.exit( add = TRUE, expr = par(.par.orig) )
 
   # If sig_col or stat_col_2 are specified, check that sig_order / sig_order_2 is specified.
   if( ( !is.null( stat_col ) && is.null( sig_order ) ) )
@@ -602,22 +632,18 @@ gsnPlotNetwork <- function( object,
   # Open new output device if appropriate.
   out_fun( file = filename, width = width, height = height  )
 
-
   # Set plot parameters
-  par( mai = .mai.plot, new = new )
+  par( mai = .mai.plot, new = new ) # This will be restored by an on.exit call
+
   if( !is.null( seed ) ){
-    #withr::with_seed( seed = seed, code = .plot(sigNet, layout = layout, xlim = c(-1,1.5), ylim = c(-1.5,1 ), new = new ) )
     withr::with_seed( seed = seed, code = .plot(sigNet, layout = layout, xlim = c(-1,1), ylim = c(-1,1 ), new = new ) )
   } else {
-    #.plot(sigNet, layout = layout, xlim = c(-1,1.5), ylim = c(-1.5,1 ), new = new)
     .plot(sigNet, layout = layout, xlim = c(-1,1), ylim = c(-1,1 ), new = new)
   }
   uxcpi <- get_usr_x_coords_per_inch()
 
 
   # Set up layout for legends.
-  # if_legend_w_over_h <- 5/4
-
   if( show.legend ){
     plt.l <- list()
     legend.lab.cex.v <- numeric()
@@ -630,8 +656,6 @@ gsnPlotNetwork <- function( object,
     legend_left_x.fig <- .plt.plot[2] + legend_spacing.x.fig # Align right edge
     legend_top_y.fig <- .plt.plot[4]  # & top edge of plot
     max_legend_x_size.fig <- legend_x_size.in / width
-
-    #if( is.null( legend.lab.cex ) ) legend.lab.cex <- par("cex") * legend_x_size.in / 2
 
     # Go through process of generating legends without rendering to determine geometries.
     # Align top legend with top and right edge of plot .plt.plot[4] and .plt.plot[2]
@@ -680,6 +704,7 @@ gsnPlotNetwork <- function( object,
                                       legend.bg = legend.bg,
                                       optimize.legend.size = TRUE
       )
+
       plt.idx <- plt.idx + 1
       plt.l[[plt.idx]] <- legend.dat$.plt.adj
       legend.lab.cex.v[[plt.idx]] <- legend.dat$cex.lab

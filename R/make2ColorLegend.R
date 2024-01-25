@@ -93,6 +93,11 @@ make2ColorLegend <- function(numbers.1,
                              render.bool = TRUE,
                              restore.params.bool = TRUE
 ){
+  # Backup par, so that original settings are restored on exit:
+  .par.orig <- par( no.readonly = TRUE )
+  on.exit( add = TRUE, expr = par(.par.orig) )
+
+  # Make 2 color legend stack
   legend.stack <- make2ColorLegendStack( numbers.1 = numbers.1,
                                          numbers.2 = numbers.2,
                                          twoColorEncode.fun = twoColorEncode.fun,
@@ -124,8 +129,6 @@ make2ColorLegend <- function(numbers.1,
                           x.dim.actual.fu = x.dim.actual.fu,
                           v.adjust = v.adjust,
                           h.adjust = h.adjust )
-
-  #browser()
 
   # If cex is not set, decide
   if( is.null( legend.ylab) ) legend.ylab <- lab.1
@@ -189,18 +192,18 @@ make2ColorLegend <- function(numbers.1,
 
 
   if( render.bool ){
-    # First back up original graphical parameters
-    .plt.orig <- graphics::par( 'plt' )
+    # First back up original graphical parameters # May not be necessary due to on.exit call.
+    #.plt.orig <- graphics::par( 'plt' )
     .usr.orig <- graphics::par( 'usr' )
-    .xpd.orig <- graphics::par( 'xpd' )
+    #.xpd.orig <- graphics::par( 'xpd' )
     #.cex.orig <- graphics::par( 'cex' )
 
     if( draw.legend.box.bool ){
-      graphics::par( plt = .plt.adj,  xpd = TRUE, new = TRUE )
+      graphics::par( plt = .plt.adj,  xpd = TRUE, new = TRUE ) # This will be restored by on.exit call.
       graphics::box( which = "plot", col = legend.fg, bg = legend.bg )
     }
 
-    graphics::par( plt = .plt.adj.vm,
+    graphics::par( plt = .plt.adj.vm, # This will be restored by on.exit call.
                    xpd = TRUE,
                    #cex = cex.lab,
                    new = TRUE )
@@ -236,7 +239,7 @@ make2ColorLegend <- function(numbers.1,
     graphics::box( col = legend.fg, bg = legend.bg )
 
     if( restore.params.bool ){
-      graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
+      #graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
       plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
     }
   }

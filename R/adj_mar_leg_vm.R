@@ -21,17 +21,16 @@
 #' @details The default behavior of this function is to scale margins to the total size of the figure, but it should actually be
 #' scaling the margins to the size of the legend itself.
 #'
-#' @examples
-#' \dontrun{
+#' examples
+#'
 #' .mar.leg.vm <- adj_mar_leg_vm( .mar.leg.vm = c( 4.1, 4.1, 2.1, 2.1 ),
 #'                                 width = 1.5,
 #'                                 height = 1.5,
 #'                                 width.threshold = 1.8,
 #'                                 height.threshold = 1.8 )
-#' }
+#'
 #' @noRd
 #' @keywords internal
-# @export
 #'
 adj_mar_leg_vm <- function( .mar.leg.vm, width = par('fin')[1], height = par('fin')[2], width.threshold = 5, height.threshold = 2.5 ){
   scale_ratio <- min( width/width.threshold, height/height.threshold )

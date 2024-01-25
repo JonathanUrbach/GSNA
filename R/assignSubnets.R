@@ -24,14 +24,14 @@
 #'   \item{\code{vertex_subnets}}{A data.frame containing the name of a vertex and its assigned subnet.}
 #'   }
 #'
-#' @export
+#' examples
 #'
-#' @examples
-#' \dontrun{
 #'    subnets.l <- assignSubnets( edges.df = edges.df, scoreCol = "p.adj", highToLow = FALSE )
-#' }
+#'
 #'
 #' @seealso \code{\link{gsnAssignSubnets}}
+#' @noRd
+#' @keywords internal
 #'
 assignSubnets <- function(edges.df, scoreCol = NULL, highToLow = NULL ){
   # Columns 1 and 2 are To and From

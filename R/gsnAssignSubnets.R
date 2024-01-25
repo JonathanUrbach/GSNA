@@ -12,7 +12,7 @@
 #' @param highToLow (optional) A boolean indicating how scores are to be ordered based on significance, low to high, or
 #' high to low.
 #'
-#' @details Calls \code{assignSubnets} method using scores derived from pathways data, starting with the most significant
+#' @details Calls the private \code{assignSubnets} function using scores derived from pathways data, starting with the most significant
 #' edge scores in a subnet, and subsequently joining additional vertices in order of the best score.
 #'
 #' @return The method returns a GSNData object containing the following data for the indicated distance matrix:
@@ -23,16 +23,41 @@
 #'   \item{\code{vertex_subnets}}{A data.frame containing the name of a vertex and its assigned subnet.}
 #'   }
 #'
+#' @examples
+#'
+#' library(GSNA)
+#'
+#' # In this example, we generate a gene set network from CERNO example
+#' # data. We begin by subsetting the CERNO data for significant results:
+#' sig_pathways.cerno <- subset( Bai_CiHep_DN.cerno, adj.P.Val <= 0.05 )
+#'
+#' # Now create a gene set collection containing just the gene sets
+#' # with significant CERNO results, by subsetting Bai_gsc.tmod using
+#' # the gene set IDs as keys:
+#' sig_pathways.tmod <- Bai_gsc.tmod[sig_pathways.cerno$ID]
+#'
+#' # And obtain a background gene set from differential expression data:
+#' background_genes <- toupper( rownames( Bai_CiHep_v_Fib2.de ) )
+#'
+#' # Build a gene set network:
+#' sig_pathways.GSN <-
+#'    buildGeneSetNetworkJaccard(geneSetCollection = sig_pathways.tmod,
+#'                               ref.background = background_genes )
+#'
+#' # Now import the CERNO data:
+#' sig_pathways.GSN <- gsnImportCERNO( sig_pathways.GSN,
+#'                                     pathways_data = sig_pathways.cerno )
+#'
+#' # Now we can pare the network. By default, the distances are complemented
+#' # and converted into ranks for the sake of generating a network.
+#' sig_pathways.GSN <- gsnPareNetGenericHierarchic( object = sig_pathways.GSN )
+#'
+#' # Once the network has been pared, gsnAssignSubnets() can be called:
+#' sig_pathways.GSN <- gsnAssignSubnets( object = sig_pathways.GSN )
+#'
+#'
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#'    subnets.l <- assignSubnets( edges.df = edges.df, scoreCol = "p.adj", highToLow = FALSE )
-#' }
-#'
-#' @seealso \code{\link{assignSubnets}}
-#'
-
 gsnAssignSubnets <- function( object, distance = NULL, scoreCol = NULL, highToLow = NULL ){
   stopifnot( "GSNData" %in% class( object ) )
   if( is.null( distance ) ) distance <- object$default_distance

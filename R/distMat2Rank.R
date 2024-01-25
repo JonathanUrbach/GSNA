@@ -13,12 +13,18 @@
 #' @details This is used by default by gsnPareNetGenericHierarchic.
 #'
 #' @examples
-#' \dontrun{
+#'
+#' # Start with a matrix of distances:
 #' mat.dist <-  matrix( c( NA, -400, -600, NA, NA, -120, NA, NA, NA ), nrow = 3, ncol = 3 )
+#' # Get the ranks as a matrix:
 #' mat.ranks <- distMat2Rank(mat.dist)
-#' }
+#'
+#' # If, for this given metric, higher numbers are closer
+#' # or more similar, do this instead:
+#' mat.ranks2 <- distMat2Rank(mat.dist, lower_is_closer = FALSE)
 #'
 #' @seealso \code{\link{distMat2UnitNormRank}()}
+#' @export
 distMat2Rank <- function( mat, lower_is_closer = TRUE ){
   if( "dist" %in% class( mat ) ){
     mat <- as.matrix(mat)

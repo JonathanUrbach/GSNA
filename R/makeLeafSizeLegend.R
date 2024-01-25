@@ -87,26 +87,28 @@
 #' @return  The function returns a list with a set of graphic parameters, including the optimized value \code{.plt.leg} if
 #' \code{optimize.legend.size = TRUE}.
 #'
-#' @examples
-#' \dontrun{
-#'     legend.dat <- makeLeafSizeLegend( numbers = gs_numbers,
-#'              sizeEncode.fun = sizeEncode.fun,
-#'              .plt.leg = c( legend_left_x.fig,
-#'                            legend_left_x.fig + legend_x_size.fig,
-#'                            0,
-#'                            legend_top_y.fig
-#'              ),
-#'              legend.lab = n_col,
-#'              pch = leaves_pch,
-#'              cex = cex,
-#'              leaf_border_color = leaf_border_color,
-#'              leaf.col = legend.leaf.col,
-#'              legend.fg = legend.fg,
-#'              legend.bg = legend.bg,
-#'              h.adjust = 'left',
-#'              v.adjust = 'top',
-#'              render.bool = FALSE,
-#'              optimize.legend.size = TRUE )
+#' @details
+#'
+#' examples:
+#' \code{
+#'      legend.dat <- makeLeafSizeLegend( numbers = gs_numbers,
+#'               sizeEncode.fun = sizeEncode.fun,
+#'               .plt.leg = c( legend_left_x.fig,
+#'                             legend_left_x.fig + legend_x_size.fig,
+#'                             0,
+#'                             legend_top_y.fig
+#'               ),
+#'               legend.lab = n_col,
+#'               pch = leaves_pch,
+#'               cex = cex,
+#'               leaf_border_color = leaf_border_color,
+#'               leaf.col = legend.leaf.col,
+#'               legend.fg = legend.fg,
+#'               legend.bg = legend.bg,
+#'               h.adjust = 'left',
+#'               v.adjust = 'top',
+#'               render.bool = FALSE,
+#'               optimize.legend.size = TRUE )
 #' }
 #'
 #' @importFrom grDevices axisTicks
@@ -157,6 +159,10 @@ makeLeafSizeLegend <-
            #debug = FALSE
 
   ){
+    # Backup par, so that original settings are restored on exit:
+    .par.orig <- par( no.readonly = TRUE )
+    on.exit( add = TRUE, expr = par(.par.orig) )
+
     # We're going to use the coordinate system set up by igraph::plot.igraph because the size of vertices is dependent on the coordinate sytem.
     # Input data used to determine tick_values
     numbers.range <- range( numbers, na.rm = TRUE )
@@ -287,12 +293,12 @@ makeLeafSizeLegend <-
           )
       }
 
-      # First back up original graphical parameters
-      .plt.orig <- graphics::par( 'plt' )
+      # First back up original graphical parameters # Probably no longer necessary due to on.exit call.
+      #.plt.orig <- graphics::par( 'plt' )
       .usr.orig <- graphics::par( 'usr' )
-      .xpd.orig <- graphics::par( 'xpd' )
+      #.xpd.orig <- graphics::par( 'xpd' )
 
-      graphics::par( "plt" = .plt.adj, xpd = TRUE, new = TRUE )
+      graphics::par( "plt" = .plt.adj, xpd = TRUE, new = TRUE ) # This will be restored by on.exit call.
 
       graphics::plot.window( xlim = c(0,1), ylim = c( 0, lines_needed ), xaxs = "i", yaxs = "i" )
 
@@ -333,7 +339,7 @@ makeLeafSizeLegend <-
       )
 
       if( restore.params.bool ){
-        graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
+        #graphics::par( "plt" = .plt.orig, xpd = .xpd.orig, new = TRUE )
         graphics::plot.window( xlim = .usr.orig[1:2], ylim = .usr.orig[3:4], xaxs = "i", yaxs = "i" )
       }
     }
