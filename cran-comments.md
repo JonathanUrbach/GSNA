@@ -2,153 +2,214 @@
 
 * This is a new release.  
 
+# Issues raised by Beni Altmann and responses   
 
-# devtools::check( cran = TRUE ) (2024-01-18/MacOS X)
+> Please omit the redundant "(Title Case)" at the end/start of your title 
+> and description.
 
-## Results:
+* This has been fixed.   
 
-0 errors ✔ | 0 warnings ✔ | 0 notes ✔
+> Please do not start the description with "This package", "Functions 
+> for", package name, title or similar.
 
+* The description has been rewritten to fix this problem.   
 
-# devtools::check_rhub() (2024-01-18)
+> Please always write package names, software names and API (application 
+> programming interface) names in single quotes in title and description.
+> e.g: --> 'GSNA'
+> Please note that package names are case sensitive.
 
-## Results:
+* Package, software, and API names have been placed in single quotes.  
 
+> If there are references describing the methods in your package, please 
+> add these in the description field of your DESCRIPTION file in the form
+> authors (year) <doi:...>
+> authors (year) <arXiv:...>
+> authors (year, ISBN:...)
+> or if those are not available: <https:...>
+> with no space after 'doi:', 'arXiv:', 'https:' and angle brackets for 
+> auto-linking. (If you want to add a title as well please put it in 
+> quotes: "Title")
 
->     Status: 4 NOTEs
->     ─  Done with R CMD check
->     ─  Cleaning up files and user
->         
->     
->     ── GSNA 0.1.1: NOTE
->     
->       Build ID:   GSNA_0.1.1.tar.gz-88418bcff5d2486592e5f082a6c9a5aa
->       Platform:   Windows Server 2022, R-devel, 64 bit
->       Submitted:  8m 43.5s ago
->       Build time: 8m 25.7s
->     
->     ❯ checking CRAN incoming feasibility ... [14s] NOTE
->       Maintainer: 'Jonathan M Urbach <jurbach@mgh.harvard.edu>'
->       
->       New submission
->       
->       Possibly misspelled words in DESCRIPTION:
->         CERNO (9:85)
->         GSEA (9:92)
->         GSNA (8:69, 11:20, 14:18)
->         epigenetic (13:66)
->         transcriptomic (13:50)
->       
->       Found the following (possibly) invalid URLs:
->         URL: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231436
->           From: inst/CITATION
->           Status: 403
->           Message: Forbidden
->     
->     ❯ checking HTML version of manual ... [12s] NOTE
->       
->     
->     ❯ checking for non-standard things in the check directory ... NOTE
->       Found the following files/directories:
->         ''NULL''
->     
->     ❯ checking for detritus in the temp directory ... NOTE
->       Found the following files/directories:
->         'lastMiKTeXException'
->     
->     0 errors ✔ | 0 warnings ✔ | 4 notes ✖
->     
->     ── GSNA 0.1.1: CREATED
->     
->       Build ID:   GSNA_0.1.1.tar.gz-dfb87b6bd3954095b12ed3c9461aea09
->       Platform:   Ubuntu Linux 20.04.1 LTS, R-release, GCC
->       Submitted:  8m 43.9s ago
->     
->     
->     ── GSNA 0.1.1: CREATED
->     
->       Build ID:   GSNA_0.1.1.tar.gz-b1814bcffe09423cada90ad49de33d9a
->       Platform:   Fedora Linux, R-devel, clang, gfortran
->       Submitted:  8m 44s ago
->     
->     
->     ── GSNA 0.1.1: CREATED
->     
->       Build ID:   GSNA_0.1.1.tar.gz-a52bea30871e423da33485334c58e2df
->       Platform:   Debian Linux, R-devel, GCC ASAN/UBSAN
->       Submitted:  8m 44.1s ago
->     
->     
+* References to the initial papers describing the method have been added as suggested.  
 
 
-## Responses to devtools::check_rhub() checks  
+> Please always explain all acronyms in the description text. -> 'CERNO', 
+> 'GSEA', ...
 
->     ❯ checking CRAN incoming feasibility ... [14s] NOTE
->       Maintainer: 'Jonathan M Urbach <jurbach@mgh.harvard.edu>'
->       
->       New submission
->       
->       Possibly misspelled words in DESCRIPTION:
->         CERNO (9:85)
->         GSEA (9:92)
->         GSNA (8:69, 11:20, 14:18)
->         epigenetic (13:66)
->         transcriptomic (13:50)
->       
->       Found the following (possibly) invalid URLs:
->         URL: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231436
->           From: inst/CITATION
->           Status: 403
->           Message: Forbidden
+* Explanations of these acronyms have been added to the description text.  
 
-* The terms 'CERNO', 'GSEA', and 'GSNA' are abbreviations and correct. The terms 'epigenetic' and 'transcriptomic' are also correct.  
-* The URL: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10231436 is valid and correct.  
+> Please add \value to .Rd files regarding exported methods and explain 
+> the functions results in the documentation. Please write about the 
+> structure of the output (class) and also what the output means. (If a 
+> function does not return a value, please document that too, e.g. 
+> \value{No return value, called for side effects} or similar)
+> Missing Rd-tags:
+>       gsnParedVsRawDistancePlot.Rd: \value
 
->     ❯ checking HTML version of manual ... [12s] NOTE
+* This has been fixed by adding '@returns A NULL value.' to the Roxygen markup. Surprisingly, adding '@returns NULL' was insufficient.
+ 
+> You have examples for unexported functions. Please either omit these 
+> examples or export these functions.
+> Examples for unexported function
+>    buildGeneSetNetworkJaccard() in:
+>       distMat2Rank.Rd
+>    buildGeneSetNetworkOC() in:
+>       get_usr_x_coords_per_inch.Rd
+>    antiSplit.Rd
 
-* This note is cryptic and difficult to fix.  
+* I have removed the @examples Roxygen tag from these examples so they won't be executed in tests and placed them under @details.  
 
->     ❯ checking for non-standard things in the check directory ... NOTE
->       Found the following files/directories:
->         ''NULL''
+> \dontrun{} should only be used if the example really cannot be executed 
+> (e.g. because of missing additional software, missing API keys, ...) by 
+> the user. That's why wrapping examples in \dontrun{} adds the comment 
+> ("# Not run:") as a warning for the user. Does not seem necessary. 
+> Please replace \dontrun with \donttest.
+> Please unwrap the examples if they are executable in < 5 sec, or replace 
+> dontrun{} with \donttest{}.
+
+
+> We see:
+> Unexecutable code in man/makeNodeSizeLegend.Rd:
+>    legend_top_y.fig
+> I believe you forgot to add a comma there.
+
+* This has been corrected, but the function is no longer exported since it is an internal function and not meant for general use.  
+
+> Please make sure that you do not change the user's options, par or 
+> working directory. If you really have to do so within functions, please 
+> ensure with an *immediate* call of on.exit() that the settings are reset 
+> when the function is exited.
+> e.g.:
+> ...
+> oldpar <- par(no.readonly = TRUE) # code line i
+> on.exit(par(oldpar)) # code line i + 1
+> ...
+> par(mfrow=c(2,2)) # somewhere after
+> ...
+
+* Functions that make changes to par now begin by backing up the original par and call \code{on.exit( add = TRUE, expr = par(.par.orig) )}, so that the parameters will be restored on exit.
+
+> e.g.: -> R/makeNodeSizeLegend.R; R/renderCircularDendrogram.R
+> If you're not familiar with the function, please check ?on.exit. This 
+> function makes it possible to restore options before exiting a function 
+> even if the function breaks. Therefore it needs to be called immediately 
+> after the option change within a function.
+
+
+# Summary of automated checks:  
+
+## devtools::check_rhub() 2024-01-25 check with responses  
+
+> 0 errors ✔ | 0 warnings ✔ | 4 notes ✖
+> 
+> ❯ checking CRAN incoming feasibility ... [20s] NOTE
+>   Maintainer: 'Jonathan M Urbach <jurbach@mgh.harvard.edu>'
+>   
+>   New submission
+>   
+>   Possibly misspelled words in DESCRIPTION:
+>     Arshad (17:38, 18:61)
+>     GH (18:50)
+>     Hitschfel (18:15)
+>     JM (17:22, 18:35)
+>     KA (17:54)
+>     Ly (18:54)
+>     Mylvaganam (18:39)
+>     NL (18:57)
+>     Racenet (17:26)
+>     Urbach (17:15, 18:28)
+>     ZJ (17:34)
+>     al (17:72, 18:74)
+>     epigenetic (15:19)
+>     et (17:69, 18:71)
+>     transcriptomic (15:3)
+
+* The terms 'transcriptomic', 'epigenetic' and 'et al.' are all correct, and the others are names and also correct.  
+
+> ❯ checking HTML version of manual ... [10s] NOTE
+
+* This is cryptic, probably OK.  
+
+> ❯ checking for non-standard things in the check directory ... NOTE
+>   Found the following files/directories:
+>     ''NULL''
 
 * This appears to be incorrect. There is no such file in the package.  
 
->     ❯ checking for detritus in the temp directory ... NOTE
->       Found the following files/directories:
->         'lastMiKTeXException'
+> ❯ checking for detritus in the temp directory ... NOTE
+>   Found the following files/directories:
+>     'lastMiKTeXException'
 
-* The file 'lastMiKTeXException' is not present in the package. It may be an artifact of the creation of the manual.   
+* The file 'lastMiKTeXException' is not present in the package. It may be an artifact of the creation of the manual.    
 
 
-# devtools::check_mac_release() (2024-01-18/MacOS X)
 
-* Build system: r-release-macosx-arm64|4.3.0|macosx|macOS 13.3.1 (22E261)|Mac mini|Apple M1||en_US.UTF-8|macOS 11.3|clang-1403.0.22.14.1|GNU Fortran (GCC) 12.2.0 
-* No errors, warnings, or notes.
+## devtools::check_mac_release( cran = TRUE ) (2024-01-25/MacOS X) check  
 
-# devtools::check_win_devel() (2024-01-18/Windows)
+> 0 errors ✔ | 0 warnings ✔ | 0 notes ✔  
 
-* x86_64-w64-mingw32  
-* R was compiled by  
-  +  gcc.exe (GCC) 12.3.0  
-  +  GNU Fortran (GCC) 12.3.0  
-* 1 NOTE:
 
->     * checking CRAN incoming feasibility ... NOTE
->     Maintainer: 'Jonathan M Urbach <jurbach@mgh.harvard.edu>'
->     
->     New submission
->     
->     Possibly misspelled words in DESCRIPTION:
->       CERNO (9:85)
->       GSEA (9:92)
->       GSNA (8:69, 11:20, 14:18)
->       epigenetic (13:66)
->       transcriptomic (13:50)
->     
+## devtools::check_win_devel() (2024-01-25) check with response  
 
-## Response to this note:  
+> * checking CRAN incoming feasibility ... NOTE
+> Maintainer: 'Jonathan M Urbach <jurbach@mgh.harvard.edu>'
+> 
+> New submission
+> 
+> Possibly misspelled words in DESCRIPTION:
+>   Arshad (17:38, 18:61)
+>   GH (18:50)
+>   Hitschfel (18:15)
+>   JM (17:22, 18:35)
+>   KA (17:54)
+>   Ly (18:54)
+>   Mylvaganam (18:39)
+>   NL (18:57)
+>   Racenet (17:26)
+>   Urbach (17:15, 18:28)
+>   ZJ (17:34)
+>   al (17:72, 18:74)
+>   epigenetic (15:19)
+>   et (17:69, 18:71)
+>   transcriptomic (15:3)
 
-* As in the rhub checks, the terms 'CERNO', 'GSEA', 'GSNA', 'epigenetic', and 'transcriptomic' are correct.
+* This is the same spelling note that devtools::check_rhub() generated.
+
+
+## devtools::check_win_release() (2024-01-25) check with response  
+
+> * checking CRAN incoming feasibility ... [13s] NOTE
+> Maintainer: 'Jonathan M Urbach <jurbach@mgh.harvard.edu>'
+> 
+> New submission
+> 
+> Possibly misspelled words in DESCRIPTION:
+>   Arshad (17:38, 18:61)
+>   GH (18:50)
+>   Hitschfel (18:15)
+>   JM (17:22, 18:35)
+>   KA (17:54)
+>   Ly (18:54)
+>   Mylvaganam (18:39)
+>   NL (18:57)
+>   Racenet (17:26)
+>   Urbach (17:15, 18:28)
+>   ZJ (17:34)
+>   al (17:72, 18:74)
+>   epigenetic (15:19)
+>   et (17:69, 18:71)
+>   transcriptomic (15:3)
+> 
+> Found the following (possibly) invalid URLs:
+>   URL: http://www.jstor.org/stable/2346101
+>     From: man/gsnORAtest.Rd
+>     Status: 403
+>     Message: Forbidden
+
+* Again, the win release check raises the same spelling issue as the devtools::check_rhub() check, plus a possible invalid URL issue. The URL 'http://www.jstor.org/stable/2346101' is correct.
+
+
+
 
 

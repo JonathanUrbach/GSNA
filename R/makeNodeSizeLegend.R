@@ -183,9 +183,6 @@ makeNodeSizeLegend <-
 
            restore.params.bool = TRUE,
            render.bool = TRUE
-           #,
-           #debug = FALSE
-
   ){
     # Backup par, so that original settings are restored on exit:
     .par.orig <- par( no.readonly = TRUE )

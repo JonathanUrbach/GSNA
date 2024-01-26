@@ -46,9 +46,6 @@ invisible( utils::globalVariables( c("font_face") ) )
 #'
 #' @noRd
 #' @keywords internal
-# @export
-# @examples
-
 make1ColorLegend <- function(numbers,
                              oneColorEncode.fun,
                              n = 100,

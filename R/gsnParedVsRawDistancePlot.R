@@ -12,7 +12,7 @@ invisible( utils::globalVariables( c( 'Pared/Scaled Distances' ) ) )
 #' subnets. This defaults to the 'default_distance'.
 #' @param ... Additional graphical parameters to be passed to \code{plot.default()}.
 #'
-#' @returns NULL
+#' @returns A NULL value.
 #'
 #' @export
 #'

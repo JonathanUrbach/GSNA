@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GSNA version 0.1.2
+# GSNA version 0.1.3
 
 **Jonathan M. Urbach**
 
 **Ragon Instute of MGH, MIT, and Harvard**
 
-**2024-01-18**
+**2024-01-25**
 
 <!-- badges: start -->
 <!-- badges: end -->

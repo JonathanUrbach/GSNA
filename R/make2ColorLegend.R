@@ -54,8 +54,6 @@ invisible( utils::globalVariables( c("font_face") ) )
 #'
 #' @noRd
 #' @keywords internal
-# @export
-# @examples
 make2ColorLegend <- function(numbers.1,
                              numbers.2,
                              twoColorEncode.fun,

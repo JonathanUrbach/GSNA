@@ -1,3 +1,20 @@
+
+
+# GSNA 0.1.3
+* This is the second resubmission to CRAN.  
+* It fixes numerous issues raised by the CRAN curator/moderator, including:  
+  + Format issues in the DESCRIPTION file.  
+  + Missing \value tag in gsnParedVsRawDistancePlot.Rd.  
+  + @example tags in documentation for non-exported @noRd tagged functions were removed. The example code was retained in '@details'.  
+  + Example code wrapped in \dontrun{} tags was either:
+    - Removed and replaced with code updated with runnable code using example data.  
+    - Removed altogether, generally in cases where additional external files would be required. (e.g. parsers for GMT (read_gmt()), DAVID (read_david_data_file()) file formats.) Example code may be re-added in the future once example data files are included.  
+    - In some cases, examples needed to be wrapped in \donttest{} tags, due to long run-time or requirement of a network connection to download data sets. (gsnPlotNetwork(), pick_MappedGeneSymbol())
+  + Several plotting-associated functions have now been changed to internal, non-exported functions. (makeLeafSizeLegend(), makeNodeSizeLegend(), make2ColorLegend(), make1ColorLegend(), etc.)  
+  + Functions that formerly set graphical parameters through par() now backup the original parameters before doing so, and restore them automatically through a call to on.exit(par(.par.orig)) (gsnHierarchicalDendrogram(), gsnPlotNetwork(), make1ColorLegend(), make2ColorLegend(), makeLeafSizeLegend(), makeNodeSizeLegend(), and renderCircularDendrogram()). 
+  
+  
+
 # GSNA 0.1.2
 * This version is the resubmission version to CRAN.
 * Fixes three main NOTE issues:
