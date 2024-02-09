@@ -14,8 +14,9 @@ invisible( utils::globalVariables( c("tick_val", "size.usr") ) )
 #' \code{
 #'    uxcpi <- get_usr_x_coords_per_inch()
 #' }
-#' @noRd
 #'
+#' @noRd
+#' @keywords internal
 get_usr_x_coords_per_inch <- function(){
   ( par('usr')[2] - par('usr')[1] ) / par('pin')[1]
 }
@@ -146,7 +147,7 @@ get_usr_x_coords_per_inch <- function(){
 #' }
 #'
 #' @noRd
-#
+#' @keywords internal
 makeNodeSizeLegend <-
   function(numbers,
            sizeEncode.fun,

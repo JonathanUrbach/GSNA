@@ -24,9 +24,6 @@
 #'
 #' @noRd
 #' @keywords internal
-#'
-# @export
-# @examples
 adjust_plt <- function( .plt,
                         y.dim.actual.fu,
                         x.dim.actual.fu,

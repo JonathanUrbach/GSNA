@@ -15,8 +15,6 @@
 #'
 #' @noRd
 #' @keywords internal
-# @export
-# @examples
 make2ColorLegendStack <- function( numbers.1,
                                    numbers.2,
                                    twoColorEncode.fun,

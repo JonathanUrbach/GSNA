@@ -1,7 +1,13 @@
 
+# GSNA 0.1.4  
+* This is the fourth submission to CRAN.  
+* Fixes were made to the 'Description' section of the 'DESCRIPTION' file, to apply the required single quote guidelines for package names, program names and API names only.  
+* Unexported functions have @noRd tags added to suppress the generation of .Rd files.  
+* The @examples tags have been removed for unexported functions, so that example code is not tested or run.  
+
 
 # GSNA 0.1.3
-* This is the second resubmission to CRAN.  
+* This is the third submission to CRAN.  
 * It fixes numerous issues raised by the CRAN curator/moderator, including:  
   + Format issues in the DESCRIPTION file.  
   + Missing \value tag in gsnParedVsRawDistancePlot.Rd.  
@@ -16,7 +22,7 @@
   
 
 # GSNA 0.1.2
-* This version is the resubmission version to CRAN.
+* This version is the second submission version to CRAN.
 * Fixes three main NOTE issues:
   1. Use of .plt instead of .plt.leg for make1ColorLegend() and make2ColorLegend()
   2. The 'lost braces' problem.
