@@ -117,7 +117,6 @@
 #'
 #' @noRd
 #' @keywords internal
-#'
 makeLeafSizeLegend <-
   function(numbers,
            sizeEncode.fun,

@@ -25,14 +25,14 @@
 #'   }
 #'
 #' examples
-#'
+#' \code{
 #'    subnets.l <- assignSubnets( edges.df = edges.df, scoreCol = "p.adj", highToLow = FALSE )
-#'
+#' }
 #'
 #' @seealso \code{\link{gsnAssignSubnets}}
+#'
 #' @noRd
 #' @keywords internal
-#'
 assignSubnets <- function(edges.df, scoreCol = NULL, highToLow = NULL ){
   # Columns 1 and 2 are To and From
   # If there are > 2 columns, use the column indicated by 'scoreCol' as a basis for sorting.

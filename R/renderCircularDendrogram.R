@@ -1,8 +1,36 @@
+#' renderCircularDendrogram
+#'
+#' @description Internal plot function for circular dendrogram, called by gsnHierarchicalDendrogram()
+#'
+#' @param dendro An object of class dendrogram.
+#' @param leaf.names A vector of the names of leaves.
+#' @param subnets.lf A vector containing subnets keyed by the names of associated gene sets.
+#' @param label_names A vector containing label names for each leaf.
+#' @param labels_colors A vector containing the color associated with each label. This is used for
+#' coloring labels by cluster.
+#' @param labels.cex The cex font size for leaf labels.
+#' @param cex General cex font size.
+#' @param .plt.plot plt value for the plot itself, describing the plotting region, in the same format
+#' as par(.plt').
+#' @param clear Boolean indicating whether circlize::circos.clear() should be called, resetting circular
+#' plot parameters.
+#' @param family The font family used.
+#' @param width Plot width in inches.
+#' @param height Plot height in inches.
+#' @param .mai.plot Size of plot margins, in same format as par('mai').
+#' @param .mai.circos Circular coordinate margins of plot, corresponding to circle.margin in 'circlize'
+#' package. (see 'circlize' documentation).
+#' @param max_frxn_label_width maximal label width as a fraction of radius.
+#' @param frxn_dendro_height circularized dendrogram height as a fraction of radius.
+#' @param label_margin_chars number of characters with which to pad the label margin.
+#' @param canvas.xlim x limit for the canvas (cartesian coordinates).
+#' @param canvas.ylim y limit for the canvas (cartesian coordinates).
+#' @param xlim_ylim_ratio Ratio of width / height.
+#'
 #' @importFrom graphics strwidth
 #'
 #' @noRd
 #' @keywords internal
-#
 renderCircularDendrogram <- function( dendro,
                                       leaf.names, # Names of leaves in proper order. May not be the same as label_names, which is obtained from dendro.
                                       subnets.lf = NULL,
@@ -11,7 +39,6 @@ renderCircularDendrogram <- function( dendro,
                                       labels.cex = NULL,
 
                                       cex = par('cex'),
-                                      #mai = par('mai'),
                                       .plt.plot = NULL,
 
                                       clear = TRUE,
@@ -29,10 +56,8 @@ renderCircularDendrogram <- function( dendro,
                                       label_margin_chars = 2,
                                       canvas.xlim = NULL,
                                       canvas.ylim = NULL,
-                                      #xlim_ylim_ratio = 4/3
                                       xlim_ylim_ratio = NULL
-                                      #legend_x_size.in = 2  # NEW # 2 by default, but plot is stull up and left based on a square layout.
-){
+                                     ){
   # Backup par, so that original settings are restored on exit:
   .par.orig <- par( no.readonly = TRUE )
   on.exit( add = TRUE, expr = par(.par.orig) )
@@ -79,11 +104,8 @@ renderCircularDendrogram <- function( dendro,
   {
     par( plt = .plt.plot ) # This has been backed up already and will be restored by on.exit call.
     circlize::circos.par(cell.padding = c(0, 0, 0, 0),
-                         #circle.margin = c( 0.1, 0.1, 0.1, 0.1 ),
                          circle.margin = .mai.circos + 0.0001, # circle.margin can only be positive.
-                         #canvas.xlim = c( -1,1.4 ),
                          canvas.xlim = canvas.xlim,
-                         #canvas.ylim = c( -1, 1 ),
                          canvas.ylim = canvas.ylim,
                          points.overflow.warning = FALSE)
     circlize::circos.initialize("a", xlim = c(0, .n)) # only one sector

@@ -2,7 +2,33 @@
 
 * This is a new release.  
 
-# Issues raised by Beni Altmann and responses   
+# Issues raised by Victoria Wimmer (January 27, 2024)  
+
+> Please only write package names, software names and API names in single quotes in title and description. 
+> Therefore, please omit the quotes for e.g.: 'CERNO' ('Coincident Extreme Ranks in Numerical Observations')
+
+* This has been fixed, and I have changed the text to make it more clear that 'GSEA' (Gene Set Enrichment Analysis) is a program in addition to being a method, and CERNO (Coincident Extreme Ranks in Numerical Observations) is a method implemented in the 'tmod' package. Likewise, 'GSNA' quoted as the name of this package.    
+
+> We still see:
+> 
+> "Using foo:::f instead of foo::f allows access to unexported objects. This is generally not recommended,
+> as the semantics of unexported objects may be changed by the package author in routine maintenance." 
+> Please omit one colon.
+> Used ::: in documentation:
+>      man/antiSplit.Rd:
+>         data.df <- GSNA:::antiSplit(data.l, c("Letters", "NumsAsCharacters"))
+>
+> You have examples for unexported functions. Please either omit these examples or export these functions. 
+> Examples for unexported function 
+>   antiSplit() in:
+>      antiSplit.Rd
+
+* The antiSplit() function now has a @noRd tag so it does not generate an .Rd file.
+* The @examples tags for the function antiSplit() and other unexported functions have been removed. The exemplar code is now under @details, and is not run by devtools::run_examples() or any checks.  
+
+
+
+# Issues raised by Beni Altmann and responses (January 22, 2024)   
 
 > Please omit the redundant "(Title Case)" at the end/start of your title 
 > and description.

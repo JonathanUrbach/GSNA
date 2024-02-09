@@ -280,8 +280,6 @@ lhm <- function( v ){
 #'
 #' @noRd
 #' @keywords internal
-# @examples
-# @export
 calculate_stlf_vector <- function( mat ){
   if( is.null( dim(mat) ) ) return( NA )
   .GS_num <- ncol(mat)

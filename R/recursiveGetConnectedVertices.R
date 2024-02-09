@@ -15,7 +15,7 @@
 #' @details This method is currently of limited use outside of assignSubnets, for which it does most of the work.
 #'
 #' @noRd
-# @export
+#' @keywords internal
 recursiveGetConnectedVertices <- function( vertx, e=environment() ){
   if( ! vertx %in% e$vertices.v )
     e$vertices.v <- c(e$vertices.v, vertx)

@@ -474,12 +474,17 @@ nzLog10.old <- function(x, quiet = FALSE ){
 #'
 #' This is used by \code{assignSubnets()}. We're not currently exporting it.
 #'
-#' @examples
+#' @details
 #'
+#' example:
+#' \code{
 #' library(GSNA)
 #' data.l<-list( A = c( 1, 2, 3, 4 ), B = c( 3, 6 ), C = c( 7, 3, 2 ) )
 #' data.df <- GSNA:::antiSplit( data.l, c("Letters", "NumsAsCharacters") )
+#' }
 #'
+#' @noRd
+#' @keywords internal
 antiSplit <- function( .l, col.names = c("V1","V2") ){
   namez <- NULL
   if(is.null(namez <- names(.l))){

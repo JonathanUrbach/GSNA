@@ -31,7 +31,6 @@
 #'
 #' @noRd
 #' @keywords internal
-#'
 adj_mar_leg_vm <- function( .mar.leg.vm, width = par('fin')[1], height = par('fin')[2], width.threshold = 5, height.threshold = 2.5 ){
   scale_ratio <- min( width/width.threshold, height/height.threshold )
   if( scale_ratio < 1 ){
