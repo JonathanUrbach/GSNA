@@ -5,7 +5,7 @@
 #' yassifyPathways
 #'
 #' @description Takes a data.frame and outputs an attractively formatted HTML table widget for reports via the
-#' using the DT and DataTables package. Optionally, the user can specify, via the \code{n} parameter, the number
+#' using the DT and data.table package. Optionally, the user can specify, via the \code{n} parameter, the number
 #' of rows to display in the HTML table. Optionally, IDs in specific columns can be mapped to URLs as links.
 #'
 #' @param pathways A data.frame containing pathways data.
