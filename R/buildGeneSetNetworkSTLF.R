@@ -8,7 +8,7 @@
 #' @param object An object of type GSNData. If NULL, a new one is instantiated.
 #'
 #' @param ref.background A character vector corresponding to the genes observable in a differential
-#' expression, ATACSeq or other dataset. This corresponds to the background used in tools like DAVID.
+#' expression, ATAC-Seq or other dataset. This corresponds to the background used in tools like DAVID.
 #' This is **required**, unless object already exists and contains a genePresenceAbsence matrix field.
 #'
 #' @param geneSetCollection (required) A gene set collection either in the form of a tmod object, or a list of

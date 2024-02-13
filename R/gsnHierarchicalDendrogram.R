@@ -150,7 +150,7 @@
 #' (default 100).
 #' @param legend.bg (option) The color of the legend background. (default: \code{par('bg')})
 #' @param legend.fg (option) The color of the legend foreground. (default: \code{par('fg')})
-#' @param resolution Imagee resolution in pixels per inch, only for bitmap image output formats (currently
+#' @param resolution Image resolution in pixels per inch, only for bitmap image output formats (currently
 #' png only). (default: 72)
 #' @param draw.legend.box.bool (option) Logical indicating whether bounding boxes should be drawn for the legends.
 #' @param DO_BROWSER (option) Logical indicating whether browser() should be run for this function. (For debugging

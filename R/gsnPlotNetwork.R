@@ -205,7 +205,7 @@
 #'
 #' @param legend_spacing.y.in (optional) Space between legends in inches. (default: 1 character height)
 #'
-#' @param resolution Imagee resolution in pixels per inch, only for bitmap image output formats (currently
+#' @param resolution Image resolution in pixels per inch, only for bitmap image output formats (currently
 #' png only). (default: 72)
 #'
 #' @param DO_BROWSER (option) Logical indicating whether browser() should be run for this function. (For debugging

@@ -2,6 +2,14 @@
 
 * This is a new release.  
 
+# Issues raised by Uwe Ligges
+
+> Possibly misspelled words in DESCRIPTION:
+> pakage (12:82)  
+
+* This has been fixed. In addition, the file 'inst/WORDLIST' has been added to simplify scans for misspelled words.  
+
+
 # Issues raised by Victoria Wimmer (January 27, 2024)  
 
 > Please only write package names, software names and API names in single quotes in title and description. 

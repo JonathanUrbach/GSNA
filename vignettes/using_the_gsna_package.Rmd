@@ -59,8 +59,8 @@ Pathways data sets are normally filtered to include only the gene sets with sign
 Gene set collections (GSCs) should contain only those gene sets that are to be analyzed by GSNA, and only the gene sets that are present in the pathways data set. Generally, this includes gene set hits with significant *p*- or *q*-values. Gene set collections may be supplied in any of the three following formats:  
 
 * A named list of character vectors in which the names are the gene set names or IDs and the contents of the vectors are gene symbols.  
-* A **tmod** object as used by the **tmod** package versions up to version ‘0.46.2’.  
-* A **tmodGS** object as used by the **tmod** package versions since version ‘0.50.11’.  
+* A **tmod** object as used by the **tmod** package versions up to version '0.46.2'.  
+* A **tmodGS** object as used by the **tmod** package versions since version '0.50.11'.  
 
 Typically, the GSCs used for **GSNA** are not the same as the GSCs used for the initial pathways analysis, but rather they are
 subsetted from the original gene set collection to contain only the gene sets with significant hits or which are otherwise of interest.

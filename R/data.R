@@ -51,7 +51,7 @@
 #'  * **Title** Human-interpretable gene set title.
 #'  * **cerno** CERNO statistic used in calculating significance.
 #'  * **N1** The number of observable genes in the expression dataset that are also in a given gene set.
-#'  * **AUC** AUD value for that gene set.
+#'  * **AUC** AUC value for that gene set.
 #'  * **cES** CERNO enrichment score.
 #'  * **P.Value** *P*-value calculated from the cerno statistic using the Fisher method.
 #'  * **adj.P.Val** FDR-adjusted.

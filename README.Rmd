@@ -21,10 +21,9 @@ require( utils )
 
 **Jonathan M. Urbach**
 
-**Ragon Instute of MGH, MIT, and Harvard**  
+**Ragon Institute of MGH, MIT, and Harvard**  
 
 **`r Sys.Date()`**  
-
 
 
 <!-- badges: start -->
