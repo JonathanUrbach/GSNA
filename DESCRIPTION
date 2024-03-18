@@ -1,7 +1,7 @@
 Package: GSNA
 Type: Package
 Title: Gene Set Networking Analysis Package  
-Version: 0.1.4.1
+Version: 0.1.4.2
 Authors@R: 
     person(given = "Jonathan M", family = "Urbach", email = "jurbach@mgh.harvard.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0597-2848"))

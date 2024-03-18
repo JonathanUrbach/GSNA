@@ -131,14 +131,13 @@ gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NUL
 
 #' gsnAddPathwayData
 #'
-#' @description A synonym of \code{\link{gsnAddPathwaysData}()}, included to support old code. Use
-#' \code{\link{gsnAddPathwaysData}()} for new code.
+#' @description \code{gsnAddPathwayData()} is a synonym of \code{\link{gsnAddPathwaysData}()}, included to support
+#' old code. Use \code{\link{gsnAddPathwaysData}()} for new code. \code{gsnAddPathwayData()} will be deprecated in]
+#' a future version.
 #'
-#' @inheritDotParams gsnAddPathwaysData
-#' @describeIn gsnAddPathwaysData Synonym of \code{\link{gsnAddPathwaysData}()}, included to support old code. Use
-#' \code{\link{gsnAddPathwaysData}()} for new code.
-
-gsnAddPathwayData <- function(...){
+#' @rdname gsnAddPathwaysData
+#' @export
+gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
   warning("gsnAddPathwayData() is included to support old code. Use gsnAddPathwaysData() instead.")
-  gsnAddPathwaysData(...)
+  gsnAddPathwaysData( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL )
 }
