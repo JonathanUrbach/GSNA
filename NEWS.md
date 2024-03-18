@@ -1,4 +1,7 @@
 
+# GSNA 0.1.4.2
+* This version attempts to address a problem coming up with CRAN's development R linux platform tests, which identified a problem with validation of the HTML manual for gsnAddPathwayData & gsnAddPathwaysData that resulted in the note warning "Warning: trimming empty <dt>". The warning is not reproduced on r-hub builder or other uploadable R package build testing services, but these changes should remove the problematic documentation. 
+
 # GSNA 0.1.4.1
 * This is the fifth submission to CRAN.
 * Spelling errors were fixed, including 'pakage' in DESCRIPTION, 'ATACSeq' which should be 'ATAC-Seq', 'Imagee' which should be 'Image' and a few others.
