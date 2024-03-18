@@ -1,6 +1,34 @@
-# Package GSNA  
+# Package GSNA
 
-* This is a new release.  
+**Version 0.4.1.2 Comments**  
+
+* This version attempts to address a problem coming up with CRAN's development R linux platform tests, which identified a problem with validation of the HTML manual for gsnAddPathwayData & gsnAddPathwaysData that resulted in the note warning "Warning: trimming empty <dt>". The warning is not reproduced on r-hub builder or other uploadable R package build testing services, but these changes should remove the problematic documentation. 
+
+* This version passes checks with RHUB (web-version) for "Fedora Linux, R-devel, GCC", "Debian Linux, R-devel, GCC", "Windows Server 2022, R-oldrel, 32/64 bit", and devtools::check(cran=TRUE). API based checks with devtools::check_rhub() gives the following notes, two of which were present in earlier checks and discussed below:
+
+>> checking HTML version of manual ... [11s] NOTE
+>>  Skipping checking math rendering: package 'V8' unavailable
+
+  + This note is self-explanatory and seemingly platform specific.  
+
+>> ❯ checking for non-standard things in the check directory ... NOTE
+>>   Found the following files/directories:
+>>     ''NULL''
+
+  + This appears to be incorrect. There is no such 'NULL' file in the package. (Present in earlier checks.)    
+
+>> ❯ checking for detritus in the temp directory ... NOTE
+>>   Found the following files/directories:
+>>     'lastMiKTeXException'
+
+  + The file 'lastMiKTeXException' is not present in the package. It may be an artifact of the creation of the manual.  (Present in earlier checks.)        
+
+
+
+
+**Version 0.4.1.1 Comments**  
+
+* This is the original CRAN release.  
 
 # Issues raised by Uwe Ligges
 
