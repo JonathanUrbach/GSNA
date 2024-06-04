@@ -283,7 +283,7 @@ gsnHierarchicalDendrogram <- function( object,
 
   # Backup par, so that original settings are restored on exit:
   .par.orig <- par( no.readonly = TRUE )
-  on.exit( add = TRUE, expr = par(.par.orig) )
+  on.exit( add = TRUE, expr = suppressMessages( suppressWarnings( par(.par.orig) ) ) )
 
   # This is used to fix the problem of labels.dendrogram and plot.dendrogram not
   # being exported from stats
@@ -668,7 +668,9 @@ gsnHierarchicalDendrogram <- function( object,
         .plt.bar[2] <- .plt.bar[1] + width.bar.fig
 
         # Set par for plotting the subnets bar
-        par( plt = .plt.bar, new = TRUE ) # This will be restored by on.exit call
+        # par( plt = .plt.bar, new = TRUE ) # This will be restored by on.exit call
+        # If actually rendering, new should be TRUE, otherwise FALSE
+        par( plt = .plt.bar, new = render.plot ) # This will be restored by on.exit call
 
         plot.window( xlim = c(0,1), ylim = c(usr[3], usr[4]), yaxs = "i" )
 
