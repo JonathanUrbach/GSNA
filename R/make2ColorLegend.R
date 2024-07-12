@@ -93,7 +93,7 @@ make2ColorLegend <- function(numbers.1,
 ){
   # Backup par, so that original settings are restored on exit:
   .par.orig <- par( no.readonly = TRUE )
-  on.exit( add = TRUE, expr = par(.par.orig) )
+  on.exit( add = TRUE, expr = suppressMessages( suppressWarnings( par(.par.orig) ) ) )
 
   # Make 2 color legend stack
   legend.stack <- make2ColorLegendStack( numbers.1 = numbers.1,

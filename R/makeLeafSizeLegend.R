@@ -160,7 +160,7 @@ makeLeafSizeLegend <-
   ){
     # Backup par, so that original settings are restored on exit:
     .par.orig <- par( no.readonly = TRUE )
-    on.exit( add = TRUE, expr = par(.par.orig) )
+    on.exit( add = TRUE, expr = suppressMessages( suppressWarnings( par(.par.orig) ) ) )
 
     # We're going to use the coordinate system set up by igraph::plot.igraph because the size of vertices is dependent on the coordinate sytem.
     # Input data used to determine tick_values
