@@ -8,7 +8,13 @@ test_that("gsnAddPathwaysData works", {
     PW.fake_david <- fake_david_chart( ora_data = PW.ORA, .gsc = GSC )
 
     # Import again, but specify type = "david"
-    STLF.GSN.fd <- gsnAddPathwaysData( object = STLF.GSN.fd, pathways_data = PW.fake_david )
+    suppressMessages(
+      testthat::expect_message(
+        object = STLF.GSN.fd <- gsnAddPathwaysData( object = STLF.GSN.fd, pathways_data = PW.fake_david ),
+        regexp = "Using\\sDAVID\\simport."
+      )
+    )
+
     testthat::expect_equal( object = STLF.GSN.fd$pathways$type, expected = "david" )
 
     testthat::expect_contains( object = colnames(STLF.GSN.fd$pathways$data), expected = colnames(PW.fake_david) )
@@ -21,7 +27,12 @@ test_that("gsnAddPathwaysData works", {
 
     # Now, import gsnORA data:
     STLF.GSN.fd$pathways <- NULL
-    STLF.GSN.fd <- gsnAddPathwaysData( object = STLF.GSN.fd, pathways_data = PW.ORA )
+    suppressMessages(
+      testthat::expect_message(
+        object = STLF.GSN.fd <- gsnAddPathwaysData( object = STLF.GSN.fd, pathways_data = PW.ORA ),
+        regexp = "Using\\sGSN-ORA\\simport\\."
+        )
+      )
 
     # Test STLF.GSN.fd object:
     testthat::expect_contains( object = names(STLF.GSN.fd), expected = "pathways" )

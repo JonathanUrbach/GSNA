@@ -8,7 +8,10 @@ test_that("gsnImportGenericPathways works", {
   PW.fake_david <- fake_david_chart( ora_data = PW.ORA, .gsc = GSC )
 
   # See if it can do a generic import of DAVID data
-  STLF.GSN.fd <- gsnImportGenericPathways( object = STLF.GSN.fd, pathways_data = PW.fake_david )
+  suppressMessages(
+    testthat::expect_message( object = STLF.GSN.fd <- gsnImportGenericPathways( object = STLF.GSN.fd, pathways_data = PW.fake_david ),
+                              regexp =  "id_col\\s=\\sTerm.+stat_col\\s=\\sBonferroni.+sig_order\\s=\\sloToHi" )
+    )
 
   # Test STLF.GSN.fd object:
   testthat::expect_contains( object = names(STLF.GSN.fd), expected = "pathways" )
@@ -16,7 +19,15 @@ test_that("gsnImportGenericPathways works", {
   testthat::expect_equal( object = STLF.GSN.fd$pathways$type, expected = "generic" )
 
   # Import again, but specify type = "david"
-  STLF.GSN.fd <- gsnImportGenericPathways( object = STLF.GSN.fd, pathways_data = PW.fake_david, type = "david" )
+  suppressMessages(
+    testthat::expect_message(
+      object = ( STLF.GSN.fd <- gsnImportGenericPathways( object = STLF.GSN.fd,
+                                                          pathways_data = PW.fake_david,
+                                                          type = "david" ) ),
+      regexp =  "id_col\\s=\\sTerm.+stat_col\\s=\\sBonferroni.+sig_order\\s=\\sloToHi"
+                            )
+    )
+
   testthat::expect_equal( object = STLF.GSN.fd$pathways$type, expected = "david" )
 
   testthat::expect_contains( object = colnames(STLF.GSN.fd$pathways$data), expected = colnames(PW.fake_david) )
@@ -29,7 +40,7 @@ test_that("gsnImportGenericPathways works", {
 
   # Now, import gsnORA data:
   STLF.GSN.fd$pathways <- NULL
-  STLF.GSN.fd <- gsnImportGenericPathways( object = STLF.GSN.fd, pathways_data = PW.ORA )
+  STLF.GSN.fd <- suppressMessages( gsnImportGenericPathways( object = STLF.GSN.fd, pathways_data = PW.ORA ) )
 
   # Test STLF.GSN.fd object:
   testthat::expect_contains( object = names(STLF.GSN.fd), expected = "pathways" )
