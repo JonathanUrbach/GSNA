@@ -1,7 +1,11 @@
 
 # GSNA 0.1.4.3  
+<<<<<<< HEAD
 * Includes the ./man directory and .Rd files as part of the GitHub repository, so that installations from GitHub via `devtools::install_github()` will now include the manual pages, without the need to run `devtools::document()` or `roxygen2::roxygenize()`.  
 * Adds tests for gsIntersectCounts() & lfisher_cpp(), and silences the messages for gsnAddPatheaysData() and gsnImportGenericPathways().  
+=======
+* Includes the ./man directory and .Rd files as part of the GitHub repository, so that installations from GitHub via `devtools::install_github()` will now include the manual pages, without the need to run `devtools::document()` or `roxygen2::roxygenize()`.
+>>>>>>> a98ce4a26e59e60c00541755b2848df1912f5509
 * GSNA documentation cannot currently be built roxygen2 version 7.3.2. A bug report has been submitted (https://github.com/r-lib/roxygen2/issues/1635).  
 * The previous version of GSNA, version 0.1.4.2 was archived on CRAN due to failure to fix a memory overflow that occurred during package tests (see: https://cran-archive.r-project.org/web/checks/2024/2024-04-04_check_results_GSNA.html). Code from the **ragg** package was called when CRAN curators tested the code on CRAN's testing platform, which included a Linux environment with R packages linked with the **ASAN** library (Address Sanitizer). Although the **GSNA** package does not directly call any **ragg** functions, and has been confirmed to run on platforms from which the **ragg** library has been removed, when the package tests were run by the curators on the **ASAN** testing platform, a (fatal) a container overflow (memory access outside of allocated memory) resulted when **ragg** functions were called. This was presumably the result of an *optional* function call by one of the **GSNA** dependencies. This error was not reproducible on our development platforms, making it difficult to fix, so for the moment, **GSNA** development is targeted for GitHub distribution.  
 * This is intended to be the last version with dependency on the obsolete **raster** library. (This may be the source of calls to the **ragg** library, see above.)  
