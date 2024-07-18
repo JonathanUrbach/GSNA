@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GSNA version 0.1.4.3
+# GSNA version 0.1.4.4
 
 **Jonathan M. Urbach**
 
 **Ragon Institute of MGH, MIT, and Harvard**
 
-**2024-07-16**
+**2024-07-18**
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -44,7 +44,6 @@ following:
 - Matrix  
 - methods  
 - psych  
-- raster  
 - stringr  
 - stringi  
 - stats  
@@ -64,41 +63,32 @@ on Windows means installing Rtools for Windows, and for Mac OS X, Xcode.
 Linux installations generally include the required compilers,
 specifically the GCC compilers.
 
-**NOTE:** Particular care should be paid to the installation of the R
-**raster** package. The **raster** package requires the **terra**
-package, which in turn requires the **GEOS** C++ computational library,
-available from <https://libgeos.org/> to compile from source. Binary
-packages for the **GEOS** library are available for numerous Linux
-distributions, and may offer a more convenient alternative than
-installing **GEOS** from source.
-
 ## Installation
 
-We intend to make the **GSNA** package available on CRAN in the near
-future. If and when it is accepted by CRAN, you will be able to install
-\*\*GSNA using the following command:
+The easiest way to install the **GSNA** package is to install directly
+from GitHub. To do this, you need to have the **devtools** package
+installed. The following command checks to see if devtools is installed,
+and if it is not, installs the package:
+
+``` r
+if( ! require( 'devtools' ) ){
+  install.packages( 'devtools' )
+  require( 'devtools' )
+}
+```
+
+To install GSNA from GitHub, run this R command:
+
+``` r
+devtools::install_github( "JonathanUrbach/GSNA" )
+```
+
+We hope to make the **GSNA** package available (again) on CRAN in the
+near future. If and when it is accepted by CRAN, you will be able to
+install **GSNA** using the following command:
 
 ``` r
 install.packages('GSNA')
-```
-
-In the meantime, if you have the **devtools** package installed, you can
-install the development version of **GSNA** directly from GitHub like
-so:
-
-``` r
-devtools::install_github( repo = "https://github.com/JonathanUrbach/GSNA" )
-```
-
-Note: Currently, this method omits installation of the package’s
-Roxygen2 man pages.
-
-If you have downloaded the source code from GitHub and opened the
-project in an Rstudio session, the following command can be used to
-install the package, including documentation:
-
-``` r
-devtools::install( build_vignettes = TRUE, args = "--no-multiarch --with-keep.source" )
 ```
 
 ## Loading **GSNA** and Accessing Documentation

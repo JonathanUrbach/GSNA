@@ -35,7 +35,6 @@ Imports:
     Matrix,
     methods,
     psych,
-    raster,
     stringr,
     stringi,
     stats,
