@@ -107,8 +107,8 @@ set in the object. (default is the value in \code{object$pathways$n_col}).}
 \item{optimal_extreme}{(optional) This indicates the behavior of the statistic used to generate the distance metric,
 specifically whether low values (\code{'min'}) or high values \code{'max'} are to be regarded as close. This is used
 for scaling the width and the color of the edges connecting vertices. See \code{scale.edges.by.distance}, below:
-(default: object$distances[\link{distance}]$pared_optimal_extreme or if that's NULL,
-object$distances[\link{distance}]$optimal_extreme)}
+(default: \code{object$distances[[distance]]$pared_optimal_extreme} or if that's \code{NULL},
+\code{object$distances[[distance]]$optimal_extreme})}
 
 \item{transform_function}{(optional) This is a function to transform the values in \code{stat_col} so that they
 are suitable for amenable to color-scaling. For \emph{p}-values, a log transformation is often useful, but can produce
