@@ -43,6 +43,7 @@ invisible( utils::globalVariables( c("font_face") ) )
 #'
 #' @importFrom grDevices axisTicks
 #' @importFrom graphics axis box par plot.window title
+#' @importFrom Matrix image
 #'
 #' @noRd
 #' @keywords internal

@@ -72,7 +72,7 @@
 #'
 #'  \code{\link{buildGeneSetNetworkSTLF}}
 #'
-#' @importFrom Matrix as.matrix
+#' @importFrom Matrix Matrix as.matrix
 buildGeneSetNetworkGeneric <- function( object = NULL, ref.background = NULL, geneSetCollection = NULL, distMatrixFun, distance, optimal_extreme ){
   if( is.null( object ) ) object <- GSNData()
 
