@@ -341,7 +341,7 @@ gsnPlotNetwork <- function( object,
 
   # Backup par, so that original settings are restored on exit:
   .par.orig <- par( no.readonly = TRUE )
-  on.exit( add = TRUE, expr = par(.par.orig) )
+  on.exit( add = TRUE, expr = suppressMessages( suppressWarnings( par(.par.orig) ) ) )
 
   # If sig_col or stat_col_2 are specified, check that sig_order / sig_order_2 is specified.
   if( ( !is.null( stat_col ) && is.null( sig_order ) ) )

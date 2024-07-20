@@ -81,7 +81,7 @@ make1ColorLegend <- function(numbers,
 ){
   # Backup par, so that original settings are restored on exit:
   .par.orig <- par( no.readonly = TRUE )
-  on.exit( add = TRUE, expr = par(.par.orig) )
+  on.exit( add = TRUE, expr = suppressMessages( suppressWarnings( par(.par.orig) ) ) )
 
   # Optimize width so that it's approximately 15% of height.
   if( is.null( legend_thickness ) ) legend_thickness <- ceiling( n * 15 / 100 )
