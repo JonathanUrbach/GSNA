@@ -42,7 +42,8 @@ filteredGenePresenceAbsence_Matrix <-
 
 }
 \seealso{
-\code{\link{buildGeneSetNetworkLFFast}}
-\code{\link{buildGeneSetNetworkSTLF}}
+\code{\link{buildGeneSetNetworkKappa}}
 \code{\link{buildGeneSetNetworkJaccard}}
+\code{\link{buildGeneSetNetworkOC}}
+\code{\link{buildGeneSetNetworkSTLF}}
 }

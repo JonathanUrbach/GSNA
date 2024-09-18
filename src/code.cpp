@@ -1027,8 +1027,120 @@ SEXP scoreLFMatrix_C(SEXP geneSetCollection_m,
 
 
 
+//' scoreKappaMatrix_C
+//'
+//' @description Takes a presence/absence matrix with genes as the rows and modules as columns and calculates
+//' a matrix of Cohen's kappa values.
+//'
+//' @usage
+//'  scoreKappaMatrix_C( geneSetCollection_m )
+//'
+//'
+//' @param geneSetCollection_m (required) A logical presence/absence matrix representation of a gene set collection
+//' in which columns correspond to gene sets, rows correspond to genes and values are \code{TRUE} if a gene is present
+//' in a gene set and \code{FALSE} otherwise. Row and column names correspond to gene symbols and gene set
+//' identifiers, respectively. NOTE: for a typical GSNA analysis, this matrix would include only observed filtered
+//' genes and significant gene set hits from pathways analysis. Using a matrix version of the full MSigDB without filtering
+//' genes, for example, would likely be unworkably slow and memory intensive.
+//'
+//' @return A numerical matrix containing the specified kappa values for all non-self pairs.
+//'
+//' The \code{distance} attribute in the output matrix is set to \code{'kappa'}.
+//'
+//' @export
+//'
+//' @details
+//'
+//' Cohen's kappa statistic (*&kappa;*) is generally used to evaluate the concordance of predictors, with 1 being
+//' perfect concordance, -1 being perfect negative concordance, and 0 indicating no significant
+//' concordance.
+//'
+//'  \deqn{\biggl[\begin{matrix}a & b \\ c & d\end{matrix}\biggr]}
+//'
+//' Given a background of observable genes and two gene sets, *i* and *j* that may overlap, this contingency
+//' table is used to represent four numbers:
+//'
+//' \itemize{
+//'   \item{*a*: the number of genes observed in the background but not in *i* or *j*}
+//'   \item{*b*: the number of observed genes in *i* but not *j*}
+//'   \item{*c*: the number of observed genes in *j* but not *i* and}
+//'   \item{*d*: the number of observed genes in both *j* and *i*, i.e. the overlap.}
+//' }
+//'
+//' Kappa is calculated as follows:
+//'
+//'\deqn{
+//'  \kappa = \frac{ 2 \cdot ( ( a \cdot d) - (b \cdot c) ) }{(a+b) \cdot (b+d) + (a+c) \cdot (c+d)}
+//'}
+//'
+//'
+//' @examples
+//'
+//' library( GSNA )
+//'
+//' # Get the background of observable genes set from
+//' # expression data:
+//' gene_background <- toupper(rownames( Bai_empty_expr_mat ))
+//'
+//' # Using the sample gene set collection **Bai_gsc.tmod**,
+//' # generate a gene presence-absence matrix filtered for the
+//' # ref.background of observable genes:
+//' presence_absence.mat <-
+//'   makeFilteredGenePresenceAbsenceMatrix( ref.background = gene_background,
+//'                                          geneSetCollection = Bai_gsc.tmod )
+//'
+//' kappa.mat <- scoreKappaMatrix_C( presence_absence.mat )
+//'
+//' @seealso
+//'  \code{\link{scoreJaccardMatrix_C}}
+//'
+// [[Rcpp::export]]
+SEXP scoreKappaMatrix_C(SEXP geneSetCollection_m) {
+  if( ! Rf_isMatrix(geneSetCollection_m) ){
+    stop("Argument 'geneSetCollection_m' must be a matrix.");
+  }
+  Rcpp::LogicalMatrix GLCF(geneSetCollection_m);
 
+  Rcpp::NumericMatrix DISTMAT(GLCF.ncol(), GLCF.ncol());
+  int bg_size = GLCF.nrow();
+  int n_modules = GLCF.ncol();
 
+  for (int j=0; j<n_modules; j++){
+    for (int i=0; i<n_modules; i++){
+      DISTMAT(j,i) = NA_REAL;
+    }
+  }
 
+  for (int j=0; j<n_modules-1; j++){
+    for (int i=j+1; i<n_modules; i++){
+      double set_ij = 0;
+      double set_i = 0;
+      double set_j = 0;
+      double set_bg = 0;
 
+      // Count the background, i, j and ij sets:
+      for( int k=0; k<bg_size; k++){
+        if( GLCF(k,i) != TRUE && GLCF(k,j) != TRUE )
+          set_bg++;
+        else if( GLCF(k,i) != TRUE )
+          set_j++;
+        else if( GLCF(k,j) != TRUE )
+          set_i++;
+        else
+          set_ij++;
+      }
+      // Calculate Kappa
+      double kappa = 2 * ((set_ij * set_bg) - (set_i * set_j)) / ( (set_ij + set_i ) * ( set_i + set_bg ) + (( set_ij + set_j ) * ( set_j + set_bg )));
+      DISTMAT(j,i) = kappa;
+      DISTMAT(i,j) = kappa;
+    }
+  }
+  rownames( DISTMAT ) = colnames(GLCF);
+  colnames( DISTMAT ) = colnames(GLCF);
+
+  DISTMAT.attr("lower_is_closer") = LogicalVector::create( FALSE );
+  DISTMAT.attr("distance") = CharacterVector::create( "kappa" );
+  DISTMAT.attr("distance_type") = CharacterVector::create( "similarity" );
+  return(DISTMAT);
+}
 

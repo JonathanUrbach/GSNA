@@ -19,9 +19,10 @@ A new GSNAData object.
 GSNData object constructor, used to generate new GSNData objects.
 }
 \details{
-This method is called by \code{buildGeneSetNetworkLFFFast()}, \code{buildGeneSetNetworkLFFast()} and \code{buildGeneSetNetworkSTLF()}.
-For most users there will be little reason to call this method except when tying to implement support for new distance metrics or
-utility functions.
+This constructor method is called by the network building functions: \code{buildGeneSetNetworkLF()},
+\code{buildGeneSetNetworkSTLF()}, \code{buildGeneSetNetworkOC()}, \code{buildGeneSetNetworkJaccard()},
+etc. For most users there will be little reason to call this method except when tying to implement
+support for new distance metrics or utility functions.
 }
 \section{Structure of the GSNData object:}{
 The GSNData object can contain multiple distance matrices including log Fisher (lf) and Jaccard (jaccard). These distances,

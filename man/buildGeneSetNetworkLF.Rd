@@ -48,14 +48,15 @@ the log Fisher \emph{p}-value is equal to:
 
 \deqn{log(P) = log\biggl(\dfrac{(a+b)!(c+d)!(a+c)!(b+d)!}{a!b!c!d!(a+b+c+d)!}\biggr)}
 
-This differs from the \code{buildGeneSetNetworkSTLF} in that only the one value of P is summed, whereas in
-\code{buildGeneSetNetworkSTLF}, all more extreme values are summed (prior to log-transformation), generating an
-actual single-sided \emph{p}-value.
+This differs from the \code{buildGeneSetNetworkSTLF} in that only the one value of P is summed,
+whereas in \code{buildGeneSetNetworkSTLF}, all more extreme values are summed (prior to
+log-transformation), generating an actual single-sided \emph{p}-value.
 
-This statistic behaves approximately like a 2-sided Fisher exact test, but may not be appropriate for
-most purposes. It is also somewhat faster to calculate than STLF (single tailed log-Fisher). Unless speed is an issue,
-we recommend using \code{buildGeneSetNetworkSTLF} Note: \code{buildGeneSetNetworkLFFast} is deprecated. Please use
-\code{buildGeneSetNetworkLF}() instead.
+This statistic behaves approximately like a 2-sided Fisher exact test, but may not be appropriate
+for most purposes. It is also somewhat faster to calculate than STLF (single tailed log-Fisher).
+Unless speed is an issue, we recommend using \code{buildGeneSetNetworkSTLF}
+Note: \code{buildGeneSetNetworkLFFast} is deprecated. Please use \code{buildGeneSetNetworkLF}()
+instead.
 }
 \details{
 This function wraps the process of creating a GSNData object and calculating a log Fisher
@@ -97,6 +98,8 @@ GSN <- buildGeneSetNetworkLF( ref.background = observable_genes,
 }
 \seealso{
 \code{\link{scoreLFMatrix_C}}
-\code{\link{scoreJaccardMatrix_C}}
-\code{\link{scoreOCMatrix_C}}
+\code{\link{buildGeneSetNetworkJaccard}}
+\code{\link{buildGeneSetNetworkKappa}}
+\code{\link{buildGeneSetNetworkOC}}
+\code{\link{buildGeneSetNetworkSTLF}}
 }

@@ -54,7 +54,8 @@
 #'
 #' @seealso
 #'  \code{\link{scoreJaccardMatrix_C}}
-#'  \code{\link{buildGeneSetNetworkLFFast}}
+#'  \code{\link{buildGeneSetNetworkKappa}}
+#'  \code{\link{buildGeneSetNetworkOC}}
 #'  \code{\link{buildGeneSetNetworkSTLF}}
 #'
 #' @importFrom Matrix as.matrix

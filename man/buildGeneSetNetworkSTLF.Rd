@@ -24,7 +24,7 @@ gene module identifier.
 This is \strong{required}, unless object already exists and contains a genePresenceAbsence matrix field.}
 
 \item{distMatrixFun}{Function used to calculate distances. Takes a genePresenceAbsence matrix and
-returns a distance matrix. (defaults to scoreLFMatrix_C )}
+returns a distance matrix. (defaults to scoreLFMatrix_C)}
 }
 \value{
 This function returns a GSNData object with the \code{$default_distance} field set as
@@ -36,8 +36,8 @@ log Fisher \emph{p}-value distances and return the results as a GSNData object.
 }
 \details{
 This function wraps the process of creating a GSNData object and calculating a log Fisher
-\emph{p}-value distance matrix. The distance matrix is calculated using \code{scoreLFMatrix_C ()}, which
-is currently implemented in R and about eight- to tenfold slower than \code{buildGeneSetNetworkLFFast()}.
+\emph{p}-value distance matrix. By default, the distance matrix is calculated using \code{scoreLFMatrix_C()},
+which is implemented in C++.
 }
 \examples{
 
@@ -64,6 +64,7 @@ GSN <- buildGeneSetNetworkSTLF( ref.background = observable_genes,
 }
 \seealso{
 \code{\link{scoreLFMatrix_C}}
-\code{\link{buildGeneSetNetworkLFFast}},
 \code{\link{buildGeneSetNetworkJaccard}}
+\code{\link{buildGeneSetNetworkKappa}}
+\code{\link{buildGeneSetNetworkOC}}
 }

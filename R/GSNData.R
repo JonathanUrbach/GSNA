@@ -14,9 +14,10 @@
 #'
 #' @details
 #'
-#' This method is called by \code{buildGeneSetNetworkLFFFast()}, \code{buildGeneSetNetworkLFFast()} and \code{buildGeneSetNetworkSTLF()}.
-#' For most users there will be little reason to call this method except when tying to implement support for new distance metrics or
-#' utility functions.
+#' This constructor method is called by the network building functions: \code{buildGeneSetNetworkLF()},
+#' \code{buildGeneSetNetworkSTLF()}, \code{buildGeneSetNetworkOC()}, \code{buildGeneSetNetworkJaccard()},
+#' etc. For most users there will be little reason to call this method except when tying to implement
+#' support for new distance metrics or utility functions.
 #'
 #'
 #' # Structure of the GSNData object:

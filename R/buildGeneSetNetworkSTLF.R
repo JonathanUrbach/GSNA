@@ -17,14 +17,14 @@
 #' This is **required**, unless object already exists and contains a genePresenceAbsence matrix field.
 #'
 #' @param distMatrixFun Function used to calculate distances. Takes a genePresenceAbsence matrix and
-#' returns a distance matrix. (defaults to scoreLFMatrix_C )
+#' returns a distance matrix. (defaults to scoreLFMatrix_C)
 #'
 #' @return This function returns a GSNData object with the \code{$default_distance} field set as
 #' \code{'stlf'} and \code{$distances$lf$optimal_extreme} set to \code{'min'}.
 #'
 #' @details This function wraps the process of creating a GSNData object and calculating a log Fisher
-#' *p*-value distance matrix. The distance matrix is calculated using \code{scoreLFMatrix_C ()}, which
-#' is currently implemented in R and about eight- to tenfold slower than \code{buildGeneSetNetworkLFFast()}.
+#' *p*-value distance matrix. By default, the distance matrix is calculated using \code{scoreLFMatrix_C()},
+#' which is implemented in C++.
 #'
 #' @export
 #'
@@ -52,8 +52,9 @@
 #'
 #' @seealso
 #'  \code{\link{scoreLFMatrix_C}}
-#'  \code{\link{buildGeneSetNetworkLFFast}},
 #'  \code{\link{buildGeneSetNetworkJaccard}}
+#'  \code{\link{buildGeneSetNetworkKappa}}
+#'  \code{\link{buildGeneSetNetworkOC}}
 #'
 #' @importFrom Matrix as.matrix
 #'

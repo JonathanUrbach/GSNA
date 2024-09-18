@@ -71,6 +71,6 @@ GSN <- buildGeneSetNetworkOC( ref.background = observable_genes,
 \seealso{
 \code{\link{scoreOCMatrix_C}}
 \code{\link{buildGeneSetNetworkJaccard}}
-\code{\link{buildGeneSetNetworkLFFast}}
 \code{\link{buildGeneSetNetworkSTLF}}
+\code{\link{buildGeneSetNetworkKappa}}
 }

@@ -13,14 +13,15 @@
 #'
 #' \deqn{log(P) = log\biggl(\dfrac{(a+b)!(c+d)!(a+c)!(b+d)!}{a!b!c!d!(a+b+c+d)!}\biggr)}
 #'
-#' This differs from the \code{buildGeneSetNetworkSTLF} in that only the one value of P is summed, whereas in
-#' \code{buildGeneSetNetworkSTLF}, all more extreme values are summed (prior to log-transformation), generating an
-#' actual single-sided *p*-value.
+#' This differs from the \code{buildGeneSetNetworkSTLF} in that only the one value of P is summed,
+#' whereas in \code{buildGeneSetNetworkSTLF}, all more extreme values are summed (prior to
+#' log-transformation), generating an actual single-sided *p*-value.
 #'
-#' This statistic behaves approximately like a 2-sided Fisher exact test, but may not be appropriate for
-#' most purposes. It is also somewhat faster to calculate than STLF (single tailed log-Fisher). Unless speed is an issue,
-#' we recommend using \code{buildGeneSetNetworkSTLF} Note: \code{buildGeneSetNetworkLFFast} is deprecated. Please use
-#' \code{buildGeneSetNetworkLF}() instead.
+#' This statistic behaves approximately like a 2-sided Fisher exact test, but may not be appropriate
+#' for most purposes. It is also somewhat faster to calculate than STLF (single tailed log-Fisher).
+#' Unless speed is an issue, we recommend using \code{buildGeneSetNetworkSTLF}
+#' Note: \code{buildGeneSetNetworkLFFast} is deprecated. Please use \code{buildGeneSetNetworkLF}()
+#' instead.
 #'
 #' @param object An object of type GSNData. If NULL, a new one is instantiated.
 #' @param ref.background (required) A character vector corresponding to the genes observable in a
@@ -65,8 +66,10 @@
 #'
 #' @seealso
 #'  \code{\link{scoreLFMatrix_C}}
-#'  \code{\link{scoreJaccardMatrix_C}}
-#'  \code{\link{scoreOCMatrix_C}}
+#'  \code{\link{buildGeneSetNetworkJaccard}}
+#'  \code{\link{buildGeneSetNetworkKappa}}
+#'  \code{\link{buildGeneSetNetworkOC}}
+#'  \code{\link{buildGeneSetNetworkSTLF}}
 #'
 #' @export
 #' @importFrom Matrix as.matrix

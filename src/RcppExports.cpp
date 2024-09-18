@@ -111,6 +111,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// scoreKappaMatrix_C
+SEXP scoreKappaMatrix_C(SEXP geneSetCollection_m);
+RcppExport SEXP _GSNA_scoreKappaMatrix_C(SEXP geneSetCollection_mSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type geneSetCollection_m(geneSetCollection_mSEXP);
+    rcpp_result_gen = Rcpp::wrap(scoreKappaMatrix_C(geneSetCollection_m));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_GSNA_lfisher_cpp", (DL_FUNC) &_GSNA_lfisher_cpp, 6},
@@ -121,6 +132,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_GSNA_gsnFilterGeneSetCollectionList", (DL_FUNC) &_GSNA_gsnFilterGeneSetCollectionList, 2},
     {"_GSNA_gsnORAtest_cpp", (DL_FUNC) &_GSNA_gsnORAtest_cpp, 3},
     {"_GSNA_scoreLFMatrix_C", (DL_FUNC) &_GSNA_scoreLFMatrix_C, 3},
+    {"_GSNA_scoreKappaMatrix_C", (DL_FUNC) &_GSNA_scoreKappaMatrix_C, 1},
     {NULL, NULL, 0}
 };
 

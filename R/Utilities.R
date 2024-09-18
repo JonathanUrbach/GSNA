@@ -109,7 +109,7 @@
 #' pw_id_col( sig_pathways.GSN ) <- "ID"
 #' # This is equivalent to the following code. When
 #' # invoked on the left side of an assignment, R uses
-#' # *syntactic sugar* to comvert the call to:
+#' # *syntactic sugar* to convert the call to:
 #' sig_pathways.GSN <- `pw_id_col<-`( object = sig_pathways.GSN,
 #'                                    value = "ID" )
 #'

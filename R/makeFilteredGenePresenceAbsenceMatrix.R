@@ -36,9 +36,10 @@
 #'                                                  geneSetCollection = Bai_gsc.tmod )
 #'
 #' @seealso
-#'  \code{\link{buildGeneSetNetworkLFFast}}
-#'  \code{\link{buildGeneSetNetworkSTLF}}
+#'  \code{\link{buildGeneSetNetworkKappa}}
 #'  \code{\link{buildGeneSetNetworkJaccard}}
+#'  \code{\link{buildGeneSetNetworkOC}}
+#'  \code{\link{buildGeneSetNetworkSTLF}}
 #'
 makeFilteredGenePresenceAbsenceMatrix <- function( ref.background, geneSetCollection ){
   # The geneSetCollection argument can be a tmod object or a list of vectors containing appropriate gene symbols,
