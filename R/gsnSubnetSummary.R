@@ -35,11 +35,15 @@ invisible( utils::globalVariables( c( "subnetRank" ) ) )
 #' @return A data.frame with a statistical summary of subnets.
 #'
 #' @details The output data.frame contains a list of subnets, each with an associated list of gene
-#' set IDs. For each subnet, summary statistics are calculated, including the harmonic mean of
-#' \code{stat_col} and (if specified) \code{stat_col_2}. In addition, the minimum or maximum of the
-#' \code{stat_col} and \code{stat_col_2} is calculated, depending on the \code{sig_order} and
+#' set IDs. By default, for each subnet, summary statistics are calculated, including the harmonic
+#' mean of \code{stat_col} and (if specified) \code{stat_col_2}. In addition, the minimum or maximum
+#' of the \code{stat_col} and \code{stat_col_2} is calculated, depending on the \code{sig_order} and
 #' \code{sig_order_2}. For \code{loToHi}, the minimum is calculated, and for \code{hiToLo}, the
-#' maximum.
+#' maximum. The calculation of these statistics may be specified using the \code{summary_statistics}
+#' argument(see above).
+#'
+#' Lastly, for each subnet the natural log of the harmonic and geometric means of single-tail Fisher
+#' *p*-values are calculated for each subnet (**STLF.HM** and **STLF.GM**, respectively).
 #'
 #' @export
 #'
@@ -190,8 +194,8 @@ gsnSubnetSummary <- function( object,
       lhm.lstf[[.subnet]] <- lhm( stlf.v )
       lgm.lstf[[.subnet]] <- sum( stlf.v ) / length( stlf.v )
     }
-    SUM.subnets$LHM.STLF <- lhm.lstf
-    SUM.subnets$LGM.STLF <- lgm.lstf
+    SUM.subnets$STLF.HM <- lhm.lstf
+    SUM.subnets$STLF.GM <- lgm.lstf
 
     # Create list of IDs
     SUM.subnets <- merge( x = SUM.subnets,
@@ -248,9 +252,9 @@ lse <- function(a,b){ a + log( 1 + exp( b - a ) ) }
 
 lhm <- function( v ){
   k <- length( v )
+  v <- v[order(-v)]
   log_arithmetic_mean_of_reciprocols <- - v[1]
   if( k > 1 ){
-    v <- v[order(-v)]
     for( i in 2:k ){
       log_arithmetic_mean_of_reciprocols <- lse( log_arithmetic_mean_of_reciprocols, - v[i] )
     }

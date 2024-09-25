@@ -1,4 +1,10 @@
 
+# GSNA 0.1.4.6  
+* Development version
+* Changed install command in README.Rmd/README.md to `devtools::install_github( "JonathanUrbach/GSNA", build_vignettes = TRUE )` so that the vignette will be installed.
+* Changed names of output columns of gsnTestSummary() results set (LHM.STLF and LGM.STLF were changed to STLF.HM and STLF.GM respectively).   
+* Tests for gsnTestSummary() was updated to work with new column names and include a test for GSNA:::lhm() correctly working.
+
 # GSNA 0.1.4.5  
 * Development version  
 * Added the ability to construct networks using Cohen's Kappa (*&kappa;*), which is the method employed by **DAVID**.

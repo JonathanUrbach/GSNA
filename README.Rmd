@@ -72,7 +72,7 @@ if( ! require( 'devtools' ) ){
 To install GSNA from GitHub, run this R command:  
 
 ``` r
-devtools::install_github( "JonathanUrbach/GSNA" )
+devtools::install_github( "JonathanUrbach/GSNA", build_vignettes = TRUE )
 ```
 
 We hope to make the **GSNA** package available (again) on CRAN in the near future. If and when it is accepted by CRAN, you will be able to install **GSNA** using the following command:

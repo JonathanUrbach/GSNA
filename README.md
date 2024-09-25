@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GSNA version 0.1.4.4
+# GSNA version 0.1.4.5
 
 **Jonathan M. Urbach**
 
 **Ragon Institute of MGH, MIT, and Harvard**
 
-**2024-07-18**
+**2024-09-18**
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -80,7 +80,7 @@ if( ! require( 'devtools' ) ){
 To install GSNA from GitHub, run this R command:
 
 ``` r
-devtools::install_github( "JonathanUrbach/GSNA" )
+devtools::install_github( "JonathanUrbach/GSNA", build_vignettes = TRUE )
 ```
 
 We hope to make the **GSNA** package available (again) on CRAN in the

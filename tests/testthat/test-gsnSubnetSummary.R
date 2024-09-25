@@ -4,19 +4,19 @@ test_that("gsnSubnetSummary works", {
 
   STLF.GSN.subnetSummary <- gsnSubnetSummary( STLF.GSN )
 
-  # LHM.STLF (log harmonic mean STLF) and LGM.STLF (log geometric mean STLF) are statistics
+  # STLF.HM (log harmonic mean STLF) and STLF.GM (log geometric mean STLF) are statistics
   # based on the single tail log-Fisher values between gene sets within a subnet/cluster, so
-  # if there's only one gene set in a cluster, the LHM.STLF and the LGM.STLF will be NA.
-  # If there are 2 members of a cluster, them LHM.STLF and LGM.STLF will be equal.
+  # if there's only one gene set in a cluster, the STLF.HM and the STLF.GM will be NA.
+  # If there are 2 members of a cluster, them STLF.HM and STLF.GM will be equal.
 
-  LHM_LGM_CHECK <- apply( X = STLF.GSN.subnetSummary[,c("Members", "LHM.STLF","LGM.STLF")],
+  LHM_LGM_CHECK <- apply( X = STLF.GSN.subnetSummary[,c("Members", "STLF.HM","STLF.GM")],
                           MARGIN = 1,
                           FUN = function(x){ # If 1 member, then NA
-                            if( x["Members"] == 1 && is.na(x["LHM.STLF"]) && is.na(x["LGM.STLF"]) )
-                              return( TRUE ) # If 2 members, then LHM.STLF == LGM.STLF
-                            if( x["Members"] == 2 && x["LHM.STLF"] == x["LGM.STLF"])
-                              return( TRUE ) # If > 2 members, then LHM.STLF LGM.STLF not NA
-                            if( x["Members"] == 3 && (!is.na( x["LHM.STLF"] ) ) &&  (!is.na( x["LGM.STLF"] ) ) )
+                            if( x["Members"] == 1 && is.na(x["STLF.HM"]) && is.na(x["STLF.GM"]) )
+                              return( TRUE ) # If 2 members, then STLF.HM == STLF.GM
+                            if( x["Members"] == 2 && x["STLF.HM"] == x["STLF.GM"])
+                              return( TRUE ) # If > 2 members, then STLF.HM STLF.GM not NA
+                            if( x["Members"] == 3 && (!is.na( x["STLF.HM"] ) ) &&  (!is.na( x["STLF.GM"] ) ) )
                               return( TRUE )
                             return( FALSE )
                           } )
@@ -39,4 +39,13 @@ test_that("gsnSubnetSummary works", {
   testthat::expect_equal( expected = STLF.GSN.subnetSummary$Members,
                   object = sapply(X = stringr::str_split( string = STLF.GSN.subnetSummary$IDs, pattern = "," ),
                        FUN = length) )
+
+  # Check that lhm() works properly. Function lhm( v ) function calculates the log of the harmonic mean of the
+  # e to the power of the numeric vector (v). Calculations are performed in log space to avoid numeric underruns
+  # or overruns.
+  testthat::expect_equal( expected = psych::harmonic.mean( c(1,2,3,4) ),
+                          object =  exp( GSNA:::lhm( log( c(1,2,3,4) ) ) ) )
+
+  testthat::expect_equal( expected = psych::harmonic.mean( c(1E-1,1E-20,1E-300) ),
+                          object =  exp( GSNA:::lhm( log( c(1E-1,1E-20,1E-300) ) ) ) )
 })
