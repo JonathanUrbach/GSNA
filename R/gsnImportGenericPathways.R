@@ -104,25 +104,39 @@ gsnImportGenericPathways <- function( object,
   if( is.null( pathways_data ) ){
     pathways_data <- utils::read.table( file = filename, header = TRUE, sep = sep, stringsAsFactors = FALSE, check.names = FALSE )
   }
+
+
+  # Check id_col, stat_col, stat_col_2, n_col for valid field names
+  field_names <- colnames( pathways_data )
+  if( ! is.null(id_col) && ! id_col %in% field_names )
+    stop( "id_col '", id_col, "' not found in pathways data."  )
+  if( ! is.null(stat_col) && ! stat_col %in% field_names )
+    stop( "stat_col '", stat_col, "' not found in pathways data."  )
+  if( ! is.null(stat_col_2) &&  ! stat_col_2 %in% field_names )
+    stop( "stat_col_2 '", stat_col_2, "' not found in pathways data."  )
+  if( ! is.null(n_col) &&  ! n_col %in% field_names )
+    stop( "n_col '", n_col, "' not found in pathways data."  )
+
+  # Check sig_order and sig_order_2 for valid values.
   if( !is.null(sig_order) && ! sig_order %in% c( "loToHi", "hiToLo" ) )
     stop( "Invalid sig_order: ", as.character( sig_order ) )
   if( !is.null(sig_order_2) && ! sig_order_2 %in% c( "loToHi", "hiToLo" ) )
     stop( "Invalid sig_order_2: ", as.character( sig_order_2 ) )
-  if( ! is.null(stat_col) && ! stat_col %in% colnames( pathways_data ) )
-    stop( "stat_col '", stat_col, "' not found in pathways data."  )
-  if( ! is.null(stat_col_2) &&  ! stat_col_2 %in% colnames( pathways_data ) )
-    stop( "stat_col_2 '", stat_col_2, "' not found in pathways data."  )
 
-  field_names <- colnames( pathways_data )
-
+  # Set up pathways data:
   pathways <- list( data = pathways_data, type = type )
+  if( !is.null(id_col) ) pathways$id_col <- id_col
+  if( !is.null(stat_col) ) pathways$stat_col <- stat_col
+  if( !is.null(sig_order) ) pathways$sig_order <- sig_order
+  if( !is.null(n_col) ) pathways$n_col <- n_col
+  if( !is.null(stat_col_2) ) pathways$stat_col_2 <- stat_col_2
+  if( !is.null(sig_order_2) ) pathways$sig_order_2 <- sig_order_2
 
-  if( any( c("ID","id", "NAME", "Term" ) %in% field_names ) )
+  if( is.null(pathways$id_col) && any( c("ID","id", "NAME", "Term" ) %in% field_names ) )
     pathways$id_col <- field_names[field_names %in% c("ID","id", "NAME", "Term" )][1]
-    #pathways$id_col <- match.arg( arg = field_names, choices = c("ID","id", "NAME", "Term" ), several.ok = TRUE  )
 
   # Find the first column in the data to match a N1/N/SIZE etc. regex. (This is a bit of a guess.)
-  if( is.null( n_col ) ){
+  if( is.null( pathways$n_col ) ){
     pathways$n_col = field_names[which(stringi::stri_detect_regex(str = field_names,
                                                                   pattern = "(?:N1\\b|N\\b|SIZE\\b|Count\\b)",
                                                                   opts_regex=stringi::stri_opts_regex(case_insensitive=TRUE)))[1]]
@@ -134,14 +148,16 @@ gsnImportGenericPathways <- function( object,
   }
 
 
-  # Find the first column in the data to match a p-val/q-val/FDR etc. regex. (This is a bit of a guess.)
-  pathways$stat_col = field_names[which(stringi::stri_detect_regex(str = field_names, pattern = "(?:adj|fdr|fwer).[pq][\\s\\-\\.]?val|FDR|Benjamini|Bonferroni|[12]S", opts_regex=stringi::stri_opts_regex(case_insensitive=TRUE)))[1]]
-  if( is.na( pathways$stat_col ) ){ # Fix stat_col if NA
-    pathways$stat_col <- NULL
-    stop('A stat_col could not be automatically determined. Please specify.')
-  } else {
-    # P-values and related statistics are loToHi
-    pathways$sig_order = "loToHi"
+  if( is.null( pathways$stat_col ) ){
+    # Find the first column in the data to match a p-val/q-val/FDR etc. regex. (This is a bit of a guess.)
+    pathways$stat_col = field_names[which(stringi::stri_detect_regex(str = field_names, pattern = "(?:adj|fdr|fwer).[pq][\\s\\-\\.]?val|FDR|Benjamini|Bonferroni|[12]S", opts_regex=stringi::stri_opts_regex(case_insensitive=TRUE)))[1]]
+    if( is.na( pathways$stat_col ) ){ # Fix stat_col if NA
+      pathways$stat_col <- NULL
+      stop('A stat_col could not be automatically determined. Please specify.')
+    } else {
+      # P-values and related statistics are loToHi
+      pathways$sig_order = "loToHi"
+    }
   }
 
   # Add a Title column to gsea data for later:

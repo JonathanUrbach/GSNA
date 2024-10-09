@@ -21,6 +21,10 @@
 #' URL. By default, this value is \code{TRUE}, suppressing this behavior.
 #' @param table_row_colors (optional) This argument specifies the row background colors used to contrast different subnets.
 #' (default: c("1"="#EEF","2"="#FFD"), pale blue and pale yellow)
+#' @param valign (optional) Specifies whether the vertical alignment of text in the table cells should be \code{"top"},
+#' \code{"middle"}, or \code{"bottom"}. Defaults to \code{"top"}.
+#' @param halign (optional) Specifies whether the horizontal alignment of text in the table cells should be \code{"left"},
+#' \code{"center"}, or \code{"right"}. Defaults to \code{"left"}.
 #' @param ... Additional arguments passed to \code{DT::datatable}.
 #' @return An attractive HTML table widget, optionally with unique IDs represented as links.
 #'
@@ -85,6 +89,8 @@ yassifyPathways <- function( pathways,
                              min_decimal = 0.0005,
                              quiet = TRUE,
                              table_row_colors = c("1"="#EEF","2"="#FFD"),
+                             valign = "top",
+                             halign = "left",
                              ...
 ){
   if( is.null(n) ){ n <- nrow(pathways) }
@@ -129,7 +135,7 @@ yassifyPathways <- function( pathways,
       .map <- as.list(url_map_by_words_list[[column]])
       pathways[[column]] <- sapply( X = pathways[[column]],
                                     FUN = function(x) try( {
-                                      ids_v <- unlist(stringr::str_match_all( string = x, pattern = "\\w+" ))
+                                      ids_v <- unlist(stringr::str_match_all( string = x, pattern = "[\\w\\:]+" ))
                                       x_cp <- x
                                       for( id in ids_v ){
                                         url <- .map[[id]]
@@ -147,6 +153,9 @@ yassifyPathways <- function( pathways,
   .dt <- DT::datatable( pathways,
                         escape=FALSE,
                         rownames=FALSE, ... )
+
+  if( ! is.null( valign ) ) .dt <- DT::formatStyle( table = .dt, columns = 0:ncol(pathways), 'vertical-align' = valign )
+  if( ! is.null( halign ) ) .dt <- DT::formatStyle( table = .dt, columns = 0:ncol(pathways), 'text-align' = halign )
 
   #if( all( c("subnet", "subnetRank" ) %in% colnames( pathways ) ) ){
   if( "subnet" %in% colnames( pathways ) && !is.null(table_row_colors) && length(table_row_colors) > 0 ){

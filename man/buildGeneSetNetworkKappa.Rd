@@ -39,7 +39,7 @@ This function wraps the process of creating a GSNData object and calculating a C
 kappa coefficient matrix. The Cohen's \emph{κ} coefficient matrix is calculated using
 \code{scoreKappaMatrix()}, which is implemented in C++.
 
-\strong{Note:} Because with \emph{κ} coefficient, higher values indicate a closer match between
+\strong{Note:} Because with the \emph{κ} coefficient, higher values indicate a closer match between
 sets, they are unlike standard metrics of distance. Therefore the optimal_extreme is \code{"max"},
 and for certain operations, such as construction of a hierarchical tree, they may require
 transformation for use in clustering.

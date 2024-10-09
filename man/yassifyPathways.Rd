@@ -12,6 +12,8 @@ yassifyPathways(
   min_decimal = 5e-04,
   quiet = TRUE,
   table_row_colors = c(`1` = "#EEF", `2` = "#FFD"),
+  valign = "top",
+  halign = "left",
   ...
 )
 }
@@ -35,6 +37,12 @@ URL. By default, this value is \code{TRUE}, suppressing this behavior.}
 
 \item{table_row_colors}{(optional) This argument specifies the row background colors used to contrast different subnets.
 (default: c("1"="#EEF","2"="#FFD"), pale blue and pale yellow)}
+
+\item{valign}{(optional) Specifies whether the vertical alignment of text in the table cells should be \code{"top"},
+\code{"middle"}, or \code{"bottom"}. Defaults to \code{"top"}.}
+
+\item{halign}{(optional) Specifies whether the horizontal alignment of text in the table cells should be \code{"left"},
+\code{"center"}, or \code{"right"}. Defaults to \code{"left"}.}
 
 \item{...}{Additional arguments passed to \code{DT::datatable}.}
 }

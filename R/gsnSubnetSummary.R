@@ -226,8 +226,8 @@ gsnSubnetSummary <- function( object,
 #' @description
 #'
 #' Implements the "Log-Sum-Exponential trick" for calculating the log of the sums of
-#' exponents without arithmetic underflows. This allows very small numbers to be
-#' summed in log space.
+#' exponents without arithmetic underflows. This allows very small or very large numbers
+#' to be summed in log space.
 #'
 #' @param a A numeric log value.
 #' @param b Another numeric log value.
@@ -235,6 +235,21 @@ gsnSubnetSummary <- function( object,
 #' @return The log of the sum of the exponents of a and b.
 #'
 #' @export
+#'
+#' @details
+#' The "Log-Sum-Exponential trick" allows calculation of the log of the sum of
+#' exponents of two arguments, such that exponentiation calls that would lead to
+#' numeric underruns or overruns can be avoided, and it works as follows.
+#'
+#' \deqn{\ln( e^{a} + e^{b} ) = a + \ln(1 + e^{b - a}) }
+#'
+#' If \eqn{a} and \eqn{b} are sufficiently different, such that \eqn{b - a > 709}, then
+#' R evaluates \eqn{exp(b - a)} as \eqn{Inf}. Hence \eqn{a + log( 1 + exp( b - a ) )}
+#' is evaluated as \eqn{Inf}, which is incorrect. However, since
+#'
+#' \deqn{\lim_{b - a\to\infty} a + \ln(1 + e^{b - a}) = b}
+#'
+#' The function approximates the result in such cases as \eqn{b}.
 #'
 #' @examples
 #'
@@ -245,8 +260,15 @@ gsnSubnetSummary <- function( object,
 #'
 #' # exp( log_AB ) == A + B
 #'
-#'
-lse <- function(a,b){ a + log( 1 + exp( b - a ) ) }
+lse <- function(a,b){
+  if( b - a > 709 ){ # Prevent numeric overrun
+    b
+  } else {
+    a + log( 1 + exp( b - a ) )
+  }
+}
+
+
 
 # Calculates the harmonic mean in log space, i.e. the log of the exponentiated values in the vector.
 
@@ -263,11 +285,6 @@ lhm <- function( v ){
 }
 
 
-# subnet_statistics <- function( mat ){
-#   stlf.v <- calculate_stlf_vector( mat )
-#   c( lhm.stlf = lhm(stlf.v),
-#      lgm.stlf = sum( stlf.v ) / length(stlf.v) )
-# }
 
 
 #' calculate_stlf_vector

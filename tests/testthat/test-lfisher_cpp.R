@@ -29,4 +29,58 @@ test_that("lfisher_cpp works", {
   .out.lf.partial <- .lf.partial( .data.mat[1], .data.mat[2], .data.mat[3], .data.mat[4] )
   .out.lfisher_cpp4 <- lfisher_cpp( .data.mat[1], .data.mat[2], .data.mat[3], .data.mat[4], alternative = 4 )
   testthat::expect_equal( object = .out.lfisher_cpp4, .out.lf.partial )
+
+  # A bug has been discovered that causes incorrect summation of partial p-values, affecting single upper tail
+  # and double-tail log Fisher p-values at the very least. (See https://github.com/JonathanUrbach/GSNA/issues/17)
+  # Since different platforms produce the error for slightly different values of a, we're going to test a range of
+  # numbers for a from 50000 => 51000
+  #
+  # We're using a tolerance that is somewhat more than the default value of testthat_tolerance() (1.490116e-08).
+  #
+  # This also takes a long time to run using fisher.test(), so only running 500 iterations.
+
+  {
+    .tolerance = 1e-7
+    stlf.st <- numeric()
+    stlf.st.stats <- numeric()
+    stlf.lt <- numeric()
+    stlf.lt.stats <- numeric()
+    stlf.dt <- numeric()
+    stlf.dt.stats <- numeric()
+    stlf.p <- numeric()
+    stlf.p.stats <- numeric()
+    .base <- 50000
+    .iterations <- 500
+    .count <- 0
+
+    for( a in .base:(.base+.iterations) ){
+      .count <- .count + 1
+      stlf.st[.count] <- GSNA::lfisher_cpp( a = a , b = 7, c = 10, d = 0, alternative = 1 )
+      stlf.st.stats[.count] <- log(stats::fisher.test( x = matrix( data = c(a = a , b = 7, c = 10, d = 0), nrow = 2, ncol = 2 ), alternative = "greater" )$p.value)
+
+      stlf.lt[.count] <- GSNA::lfisher_cpp( a = 0 , b = 7, c = 10, d = a, alternative = 2 )
+      stlf.lt.stats[.count] <- log(stats::fisher.test( x = matrix( data = c(a = a , b = 7, c = 10, d = 0), nrow = 2, ncol = 2 ), alternative = "less" )$p.value)
+
+      stlf.dt[.count] <- GSNA::lfisher_cpp( a = a , b = 7, c = 10, d = 0, alternative = 3 )
+      stlf.dt.stats[.count] <- log(stats::fisher.test( x = matrix( data = c(a = a , b = 7, c = 10, d = 0), nrow = 2, ncol = 2 ), alternative = "two.sided" )$p.value)
+
+    }
+
+    testthat::expect_equal( object = stlf.st, expected = stlf.st.stats, tolerance = .tolerance )
+    if( (.errors.st <- sum( abs( stlf.st - stlf.st.stats ) > .tolerance ) ) > 0 ){
+      message("\nIn lfisher_cpp() single upper-tail test, ", .errors.st, " values exceeded error tolerance.\n")
+    }
+
+    testthat::expect_equal( object = stlf.lt, expected = stlf.lt.stats, tolerance = .tolerance )
+    if( (.errors.lt <- sum( abs( stlf.lt - stlf.lt.stats ) > .tolerance ) ) > 0 ){
+      message("\nIn lfisher_cpp() single lower-tail test, ", .errors.lt, " values exceeded error tolerance.\n")
+    }
+
+    testthat::expect_equal( object = stlf.dt, expected = stlf.dt.stats, tolerance = .tolerance )
+    if( (.errors.dt <- sum( abs( stlf.dt - stlf.dt.stats ) > .tolerance ) ) > 0 ){
+      message("\nIn lfisher_cpp() two-tail test, ", .errors.dt, " values exceeded error tolerance.\n")
+    }
+  }
+
+
 })

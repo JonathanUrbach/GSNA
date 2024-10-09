@@ -1,4 +1,12 @@
 
+# GSNA 0.1.4.7
+* Development version  
+* Fixed a serious bug in `lfisher_cpp()` that intermittantly produced erroneously significant log Fisher p-values with large backgrounds/numbers of total genes.  This bug, which also affected `GSNA::buildGeneSetNetworkSTLF()`, `GSNA::buildGeneSetNetworkLF()` and `GSNA::scoreLFMatrix_C()`,  was due to an interaction between a rounding error in the summation of partial p-values with a programming logic issue. Also, added tests to tests/test-lfisher_cpp.R to detect this problem.    
+* Fixed numeric overrun problem with the `lse()` function that led to incorrect calculation of log harmonic means with the private `lhm()` function, which resulted in incorrect log harmonic mean P values being calculated by `gsnSubnetSummary()`. This bug was a contributor to incorrect calculation of the log of harmonic means of within subnet single-tail log-Fisher values.    
+* Fixed a sorting issue that also contributed to incorrect calculation of log harmonic mean within-subnet single tail Fisher *p*-values.  
+* Updated `yassifyPathways()` so that identifiers containing colons such as GO terms (e.g. "GO:0045824") can be used with the `url_map_by_words_list` argument. Currently, word characters `"\\w"` and colons `":"` can be used.  
+* Fixed problem with gsnImportGenericPathways() that caused explicitly specified values of `stat_col` to be ignored.  
+
 # GSNA 0.1.4.6  
 * Development version
 * Changed install command in README.Rmd/README.md to `devtools::install_github( "JonathanUrbach/GSNA", build_vignettes = TRUE )` so that the vignette will be installed.
@@ -9,7 +17,6 @@
 * Development version  
 * Added the ability to construct networks using Cohen's Kappa (*&kappa;*), which is the method employed by **DAVID**.
 * Removed ./doc from .gitignore so that installation of vignette from GitHub would work.  
-
 
 # GSNA 0.1.4.4  
 * Development version  
@@ -23,7 +30,6 @@
 * GSNA documentation cannot currently be built roxygen2 version 7.3.2. A bug report has been submitted (https://github.com/r-lib/roxygen2/issues/1635).  
 * The previous version of GSNA, version 0.1.4.2 was archived on CRAN due to failure to fix a memory overflow that occurred during package tests (see: https://cran-archive.r-project.org/web/checks/2024/2024-04-04_check_results_GSNA.html). Code from the **ragg** package was called when CRAN curators tested the code on CRAN's testing platform, which included a Linux environment with R packages linked with the **ASAN** library (Address Sanitizer). Although the **GSNA** package does not directly call any **ragg** functions, and has been confirmed to run on platforms from which the **ragg** library has been removed, when the package tests were run by the curators on the **ASAN** testing platform, a (fatal) a container overflow (memory access outside of allocated memory) resulted when **ragg** functions were called. This was presumably the result of an *optional* function call by one of the **GSNA** dependencies. This error was not reproducible on our development platforms, making it difficult to fix, so for the moment, **GSNA** development is targeted for GitHub distribution.  
 * This is intended to be the last version with dependency on the obsolete **raster** library. (This may be the source of calls to the **ragg** library, see above.)  
-
 
 # GSNA 0.1.4.2
 * This version attempts to address a problem coming up with CRAN's development R linux platform tests, which identified a problem with validation of the HTML manual for gsnAddPathwayData & gsnAddPathwaysData that resulted in the note warning "Warning: trimming empty <dt>". The warning is not reproduced on r-hub builder or other uploadable R package build testing services, but these changes should remove the problematic documentation. 

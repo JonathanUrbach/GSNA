@@ -53,5 +53,33 @@ test_that("gsnImportGenericPathways works", {
   testthat::expect_in( object = STLF.GSN.fd$pathways$stat_col, expected = c("P.1S") )
   testthat::expect_equal( object = STLF.GSN.fd$pathways$sig_order, expected = "loToHi" )
   testthat::expect_equal( object = STLF.GSN.fd$pathways$n_col, expected = "N" )
+
+
+  # This next test is to address a bug that happens when a stat_col is specified as an argument,
+  # and none of the columns in the data set are automatically recognized as statistical columns.
+  # This issue was outlined here: https://github.com/JonathanUrbach/GSNA/issues/7
+  STLF.GSN.fake_generic <- STLF.GSN.fd
+  STLF.GSN.fake_generic$pathways <- NULL
+  # We're renaming the columns to be non-recognizable by the code that automatically identifies stat_cols:
+  PW.fake_generic <- dplyr::rename( .data = PW.fake_david,
+                                    stat1 = PValue,
+                                    stat2 = Bonferroni,
+                                    stat3 = Benjamini,
+                                    stat4 = FDR )
+
+  # We expect a message and no error:
+  testthat::expect_message( testthat::expect_no_error( STLF.GSN.fake_generic <- gsnImportGenericPathways( object = STLF.GSN.fake_generic,
+                                                     pathways_data = PW.fake_generic,
+                                                     type = "fake_generic",
+                                                     stat_col = "stat1", sig_order = "loToHi",
+                                                     stat_col_2 = "Fold Enrichment", sig_order_2 = "hiToLo"
+  ) ), regexp = "id_col = Term" )
+
+  testthat::expect_equal( object = STLF.GSN.fake_generic$pathways$stat_col, expected = "stat1" )
+  testthat::expect_equal( object = STLF.GSN.fake_generic$pathways$sig_order, expected = "loToHi" )
+  testthat::expect_equal( object = STLF.GSN.fake_generic$pathways$stat_col_2, expected = "Fold Enrichment" )
+  testthat::expect_equal( object = STLF.GSN.fake_generic$pathways$sig_order_2, expected = "hiToLo" )
+
+
 })
 
