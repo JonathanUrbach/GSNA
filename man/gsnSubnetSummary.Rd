@@ -62,11 +62,15 @@ Generates a table summarizing subnets that incorporates subnets and pathways dat
 }
 \details{
 The output data.frame contains a list of subnets, each with an associated list of gene
-set IDs. For each subnet, summary statistics are calculated, including the harmonic mean of
-\code{stat_col} and (if specified) \code{stat_col_2}. In addition, the minimum or maximum of the
-\code{stat_col} and \code{stat_col_2} is calculated, depending on the \code{sig_order} and
+set IDs. By default, for each subnet, summary statistics are calculated, including the harmonic
+mean of \code{stat_col} and (if specified) \code{stat_col_2}. In addition, the minimum or maximum
+of the \code{stat_col} and \code{stat_col_2} is calculated, depending on the \code{sig_order} and
 \code{sig_order_2}. For \code{loToHi}, the minimum is calculated, and for \code{hiToLo}, the
-maximum.
+maximum. The calculation of these statistics may be specified using the \code{summary_statistics}
+argument(see above).
+
+Lastly, for each subnet the natural log of the harmonic and geometric means of single-tail Fisher
+\emph{p}-values are calculated for each subnet (\strong{STLF.HM} and \strong{STLF.GM}, respectively).
 }
 \examples{
 

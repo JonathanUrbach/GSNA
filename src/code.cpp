@@ -82,8 +82,8 @@ using namespace Rcpp;
 //'
 // [[Rcpp::export]]
 double lfisher_cpp( int a, int b, int c, int d,
-                    double e_precision = 12.0,
-                    int alternative = 1
+                        double e_precision = 12.0,
+                        int alternative = 1
 
 ){
   int ab_ = a + b;
@@ -117,7 +117,7 @@ double lfisher_cpp( int a, int b, int c, int d,
       double part_lp = l_constant -
         std::lgamma( a_ + 1 ) - std::lgamma( b_ + 1 ) - std::lgamma( c_ + 1 ) - std::lgamma( d_ + 1 );
 
-      if ( lf2s > 0 ){
+      if ( lf2s == 1 ){
         lf2s = part_lp;
         //maxPartial = part_lp;
       } else if ( lf2s - part_lp > e_precision + 0.69 + std::log(d_max - d_ + 1) ){ //Heuristic that stops summing for small values of part_lp
@@ -137,7 +137,7 @@ double lfisher_cpp( int a, int b, int c, int d,
       double part_lp = l_constant -
         std::lgamma( a_ + 1 ) - std::lgamma( b_ + 1 ) - std::lgamma( c_ + 1 ) - std::lgamma( d_ + 1 );
 
-      if ( lf2s > 0 ){
+      if ( lf2s == 1 ){
         lf2s = part_lp;
         //maxPartial = part_lp;
       } else if ( lf2s - part_lp > e_precision + 0.69 + std::log(d_max - d_ + 1) ){ //Heuristic that stops summing for small values of part_lp
@@ -163,7 +163,7 @@ double lfisher_cpp( int a, int b, int c, int d,
       if( part_lp > maxPartial ){
         continue;
       }
-      if ( lf2s > 0 ){
+      if ( lf2s == 1 ){
         lf2s = part_lp;
         //maxPartial = part_lp;
       } else if ( lf2s - part_lp > e_precision + 0.69 + std::log(d_max - d_ + 1) ){ //Heuristic that stops summing for small values of part_lp
@@ -185,8 +185,6 @@ double lfisher_cpp( int a, int b, int c, int d,
 
   return lf2s;
 }
-
-
 
 
 
