@@ -1,4 +1,6 @@
-test_that("gsnAddPathwaysData works", {
+# NOTE: This is a near-duplicate of test-gsnAddPathwaysData.R. This runs the same tests on gsnAddPathwayData()
+# which will be deprecated in a future GSNA version.
+test_that("gsnAddPathwayData works", {
     load_test_data()
 
     # Copy STLF.GSN and delete pathways data.
@@ -8,10 +10,15 @@ test_that("gsnAddPathwaysData works", {
     PW.fake_david <- fake_david_chart( ora_data = PW.ORA, .gsc = GSC )
 
     # Import again, but specify type = "david"
-    suppressMessages(
-      testthat::expect_message(
-        object = STLF.GSN.fd <- gsnAddPathwaysData( object = STLF.GSN.fd, pathways_data = PW.fake_david ),
-        regexp = "Using\\sDAVID\\simport."
+    suppressWarnings(
+      testthat::expect_warning(
+        suppressMessages(
+          testthat::expect_message(
+            object = STLF.GSN.fd <- gsnAddPathwayData( object = STLF.GSN.fd, pathways_data = PW.fake_david ),
+            regexp = "Using\\sDAVID\\simport."
+          )
+        ),
+        regexp = "is included to support old code"
       )
     )
 
@@ -27,12 +34,17 @@ test_that("gsnAddPathwaysData works", {
 
     # Now, import gsnORA data:
     STLF.GSN.fd$pathways <- NULL
-    suppressMessages(
-      testthat::expect_message(
-        object = STLF.GSN.fd <- gsnAddPathwaysData( object = STLF.GSN.fd, pathways_data = PW.ORA ),
-        regexp = "Using\\sGSN-ORA\\simport\\."
-        )
+    suppressWarnings(
+      testthat::expect_warning(
+        suppressMessages(
+          testthat::expect_message(
+            object = STLF.GSN.fd <- gsnAddPathwayData( object = STLF.GSN.fd, pathways_data = PW.ORA ),
+            regexp = "Using\\sGSN-ORA\\simport\\."
+          )
+        ),
+        regexp = "is included to support old code"
       )
+    )
 
     # Test STLF.GSN.fd object:
     testthat::expect_contains( object = names(STLF.GSN.fd), expected = "pathways" )
@@ -47,13 +59,19 @@ test_that("gsnAddPathwaysData works", {
     # Test gsnORA import with specified stat_col, stat_col_2, sig_order, sig_order_2, n_col
     suppressMessages(
       testthat::expect_message(
-            object = STLF.GSN.fd_2 <- gsnAddPathwaysData( object = STLF.GSN.fd,
+        suppressWarnings(
+          testthat::expect_warning(
+            object = STLF.GSN.fd_2 <- gsnAddPathwayData( object = STLF.GSN.fd,
                                                          pathways_data = PW.ORA,
                                                          stat_col = "P.2S",
                                                          sig_order = "loToHi",
                                                          stat_col_2 = "Enrichment",
                                                          sig_order_2 = "hiToLo",
                                                          n_col = "d" ),
+            regexp = "is included to support old code"
+          )
+
+        ),
         regexp = "Using\\sGSN-ORA\\simport\\."
       )
     )

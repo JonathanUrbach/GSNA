@@ -139,5 +139,5 @@ gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NUL
 #' @export
 gsnAddPathwayData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
   warning("gsnAddPathwayData() is included to support old code. Use gsnAddPathwaysData() instead.")
-  gsnAddPathwaysData( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL )
+  gsnAddPathwaysData( object, pathways_data, type = type, id_col = id_col, stat_col = stat_col, sig_order = sig_order, stat_col_2 = stat_col_2, sig_order_2 = sig_order_2, n_col = n_col )
 }

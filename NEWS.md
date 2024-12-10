@@ -1,4 +1,9 @@
 
+# GSNA 0.1.4.8
+* Development version  
+* Fixes a bug with `gsnAddPathwayData()` (not present in `gsnAddPathwaysData()`).  
+* Adds additional tests for `gsnAddPathwayData()` and `gsnAddPathwaysData()`.  
+
 # GSNA 0.1.4.7
 * Development version  
 * Fixed a serious bug in `lfisher_cpp()` that intermittantly produced erroneously significant log Fisher p-values with large backgrounds/numbers of total genes.  This bug, which also affected `GSNA::buildGeneSetNetworkSTLF()`, `GSNA::buildGeneSetNetworkLF()` and `GSNA::scoreLFMatrix_C()`,  was due to an interaction between a rounding error in the summation of partial p-values with a programming logic issue. Also, added tests to tests/test-lfisher_cpp.R to detect this problem.    
