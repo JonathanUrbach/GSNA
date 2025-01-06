@@ -1,4 +1,8 @@
 
+# GSNA 0.1.5
+* In previous versions of the GSEA package, sample data included in the vignette contained gene sets derived from the academic version of the dorothea package, and therefore may not be used for commercial purposes. In this version, the GSEA example in the vignette and the corresponding gene sets from the dorothea package used as example data in the vignette were updated to include only genes sets and genes from the non-academic version of the dorothea package, so as to be compatible with commercial use.  
+* Includes numerous corrections to the vignette.  
+
 # GSNA 0.1.4.8
 * Development version  
 * Fixes a bug with `gsnAddPathwayData()` (not present in `gsnAddPathwaysData()`).  
@@ -80,6 +84,5 @@
 * This is (hopefully) the first public CRAN release version.
 
 # GSNA 0.1.0
-
 * This is the development version prior to CRAN submission.
 

@@ -28,7 +28,7 @@
 \strong{Bai_CiKrt_DN.cerno:} An object of class \code{data.frame} with 2895 rows and 8 columns.
 Same data format as \code{Bai_CiHep_DN.cerno}, above.
 
-\strong{Bai_CiHep_dorothea_UP.Gsea:} An object of class \code{data.frame} with 84 rows and 12 columns.
+\strong{Bai_CiHep_dorothea_UP.Gsea:} An object of class \code{data.frame} with 82 rows and 12 columns.
 \itemize{
 \item \strong{NAME} Gene set name/ID.
 \item \strong{GS\if{html}{\out{<br>}} follow link to MSigDB} Same as NAME.
@@ -44,7 +44,7 @@ Same data format as \code{Bai_CiHep_DN.cerno}, above.
 \item \strong{""} Blank column.
 }
 
-\strong{Bai_CiHep_dorothea_DN.Gsea:} An object of class \code{data.frame} with 180 rows and 12 columns.
+\strong{Bai_CiHep_dorothea_DN.Gsea:} An object of class \code{data.frame} with 193 rows and 12 columns.
 Same data format as \code{Bai_CiHep_dorothea_UP.Gsea}.
 
 \strong{Bai_CiHep_v_Fib2.de:} An object of class \code{data.frame} with 8769 rows and 5 columns.

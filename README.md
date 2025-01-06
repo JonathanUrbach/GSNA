@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# GSNA version 0.1.4.8
+# GSNA version 0.1.5
 
 **Jonathan M. Urbach**
 
 **Ragon Institute of MGH, MIT, and Harvard**
 
-**2024-12-10**
+**2025-01-06**
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -113,6 +113,17 @@ obtained via:
 ``` r
 help( package = "GSNA" )
 ```
+
+# Note:
+
+In versions of **GSNA** prior to version **0.1.5**, example data for the
+vignette included gene sets derived from the academic version of the
+dorothea package that may not be used for commercial purposes. In this
+version, the GSEA example in the vignette, and the corresponding
+dorothea gene sets were updated to include only genes sets from the
+non-academic version of the dorothea package, and are therefore
+compatible with commercial use. We urge commercial users of **GSNA** to
+update to version **0.1.5** or later.
 
 # Citing **GSNA**
 

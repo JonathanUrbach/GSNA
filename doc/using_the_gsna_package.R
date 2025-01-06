@@ -60,11 +60,9 @@ Bai_CiHep_DN.sig.GSN.subnets
 
 ## -----------------------------------------------------------------------------
 if( utils::packageVersion( pkg = "tmod" ) >= "0.50.11" ){
-  #url_map_l <- list( ID = with( Bai_gsc.tmod$gs, structure( URL, names = ID ) ))
   # For tmod version 0.50.11 and later.
   url_from_ID <- with( Bai_gsc.tmod$gs, structure( URL, names = ID ) )
 } else {
-  #url_map_l <- list( ID = with( Bai_gsc.tmod$MODULES, structure( URL, names = ID ) ))
   # For earlier versions:
   url_from_ID <- with( Bai_gsc.tmod$MODULES, structure( URL, names = ID ) )
 }
@@ -284,7 +282,7 @@ Bai_gsc.tmod.gsea <- Bai_gsc.tmod[ Bai_CiHep_dorothea_UD.FILT$NAME ]
 Bai_gsc.tmod.gsea
 
 ## -----------------------------------------------------------------------------
-Bai_background_genes <- toupper( rownames( Bai_empty_expr_mat ) )
+Bai_background_genes <- rownames( Bai_empty_expr_mat )
 
 ## -----------------------------------------------------------------------------
 Bai_CiHep_dorothea_UD.GSN <- buildGeneSetNetworkJaccard( ref.background = Bai_background_genes,
