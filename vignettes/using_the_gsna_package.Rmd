@@ -511,7 +511,7 @@ knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.NP.png" )
 From this analysis, it may be concluded that about 7 subnets or clusters of related gene sets are downregulated in CiHep and CiKrt cells upon chemical induction of fibroblast 2 cells. In particular, the Psmb5 downregulation signature is strong in CiHeps (strong red), whereas the Hes2 signature (strong blue) is strongest in CiKrt cells.  
 
 
-**Variation:** When available in the pathways data, an alternative statistic can be used to color gene sets in a gene set network. Here, we're specifying `stat_col = 'AUC.CiHep'`, suppressing the previously set value of the second statistical column with `stat_col_2 = NA` and specifying a custom set of vertex colors used to represent the AUC values, such that the color scale goes from dark blue to white.     
+**Variation:** When available in the pathways data, an alternative statistic can be used to color gene sets in a gene set network. Here, we're specifying `stat_col = 'AUC.CiHep'`, suppressing the previously set value of the second statistical column with `stat_col_2 = NA`. Since we do not AUC is not a *p*-value, we do not wish it to be log-transformed, so we specify `identity` as the transform_function. Furthermore, we are specifying a custom set of vertex colors used to represent the AUC values, such that the color scale goes from white to dark blue.  
 
 
 ```{r NetworkPlot_AUC}
@@ -525,7 +525,8 @@ gsnPlotNetwork( object = Bai_CiHep_v_CiKrt_DN.GSN,
                 stat_col = 'AUC.CiHep',
                 sig_order = 'hiToLo',
                 stat_col_2 = NA,
-                vertex_colors = c('darkblue', 'blue', '#9999FF',  '#DDDDFF', 'white' )
+                vertex_colors = c( 'white', '#DDDDFF', '#9999FF', 'blue', 'darkblue' ),
+                transform_function = identity
 )
 
 knitr::include_graphics( path = "Bai_CiHep_v_CiKrt_DN.GSN.NP_AUC.png" )

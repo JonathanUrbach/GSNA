@@ -14,24 +14,26 @@ invisible(utils::globalVariables( c("DIST", "M1", "M2", "Stat")))
 #' i.e. to be interpreted as the shortest distance for nearest neighbor paring. This defaults to the value set for the
 #' \code{optimal_extreme} field of the specified \code{distance} matrix.
 #'
-#' @param cutoff (optional) A cutoff specifying a maximal of minimal value that will be retained, dependent on the distance
-#' metric being used. This is not usually necessary to specify for hierarchical clustering. (see details)
+#' @param cutoff (optional) This is the argument to specify the distance used for clustering, specified before any
+#' distance scaling is performed. This is mapped to the corresponding scaled value which is then used as the \code{h}
+#' argument for \code{stats::cutree()}. (see details)
 #'
 #' @param keepOrphans A boolean indicating whether 'orphan' gene sets that have no nearest neighbors should be retained in
 #' the final network. (default \code{TRUE} )
 #'
 #' @param matrix_scaling_fun A function to perform transformation and scaling of the distance matrix. The default,
 #' \code{distMat2UnitNormRank} converts the distance matrix to ranks and scales the resulting numbers to a range between 0 and 1.
-#' If set to NULL, the distances are not scaled or transformed. (see details)
+#' If set to \code{NULL}, the distances are not scaled or transformed. (see details)
 #'
 #' @param lower_is_closer Boolean indicating that lower values should be treated as closer for the sake of hierarchical
 #' clustering.
 #'
-#' @param k (optional) Parameter passed to cutree to determine the number of desired clusters. If both k and h are NULL,
-#' a value for k will be chosen. (see details)
+#' @param k (optional) Parameter passed to cutree to determine the number of desired clusters. If \code{k}, \code{h},
+#' and \code{cutoff} are \code{NULL}, a value for k will be chosen. (see details)
 #'
 #' @param h (optional) Parameter passed to cutree to determine the cutting height for breaking the clusters into groups.
-#' (see details)
+#' This is specified in terms of the scaled data as opposed to \code{cutoff}. For the default scaling method, this
+#' corresponds roughly to a quantile of scaled distances. (see details)
 #'
 #' @param method (optional) Parameter passed to \code{hclust()} to specify the hierarchical clustering method used.
 #' (default "average")
@@ -120,8 +122,176 @@ invisible(utils::globalVariables( c("DIST", "M1", "M2", "Stat")))
 #' @importFrom tidyr gather
 #' @importFrom tibble rownames_to_column
 #' @export
-#'
 gsnPareNetGenericHierarchic <- function( object,
+                                         distance = NULL,
+                                         extreme = NULL,
+                                         cutoff = NULL,
+                                         keepOrphans = TRUE,
+                                         #matrix_scaling_fun =distMat2UnitNormRank,# Scaling function for matrix
+                                         matrix_scaling_fun = NULL,                # Scaling function for matrix
+                                         lower_is_closer = NULL,                   # Lower values are treated as closer.
+                                         k = NULL,                                 # Integer number of groups/clusters for cutree.
+                                         h = NULL,                                 # Numeric scalar of height for cutting tree
+                                         # If neither h or k is set, k will default to
+                                         # round((number of nodes)^(2/3))
+                                         method = "average"                        # hclust agglomeration method
+){
+  paring_call_arguments <- as.list(c(paring_function_name = "gsnPareNetGenericHierarchic",
+                                     as.list(environment())))
+  paring_call_arguments$matrix_scaling_fun <- deparse(substitute(matrix_scaling_fun))
+  paring_call_arguments$object <- NULL
+  stopifnot("GSNData" %in% class(object))
+  if (is.null(distance))
+    distance <- object$default_distance
+  if (is.null(distance))
+    stop("distance parameter required (lf, jaccard, etc.).")
+  if (is.null(extreme))
+    extreme <- object$distances[[distance]]$optimal_extreme
+  if (is.null(extreme))
+    stop("Parameter 'extreme' is udefined.")
+  if (is.null(lower_is_closer))
+    lower_is_closer <- extreme == "min"
+  dist.matrix.scaled <- object$distances[[distance]]$matrix
+  for (geneSetName in union(rownames(dist.matrix.scaled), colnames(dist.matrix.scaled))) dist.matrix.scaled[geneSetName,
+                                                                                                            geneSetName] <- NA
+  #if (!is.null(cutoff)) {
+  #    if (extreme == "max") {
+  #        dist.matrix.scaled[dist.matrix.scaled > cutoff] <- NA
+  #    }
+  #    else {
+  #        dist.matrix.scaled[dist.matrix.scaled < cutoff] <- NA
+  #    }
+  #}
+  if (is.null(matrix_scaling_fun)) {
+    if (lower_is_closer)
+      matrix_scaling_fun <- distMat2UnitNormRank
+    else matrix_scaling_fun <- function(mat) distMat2UnitNormRank(mat = -mat)
+  }
+  dist.matrix.scaled <- matrix_scaling_fun(dist.matrix.scaled)
+
+  # This bit of code scales the cutoff based on the scaled distance matrix, so it can be used for cutree
+  .scaled_cutoff <- NULL
+  if (!is.null(cutoff)) {
+    .sc.df <- data.frame( raw = as.dist(object$distances[[distance]]$matrix),
+                          scaled = as.dist( dist.matrix.scaled ) )
+    .sc.df <- .sc.df[order(.sc.df$raw), ]
+
+    #if( cutoff < min( .sc.df$raw, na.rm = TRUE ) | cutoff > max( .sc.df$raw, na.rm = TRUE ) ){
+    # stop( "cutoff = ", cutoff, " is out of range. Please select a value within the range ",
+    #        min(.sc.df$raw), " to ", max(.sc.df$raw), "." )
+    #}
+
+    .range.matrix <- range( .sc.df$raw, na.rm = TRUE )
+    .range.pared <- range( .sc.df$scaled, na.rm = TRUE )
+    .relation.sign <- sign( ( .sc.df[nrow(.sc.df),'scaled'] - .sc.df[1,'scaled'] ) / ( .sc.df[nrow(.sc.df),'raw'] - .sc.df[1,'raw'] ) )
+    if( cutoff < .range.matrix[[1]] | cutoff > .range.matrix[[2]] ){
+      warning( "cutoff = ", cutoff, " is out of range ", .range.matrix[[1]], " to ", .range.matrix[[2]], "." )
+      if( cutoff < .range.matrix[[1]] ){
+        .scaled_cutoff <- .sc.df[1, 'scaled'] - .relation.sign * ( .range.pared[[2]] - .range.pared[[1]] ) / nrow(.sc.df)
+      } else if ( cutoff > .range.matrix[[2]] ){
+        .scaled_cutoff <- .sc.df[nrow(.sc.df), 'scaled'] + .relation.sign * ( .range.pared[[2]] - .range.pared[[1]] ) / nrow(.sc.df)
+      }
+    } else {
+      for( i in 1:(nrow(.sc.df) - 1) ){
+        if( .sc.df[i,'raw'] == cutoff ) { .scaled_cutoff <- .sc.df[i,'scaled'] }
+        else if( .sc.df[i,'raw'] < cutoff &  .sc.df[i+1,'raw'] > cutoff  ){
+          .scaled_cutoff <- mean(.sc.df[i,'scaled'], .sc.df[i+1,'scaled'])
+        }
+      }
+    }
+  } #
+
+  # Perform Hierarchical Clustering
+  pared_optimal_extreme <- extreme
+  if (!is.null(attr(x = dist.matrix.scaled, which = "lower_is_closer")))
+    pared_optimal_extreme <- ifelse(test = attr(x = dist.matrix.scaled,
+                                                which = "lower_is_closer"), yes = "min", no = "max")
+  object$distances[[distance]]$hclust <- stats::hclust(d = stats::as.dist(dist.matrix.scaled),
+                                                       method)
+  clusters.v <- NULL
+
+  # Set value of k (number of clusters) if h, k, and .scaled_cutoff are NULL
+  if (is.null(h) & is.null(k) & is.null(.scaled_cutoff))
+    k <- round(ncol(dist.matrix.scaled)^(2/3))
+
+  if( !is.null( .scaled_cutoff ) ){
+    clusters.v <- stats::cutree( object$distances[[distance]]$hclust,
+                                 h = .scaled_cutoff )
+  } else if( !is.null(h) ) {
+    clusters.v <- stats::cutree(object$distances[[distance]]$hclust,
+                                h = h)
+  } else if (!is.null(k)) {
+    clusters.v <- stats::cutree(object$distances[[distance]]$hclust,
+                                k = k)
+  } else { stop("Something went wrong.") }
+
+  cs.matrix.pared <- matrix(nrow = nrow(dist.matrix.scaled),
+                            ncol = ncol(dist.matrix.scaled), dimnames = dimnames(dist.matrix.scaled))
+  dist.gather <- subset(tidyr::gather(data = tibble::rownames_to_column(as.data.frame(dist.matrix.scaled),
+                                                                        "M1"), key = "M2", value = "DIST", -"M1"), !is.na(DIST))
+  pared_optimal_extreme_sign <- 2 * ((pared_optimal_extreme ==
+                                        "min") - 0.5)
+  dist.gather <- dist.gather[order(dist.gather$DIST * pared_optimal_extreme_sign),
+  ]
+  dist.gather$edgeNo <- 1:nrow(dist.gather)
+  edges.df <- data.frame(M1 = c(), M2 = c(), DIST = c(), edgeNo = c(),
+                         cluster = c())
+  for (cluster.i in unique(clusters.v)) {
+    vertices.i = names(clusters.v[clusters.v == cluster.i])
+    if (length(vertices.i) > 1) {
+      edges.i <- data.frame(M1 = c(), M2 = c(), DIST = c(),
+                            edgeNo = c())
+      dist.i <- subset(dist.gather, M1 %in% vertices.i &
+                         M2 %in% vertices.i)
+      dist.i$cluster <- cluster.i
+      seed.edges.i <- subset(dist.i, M1 %in% dist.i[1,
+                                                    c("M1", "M2")] & M2 %in% dist.i[1, c("M1", "M2")] &
+                               DIST == dist.i[1, "DIST"])
+      joined_vertices <- unique(with(seed.edges.i, c(M1,
+                                                     M2)))
+      edges.i <- rbind(edges.i, seed.edges.i)
+      dist.j <- subset(dist.i, (M1 %in% joined_vertices &
+                                  !M2 %in% joined_vertices))
+      while (nrow(dist.j) > 0) {
+        joined_vertices <- c(joined_vertices, dist.j[1,
+                                                     "M2"])
+        edges.i <- rbind(edges.i, dist.j[1, ])
+        dist.j <- subset(dist.i, (M1 %in% joined_vertices &
+                                    !M2 %in% joined_vertices))
+      }
+      edges.df <- rbind(edges.df, edges.i)
+    }
+  }
+  for (i in 1:nrow(edges.df)) {
+    cs.matrix.pared[edges.df[i, "M1"], edges.df[i, "M2"]] <- edges.df[i,
+                                                                      "DIST"]
+  }
+  object$distances[[distance]]$paring_call_arguments <- paring_call_arguments
+  object$distances[[distance]]$pared <- cs.matrix.pared
+  object$distances[[distance]]$pared_optimal_extreme <- pared_optimal_extreme
+  object$distances[[distance]]$clusters <- clusters.v
+  object$distances[[distance]]$edges <- subset(tidyr::gather(data = tibble::rownames_to_column(as.data.frame(cs.matrix.pared),
+                                                                                               "M1"), key = "M2", value = "Stat", -M1), !is.na(Stat))
+  if (keepOrphans) {
+    orphanVertices <- colnames(object$distances[[distance]]$matrix)
+    orphanVertices <- orphanVertices[!orphanVertices %in%
+                                       unique(c(object$distances[[distance]]$edges$M1, object$distances[[distance]]$edges$M2))]
+    object$distances[[distance]]$orphanVertices <- orphanVertices
+    if (length(orphanVertices) > 0) {
+      orphanVertices.df <- data.frame(M1 = orphanVertices,
+                                      M2 = rep(NA, length(orphanVertices)), Stat = rep(NA,
+                                                                                       length(orphanVertices)))
+      object$distances[[distance]]$edges <- rbind(object$distances[[distance]]$edges,
+                                                  orphanVertices.df)
+    }
+  }
+  object
+}
+
+
+
+# This is the old version of the function, from 0.1.5.0 and prior. I'm keeping this pending testing.
+gsnPareNetGenericHierarchic_old <- function( object,
                                          distance = NULL,
                                          extreme = NULL,
                                          cutoff = NULL,

@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -86,10 +86,10 @@ yassifyPathways( Bai_CiHep_DN.sig.GSN.subnetSummary,
                  )
 
 ## ----eval=FALSE, include=FALSE, echo=FALSE------------------------------------
-#  # SVG version of this function, but the output SVG is too large for inclusion in the vignette.
-#  plot( x = Bai_CiHep_DN.sig.GSN, filename = "Bai_CiHep_DN.sig.GSN.PL.svg", width = 9, height = 7, n_col = 'N1' ) -> out
-#  
-#  knitr::include_graphics( "Bai_CiHep_DN.sig.GSN.PL.svg" )
+# # SVG version of this function, but the output SVG is too large for inclusion in the vignette.
+# plot( x = Bai_CiHep_DN.sig.GSN, filename = "Bai_CiHep_DN.sig.GSN.PL.svg", width = 9, height = 7, n_col = 'N1' ) -> out
+# 
+# knitr::include_graphics( "Bai_CiHep_DN.sig.GSN.PL.svg" )
 
 ## -----------------------------------------------------------------------------
 gsnPlotNetwork( object = Bai_CiHep_DN.sig.GSN, filename = "Bai_CiHep_DN.sig.GSN.PL.png", width = 9, height = 7, n_col = 'N1' ) -> out
@@ -150,17 +150,17 @@ yassifyPathways( Bai_CiHep_v_CiKrt_DN.filt,
                  )
 
 ## ----include=FALSE, results=FALSE, eval=FALSE---------------------------------
-#  # THis is a little sanity check to figure out why N1's differ between the CiHep and CiKrt CERNO results sets. N1 is not the number of genes in the module in the gene set collection, but the number of genes in the gene set collection that are represented in the differential expression dataset.
-#  
-#  sum(toupper( rownames(Bai_CiHep_v_Fib2.de) ) %in% toupper( rownames(Bai_CiKrt_v_Fib2.de) ))
-#  
-#  Ns_table <- data.frame( ID = names(Bai_gsc.tmod$MODULES2GENES),
-#                          N.CiHep = sapply( X = Bai_gsc.tmod$MODULES2GENES, FUN = function(x)sum( sum( unlist(x) %in% toupper( rownames(Bai_CiHep_v_Fib2.de) ) ) ) ) ,
-#                          N.CiKrt = sapply( X = Bai_gsc.tmod$MODULES2GENES, FUN = function(x)sum( sum( unlist(x) %in% toupper( rownames(Bai_CiKrt_v_Fib2.de) ) ) ) )
-#  )
-#  
-#  merge( x = Ns_table, y = Bai_CiHep_v_CiKrt_DN.merge[,c("ID", "N1.CiHep", "N1.CiKrt")], by = "ID" )
-#  
+# # THis is a little sanity check to figure out why N1's differ between the CiHep and CiKrt CERNO results sets. N1 is not the number of genes in the module in the gene set collection, but the number of genes in the gene set collection that are represented in the differential expression dataset.
+# 
+# sum(toupper( rownames(Bai_CiHep_v_Fib2.de) ) %in% toupper( rownames(Bai_CiKrt_v_Fib2.de) ))
+# 
+# Ns_table <- data.frame( ID = names(Bai_gsc.tmod$MODULES2GENES),
+#                         N.CiHep = sapply( X = Bai_gsc.tmod$MODULES2GENES, FUN = function(x)sum( sum( unlist(x) %in% toupper( rownames(Bai_CiHep_v_Fib2.de) ) ) ) ) ,
+#                         N.CiKrt = sapply( X = Bai_gsc.tmod$MODULES2GENES, FUN = function(x)sum( sum( unlist(x) %in% toupper( rownames(Bai_CiKrt_v_Fib2.de) ) ) ) )
+# )
+# 
+# merge( x = Ns_table, y = Bai_CiHep_v_CiKrt_DN.merge[,c("ID", "N1.CiHep", "N1.CiKrt")], by = "ID" )
+# 
 
 ## -----------------------------------------------------------------------------
 Bai_CiHep_v_CiKrt_DN.sig.tmod <- Bai_gsc.tmod[ Bai_CiHep_v_CiKrt_DN.filt$ID ]
@@ -223,7 +223,8 @@ gsnPlotNetwork( object = Bai_CiHep_v_CiKrt_DN.GSN,
                 stat_col = 'AUC.CiHep',
                 sig_order = 'hiToLo',
                 stat_col_2 = NA,
-                vertex_colors = c('darkblue', 'blue', '#9999FF',  '#DDDDFF', 'white' )
+                vertex_colors = c( 'white', '#DDDDFF', '#9999FF', 'blue', 'darkblue' ),
+                transform_function = identity
 )
 
 knitr::include_graphics( path = "Bai_CiHep_v_CiKrt_DN.GSN.NP_AUC.png" )
@@ -240,7 +241,7 @@ gsnHierarchicalDendrogram( Bai_CiHep_v_CiKrt_DN.GSN,
 
 knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.HD.png" )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 Bai_CiHep_dorothea_UD.Gsea <- rbind( Bai_CiHep_dorothea_UP.Gsea, Bai_CiHep_dorothea_DN.Gsea )
 Bai_CiHep_dorothea_UD.Gsea$`Activated In` <- sapply( X = Bai_CiHep_dorothea_UD.Gsea$NES, function(x) ifelse( x > 0, "CiHep", "Fibroblast2" ) )
 Bai_CiHep_dorothea_UD.Gsea$`FDR q-val<=0.05` <- ifelse( Bai_CiHep_dorothea_UD.Gsea$`FDR q-val` <= 0.05, "significant", "not significant" )

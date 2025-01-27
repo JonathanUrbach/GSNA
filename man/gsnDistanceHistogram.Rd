@@ -10,7 +10,10 @@ gsnDistanceHistogram(
   dist.matrix = c("raw", "pared", "edges"),
   stat = "percent",
   colors = NULL,
-  bins = 100
+  bins = 100,
+  use_facets = FALSE,
+  scales = "free",
+  ncol = 1
 )
 }
 \arguments{
@@ -28,6 +31,19 @@ the distances in "edges" will be the same as those in "pared", but this may not 
 tuned.}
 
 \item{bins}{The number of bins, for histograms ("percent" or "count").}
+
+\item{use_facets}{A logical value that tells the function whether to generate a stacked or side-by-side plot
+with multiple facets instead of plotting all distances on a single plot with the same scale. (default FALSE)}
+
+\item{scales}{Specifies whether subplot scales should be "fixed", meaning that they share the same axis
+scaling, "free_x", meaning that subplots have their own x coordinates, "free_y", meaning that subplots have
+their own y coordinates, or "free" indicating that both axes are free. For more details, see documentation
+for \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}. This is only used when
+\code{use_facets = TRUE} is specified. (Default "free")}
+
+\item{ncol}{Specifies the number of columns of subplots. For more details, see documentation
+for \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}}. This is only used when
+\code{use_facets = TRUE} is specified. (Default 1)}
 }
 \value{
 A ggplot2 graphical object.

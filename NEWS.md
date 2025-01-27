@@ -1,4 +1,11 @@
 
+# GSNA 0.1.5.1
+* Development version  
+* The function gsn_select_cutoff is added. This function suggests appropriate cutoffs for paring using `gsnPareNetGenericHierarchic()` or `gsnPareNetGenericToNearestNNeighbors()`.  
+* The `yassifyPathways()` function has been updated to better handle the insertion of URL links via the `url_map_by_words_list` argument.  
+* The `gsnDistanceHistogram()` function has been enhanced with the option to plot the distance distribution as a set of stacked plots, which may optionally have independent *x* and/or *y* coordinates. These new featuresa are accessed via the `use_facets`, `scales`, and `ncol` arguments.  
+* The `gsnPlotNetwork()` and `gsnHierarchicalDendrogram()` functions have been fixed to properly indicate in the one and two-color figure legends the transformed nature of the statistal columns used for node coloring.  
+
 # GSNA 0.1.5
 * In previous versions of the GSEA package, sample data included in the vignette contained gene sets derived from the academic version of the dorothea package, and therefore may not be used for commercial purposes. In this version, the GSEA example in the vignette and the corresponding gene sets from the dorothea package used as example data in the vignette were updated to include only genes sets and genes from the non-academic version of the dorothea package, so as to be compatible with commercial use.  
 * Includes numerous corrections to the vignette.  
