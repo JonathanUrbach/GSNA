@@ -43,8 +43,8 @@
 #' * Gene sets included herein derived from the the C3 subset of GSEA are protected by copyright (c) 2004-2023 Broad Institute, Inc.,
 #'   Massachusetts Institute of Technology, and Regents of the University of California, and are included here under the terms and
 #'   conditions of the Creative Commons Attribution 4.0 International License.
-#' * Gene sets included herein derived from the \code{dorothea} package are included herein under the terms and conditions of the
-#'   GPL 3+ license.
+#' * Gene sets included herein derived from the \code{dorothea} package version 0.99.0 (https://github.com/saezlab/dorothea/tree/non-academic)
+#'   are included herein under the terms and conditions of the GPL 3+ license.
 #'
 #' @format **Bai_CiHep_DN.cerno:** `r roxygen2::object_format( Bai_CiHep_DN.cerno )`
 #'  * **ID** Gene set ID.

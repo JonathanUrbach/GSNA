@@ -2,7 +2,7 @@
 bibliography: vignettes/using_the_gsna_package.bib
 output: github_document
 ---
- 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}

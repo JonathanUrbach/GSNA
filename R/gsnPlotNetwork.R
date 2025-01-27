@@ -395,6 +395,13 @@ gsnPlotNetwork <- function( object,
   if( is.null( legend.vertex.fg ) ) legend.vertex.fg <- vertex.frame.color
   if( is.null( cex.main ) ) cex.main <- 1.5 * par( 'cex' )
 
+  if( "function" %in% class(transform_function) ){
+    transform_function_name <- deparse( substitute( transform_function ) )
+  } else if( "character" %in% class(transform_function) ) {
+    transform_function_name <- transform_function
+    transform_function <- get(transform_function)
+  }
+
   # Determine plot layout.
   if( is.null( width ) ) width <- par('fin')[1]   # grDevices::dev.size("in")[1]
   if( is.null( height ) ) height <- par('fin')[2] # grDevices::dev.size("in")[2]
@@ -489,6 +496,11 @@ gsnPlotNetwork <- function( object,
       pathways_dat$vertex.color <- oneColorEncode.fun( numbers = numbers, output_as = "rgb" )
       legend.ylab <- stat_col
     }
+    #if( ( ! identical( transform_function, identity ) ) & transform_function_name != "identity" ){
+    #  if( exists( "legend.xlab" ) )
+    #    legend.xlab <- paste0( transform_function_name, "(", legend.xlab, ")" )
+    #  legend.ylab <- paste0( transform_function_name, "(", legend.ylab, ")" )
+    #}
     # If n_col is set, use for the vertex size scale.
     if( !is.null( n_col ) ){
       gs_numbers <- pathways_dat[[n_col]]
@@ -641,6 +653,23 @@ gsnPlotNetwork <- function( object,
     .plot(sigNet, layout = layout, xlim = c(-1,1), ylim = c(-1,1 ), new = new)
   }
   uxcpi <- get_usr_x_coords_per_inch()
+
+
+  if( ! is.null(twoColorEncode.fun) || ! is.null(oneColorEncode.fun) ){
+    if( isTRUE( all.equal(  transform_function, identity )) ){
+      if( ! is.null( sig_order_2 ) )
+        if( exists( "legend.xlab" ) )
+          legend.xlab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order_2)]], legend.xlab )
+      if( ! is.null( sig_order ) )
+        legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], legend.ylab )
+    } else {
+      if( ! is.null( sig_order_2 ) )
+        if( exists( "legend.xlab" ) )
+          legend.xlab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order_2)]], transform_function_name, "(", legend.xlab, ")" )
+      if( ! is.null( sig_order ) )
+        legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], transform_function_name, "(", legend.ylab, ")" )
+    }
+  }
 
 
   # Set up layout for legends.

@@ -291,7 +291,14 @@ gsnHierarchicalDendrogram <- function( object,
   requireNamespace("stats", quietly = TRUE)
 
   stopifnot( "GSNData" %in% class( object ) )
-  transform_function.name <- deparse( substitute( transform_function ) )
+  #transform_function_name <- deparse( substitute( transform_function ) )
+  if( "function" %in% class(transform_function) ){
+    transform_function_name <- deparse( substitute( transform_function ) )
+  } else if( "character" %in% class(transform_function) ) {
+    transform_function_name <- transform_function
+    transform_function <- get(transform_function)
+  }
+
 
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( distance ) ) stop( 'Need distance argument.' )
@@ -717,9 +724,9 @@ gsnHierarchicalDendrogram <- function( object,
           legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], legend.ylab )
       } else {
         if( ! is.null( sig_order_2 ) )
-          legend.xlab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order_2)]], transform_function.name, "(", legend.xlab, ")" )
+          legend.xlab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order_2)]], transform_function_name, "(", legend.xlab, ")" )
         if( ! is.null( sig_order ) )
-          legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], transform_function.name, "(", legend.ylab, ")" )
+          legend.ylab <- paste0( c(loToHi='-', hiToLo = '')[[as.character(sig_order)]], transform_function_name, "(", legend.ylab, ")" )
       }
     }
 

@@ -27,24 +27,26 @@ subnets. This defaults to the 'default_distance'.}
 i.e. to be interpreted as the shortest distance for nearest neighbor paring. This defaults to the value set for the
 \code{optimal_extreme} field of the specified \code{distance} matrix.}
 
-\item{cutoff}{(optional) A cutoff specifying a maximal of minimal value that will be retained, dependent on the distance
-metric being used. This is not usually necessary to specify for hierarchical clustering. (see details)}
+\item{cutoff}{(optional) This is the argument to specify the distance used for clustering, specified before any
+distance scaling is performed. This is mapped to the corresponding scaled value which is then used as the \code{h}
+argument for \code{stats::cutree()}. (see details)}
 
 \item{keepOrphans}{A boolean indicating whether 'orphan' gene sets that have no nearest neighbors should be retained in
 the final network. (default \code{TRUE} )}
 
 \item{matrix_scaling_fun}{A function to perform transformation and scaling of the distance matrix. The default,
 \code{distMat2UnitNormRank} converts the distance matrix to ranks and scales the resulting numbers to a range between 0 and 1.
-If set to NULL, the distances are not scaled or transformed. (see details)}
+If set to \code{NULL}, the distances are not scaled or transformed. (see details)}
 
 \item{lower_is_closer}{Boolean indicating that lower values should be treated as closer for the sake of hierarchical
 clustering.}
 
-\item{k}{(optional) Parameter passed to cutree to determine the number of desired clusters. If both k and h are NULL,
-a value for k will be chosen. (see details)}
+\item{k}{(optional) Parameter passed to cutree to determine the number of desired clusters. If \code{k}, \code{h},
+and \code{cutoff} are \code{NULL}, a value for k will be chosen. (see details)}
 
 \item{h}{(optional) Parameter passed to cutree to determine the cutting height for breaking the clusters into groups.
-(see details)}
+This is specified in terms of the scaled data as opposed to \code{cutoff}. For the default scaling method, this
+corresponds roughly to a quantile of scaled distances. (see details)}
 
 \item{method}{(optional) Parameter passed to \code{hclust()} to specify the hierarchical clustering method used.
 (default "average")}

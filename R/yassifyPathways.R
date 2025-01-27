@@ -82,7 +82,118 @@
 #' # slower.
 #'
 #' @importFrom utils head
-yassifyPathways <- function( pathways,
+yassifyPathways <- function (pathways, n = NULL, url_map_list = list(), url_map_by_words_list = list(),
+                             min_decimal = 5e-04, quiet = TRUE, table_row_colors = c(`1` = "#EEF",
+                                                                                     `2` = "#FFD"), valign = "top", halign = "left", ...)
+{
+  if (is.null(n)) {
+    n <- nrow(pathways)
+  }
+  small_numeric_cols <- character()
+  other_numeric_cols <- colnames(pathways)[sapply(X = colnames(pathways),
+                                                  FUN = function(x) class(pathways[[x]]) == "numeric" &&
+                                                    !x %in% small_numeric_cols)]
+  for (column in other_numeric_cols) {
+    pathways[[column]] <- sapply(X = pathways[[column]],
+                                 FUN = function(x) {
+                                   if (is.na(x))
+                                     return(NA)
+                                   if (abs(x) > 1e+06 || abs(x) < min_decimal)
+                                     return(format(x, scientific = TRUE, digits = 5))
+                                   return(format(x, scientific = FALSE, digits = 5))
+                                 })
+  }
+  for (column in names(url_map_list)) {
+    if (!is.null(pathways[[column]])) {
+      pathways[[column]] <- sapply(X = pathways[[column]],
+                                   FUN = function(x) {
+                                     if (is.na(x))
+                                       return("")
+                                     if (!x %in% names(url_map_list[[column]])) {
+                                       if (!quiet)
+                                         warning("Term '", x, "' not found.\n")
+                                       return(x)
+                                     }
+                                     url <- try(url_map_list[[column]][[x]])
+                                     if (is.na(url))
+                                       return(x)
+                                     if ("try-error" %in% class(url)) {
+                                       return(x)
+                                     }
+                                     paste0("<a href=\"", url, "\" target=\"_blank\">",
+                                            x, "</a>")
+                                   })
+    }
+  }
+  for (column in names(url_map_by_words_list)) {
+    if (!is.null(pathways[[column]])) {
+      .map <- as.list(url_map_by_words_list[[column]])
+      .tokenized_column <- .yass_tokenizer( pathways[[column]] )
+
+      .urlized_col <- lapply( X = .tokenized_column,
+                              FUN = function( x ){
+                                sapply(X = x, FUN = function(.x){
+                                  ifelse( test = .x %in% names(.map),
+                                          yes = paste0("<a href=\"", .map[.x], "\" target=\"_blank\">", .x, "</a>"),
+                                          no = .x )
+                                } )
+                              } )
+
+
+      pathways[[column]] <- sapply( X = .urlized_col, FUN = function( x ) paste0(x, collapse = "") )
+    }
+  }
+
+
+  pathways <- utils::head(pathways, n)
+  .dt <- DT::datatable(pathways, escape = FALSE, rownames = FALSE,
+                       ...)
+  if (!is.null(valign))
+    .dt <- DT::formatStyle(table = .dt, columns = 0:ncol(pathways),
+                           `vertical-align` = valign)
+  if (!is.null(halign))
+    .dt <- DT::formatStyle(table = .dt, columns = 0:ncol(pathways),
+                           `text-align` = halign)
+  if ("subnet" %in% colnames(pathways) && !is.null(table_row_colors) &&
+      length(table_row_colors) > 0) {
+    subnet.id <- unique(pathways$subnet)
+    if (!any(suppressWarnings(is.na(as.numeric(subnet.id)))) &&
+        all(as.numeric(subnet.id) >= 1) && all(as.numeric(subnet.id) ==
+                                               as.integer(subnet.id))) {
+      subnet.id <- as.integer(subnet.id)
+    }
+    else {
+      subnet.if <- as.integer(factor(subnet.id))
+    }
+    subnet.val <- table_row_colors[((1:length(subnet.id) - 1)%%length(table_row_colors)) + 1]
+    DT::formatStyle(.dt, "subnet", target = "row", backgroundColor = DT::styleEqual(subnet.id,
+                                                                                    subnet.val))
+  }
+  else {
+    .dt
+  }
+}
+
+
+.yass_tokenizer <- function(x){
+  .outz <- list()
+  for( .x in x ){
+    .tokenz <- c()
+    while( !is.na(.x) ){
+      if( !is.na( (.cptr <- stringr::str_match( string = .x, pattern = "^(\\w+|\\W+)(.+)?" ) )[1,2] ) ){ # Letter, digit, underscore
+        .tokenz <- c( .tokenz, .cptr[1,2] )
+        .x <- .cptr[1,3]
+      }
+    }
+    .outz[[length(.outz)+1]] <- .tokenz
+  }
+  .outz
+}
+
+
+
+
+yassifyPathways.old <- function( pathways,
                              n = NULL,
                              url_map_list = list(),
                              url_map_by_words_list = list(),
