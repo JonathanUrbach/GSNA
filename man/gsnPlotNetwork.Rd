@@ -66,6 +66,7 @@ gsnPlotNetwork(
   legend_spacing.x.in = 2 * par("cin")[1],
   legend_spacing.y.in = par("cin")[2],
   resolution = 72,
+  prepend_subnet = TRUE,
   DO_BROWSER = FALSE
 )
 }
@@ -280,7 +281,11 @@ entire plotting region, it may be useful to use negative values to move the lege
 \item{resolution}{Image resolution in pixels per inch, only for bitmap image output formats (currently
 png only). (default: 72)}
 
-\item{DO_BROWSER}{(option) Logical indicating whether browser() should be run for this function. (For debugging
+\item{prepend_subnet}{(optional) Logical value telling the function whether or not to prepend the
+subnet identifier to the gene set identifier when plotting. If \code{FALSE}, the subnet identifier
+is not prepended. (default \code{TRUE})}
+
+\item{DO_BROWSER}{(optional) Logical indicating whether browser() should be run for this function. (For debugging
 purposes, will probably remove.)}
 }
 \value{

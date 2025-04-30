@@ -163,7 +163,10 @@ entire plotting region, it may be useful to use negative values to move the lege
     \item{\code{legend_spacing.y.in}}{(optional) Space between legends in inches. (default: 1 character height)}
     \item{\code{resolution}}{Image resolution in pixels per inch, only for bitmap image output formats (currently
 png only). (default: 72)}
-    \item{\code{DO_BROWSER}}{(option) Logical indicating whether browser() should be run for this function. (For debugging
+    \item{\code{prepend_subnet}}{(optional) Logical value telling the function whether or not to prepend the
+subnet identifier to the gene set identifier when plotting. If \code{FALSE}, the subnet identifier
+is not prepended. (default \code{TRUE})}
+    \item{\code{DO_BROWSER}}{(optional) Logical indicating whether browser() should be run for this function. (For debugging
 purposes, will probably remove.)}
   }}
 }

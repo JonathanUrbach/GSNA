@@ -208,7 +208,11 @@
 #' @param resolution Image resolution in pixels per inch, only for bitmap image output formats (currently
 #' png only). (default: 72)
 #'
-#' @param DO_BROWSER (option) Logical indicating whether browser() should be run for this function. (For debugging
+#' @param prepend_subnet (optional) Logical value telling the function whether or not to prepend the
+#' subnet identifier to the gene set identifier when plotting. If \code{FALSE}, the subnet identifier
+#' is not prepended. (default \code{TRUE})
+#'
+#' @param DO_BROWSER (optional) Logical indicating whether browser() should be run for this function. (For debugging
 #' purposes, will probably remove.)
 #'
 #'
@@ -333,6 +337,7 @@ gsnPlotNetwork <- function( object,
                             legend_spacing.x.in = 2 * par('cin')[1],
                             legend_spacing.y.in = par('cin')[2],
                             resolution = 72, # pixels per inch
+                            prepend_subnet = TRUE,
                             DO_BROWSER = FALSE
 
 ){
@@ -535,6 +540,11 @@ gsnPlotNetwork <- function( object,
 
   # Get id from the vertex name. It may require reformatting:
   id <- igraph::V(sigNet)$name
+
+  if( prepend_subnet )
+    subnet_by_vertex <- with( object$distances[[distance]]$vertex_subnets,
+                              structure( subnet, names = vertex ) )
+
   if( ! is.null( substitute_id_col ) )
     id <- pathways_dat[igraph::V(sigNet)$name, substitute_id_col ]
 
@@ -543,6 +553,9 @@ gsnPlotNetwork <- function( object,
     id <- igraph::V(sigNet)$name
     if( ! is.null( substitute_id_col ) )
       id <- pathways_dat[ igraph::V(sigNet)$name, substitute_id_col ]
+
+      # Add Subnet
+      if( prepend_subnet ) id <- paste0( "(", subnet_by_vertex[igraph::V(sigNet)$name],") ", id )
 
     # igraph::V(sigNet)$label <- paste0( gsub( x = id, pattern = '(.{1,15})([\\s\\~\\:])', replacement = '\\1\n' ),
     #                                    "\n",
@@ -555,6 +568,7 @@ gsnPlotNetwork <- function( object,
                                        break_long_lines( x = pathways_dat[igraph::V(sigNet)$name, pathways_title_col ] ) )
                                        # Adds converts '\s' to '\n' after up to 1
   } else {
+    if( prepend_subnet ) id <- paste0( "(", subnet_by_vertex[igraph::V(sigNet)$name],") ", id )
     igraph::V(sigNet)$label <- break_long_lines( x = id )
   }
 
