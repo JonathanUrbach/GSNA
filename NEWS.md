@@ -1,5 +1,10 @@
+# GSNA 0.1.6.1
+* Development version  
+* Added tests for `termSummary()`, `gsnSubnetsDotPlot()`, and `myColorF()`.  
+* Updated the vignette.  
+
 # GSNA 0.1.6.0
-* Development version
+* Development version  
 * Added the `termSummary()` function (along with some associated helper functions `filterTerms()` and `score_word_clusters()`) that can take multiple gene set names/terms and convert them to summarized names.    
 * Added the `gsnSubnetsDotPlot()` function to provide an additional way to represent gene set subnets, ploting gene sets grouped on the y-axis by subnet, positioned on the x-axis by a configurable statistical column, with scaling by number of gene set members and coloring by an additional configural statistic.  
 * Added the `prepend_subnet` function for the `gsnPlotNetwork()` function.  

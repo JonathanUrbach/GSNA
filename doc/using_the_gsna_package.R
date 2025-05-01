@@ -111,6 +111,27 @@ knitr::include_graphics( path = "Bai_CiHep_DN.sig.GSN.HD.png" )
 
 
 ## -----------------------------------------------------------------------------
+gsnPathways( Bai_CiHep_DN.sig.GSN, "TF Signature / Subnets" ) <-
+  with( with( gsnMergePathways( object = Bai_CiHep_DN.sig.GSN ),
+              aggregate( x = list( IDs = Title ),
+                         by =list(subnet = subnet ),
+                         FUN = function( x ){
+                           gsub( pattern = "\\starget\\sgenes",
+                                 replacement = "",
+                                 x ) } ) ),
+        structure( sapply( IDs, function( x ){
+          paste0( x, collapse = ", " ) } ),
+          names = subnet ) )[gsnMergePathways(Bai_CiHep_DN.sig.GSN)[ ,"subnet"] ]
+
+## ----subnets_dot_plot_1, fig.height=4-----------------------------------------
+gsnSubnetsDotPlot( object = Bai_CiHep_DN.sig.GSN,
+                   color_col = "AUC",
+                   x_transform = "log10",
+                   group_by = "TF Signature / Subnets",
+                   preappend_subnet_in_summary = TRUE,
+                   label_width_chars = 25 )
+
+## -----------------------------------------------------------------------------
 Bai_CiHep_v_CiKrt_DN.merge <- merge( x = Bai_CiHep_DN.cerno,
                                      y = Bai_CiKrt_DN.cerno,
                                      by = 'ID' )
@@ -240,6 +261,29 @@ gsnHierarchicalDendrogram( Bai_CiHep_v_CiKrt_DN.GSN,
                            geometry = 'circular' )
 
 knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.HD.png" )
+
+## -----------------------------------------------------------------------------
+gsnPathways( Bai_CiHep_v_CiKrt_DN.GSN, "TF Signature / Subnets" ) <-
+  with( with( gsnMergePathways( object = Bai_CiHep_v_CiKrt_DN.GSN ),
+              aggregate( x = list( IDs = Title ),
+                         by =list(subnet = subnet ),
+                         FUN = function( x ){
+                           gsub( pattern = "\\starget\\sgenes",
+                                 replacement = "", x ) } ) ),
+        structure( sapply( IDs, function( x ){
+          paste0( x, collapse = ", " ) } ),
+          names = subnet ) )[ gsnMergePathways(Bai_CiHep_v_CiKrt_DN.GSN)[ ,"subnet"] ]
+
+gsnPathways( Bai_CiHep_v_CiKrt_DN.GSN, "AUC.CiHep-CiKrt" ) <-
+  with( gsnPathways( Bai_CiHep_v_CiKrt_DN.GSN ), AUC.CiHep - AUC.CiKrt )
+
+## ----subnets_dot_plot_2, fig.height=4-----------------------------------------
+gsnSubnetsDotPlot( object = Bai_CiHep_v_CiKrt_DN.GSN,
+                   color_col = "AUC.CiHep-CiKrt",
+                   x_transform = "log10",
+                   group_by = "TF Signature / Subnets",
+                   preappend_subnet_in_summary = TRUE,
+                   label_width_chars = 25 )
 
 ## ----echo=FALSE---------------------------------------------------------------
 Bai_CiHep_dorothea_UD.Gsea <- rbind( Bai_CiHep_dorothea_UP.Gsea, Bai_CiHep_dorothea_DN.Gsea )

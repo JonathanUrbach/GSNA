@@ -126,9 +126,16 @@ calculation of the font size, and does not determine the size of images generate
 (default, value of \code{grDevices::dev.size()[2]})}
 }
 \value{
-Either a \strong{ggplot2} \code{ggplot} object (default) or a \code{plotly/htmlwidget} if
-\code{interactive=TRUE} is specified.
+This function returns either a \strong{ggplot2} \code{ggplot} object (default) or a \code{plotly/htmlwidget}
+if the \code{interactive=TRUE} argument is specified.
 }
 \description{
-gsnSubnetsDotPlot
+This function generates a \strong{ggplot2} or (if the \code{interactive=TRUE} argument is specified)
+plotly dotplot representation of gene set clusters/subnets. Gene sets are represented on the y-axis,
+whereas the x-axis position, color, and size of dots represent user-chosen statistics for each gene set.
+
+NOTE: Unlike the \code{gsnPlotNetwork()} and \code{genHierarchicalDendrogram()} methods,
+\code{gsnSubnetsDotPlot()} does not currently have direct support for output to a file. For outputting to
+a file, use the \strong{ggplot2} \code{ggsave()} function for \strong{ggplot} objects, or for \strong{plotly} objects,
+use the \code{saveWidget()} function from the \strong{htmlwidget} package.
 }

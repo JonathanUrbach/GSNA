@@ -335,6 +335,38 @@ On the basis of this output, it could be concluded that there are 6 subnets or c
 **Variation:** A hierarchical dendrogram with a circular geometry can be generated with `gsnHierarchicalDendrogram()` using the `geometry = 'circular'` argument.  
 
 
+A dot plot is another, intuitive way to represent the data in a GSNData object, which we present below.
+
+Since the gene sets in this data set are comprised of the target genes of particular transcription factors, we can give the subnets descriptive names derived from their respective transcription factors. The code block below takes the gene set names in the `Title` column, having the format `TF target genes`, filtering out " target genes", groups them for each subnet, and combines the transcription factor names into a comma separated strings. The `gsnPathways()` function is used both to retrieve the pathways data being manipulated, and for assignment.  
+
+```{r}
+gsnPathways( Bai_CiHep_DN.sig.GSN, "TF Signature / Subnets" ) <-
+  with( with( gsnMergePathways( object = Bai_CiHep_DN.sig.GSN ),
+              aggregate( x = list( IDs = Title ),
+                         by =list(subnet = subnet ),
+                         FUN = function( x ){
+                           gsub( pattern = "\\starget\\sgenes",
+                                 replacement = "",
+                                 x ) } ) ),
+        structure( sapply( IDs, function( x ){
+          paste0( x, collapse = ", " ) } ),
+          names = subnet ) )[gsnMergePathways(Bai_CiHep_DN.sig.GSN)[ ,"subnet"] ]
+```
+
+
+Then, we use the `gsnSubnetsDotPlot()` to generate a dot plot representation. The gene sets comprising the subnets are grouped along the y-axis, whereas on the x-axis, were using the statistical column, specifying that the x-axis should have a **log10** scale. Dot sizes correspond here to the value of `n_col`, the number of genes comprising the gene sets, but we have chosen to represent the **AUC** column with dot color.  
+
+```{r subnets_dot_plot_1, fig.height=4}
+gsnSubnetsDotPlot( object = Bai_CiHep_DN.sig.GSN,
+                   color_col = "AUC",
+                   x_transform = "log10",
+                   group_by = "TF Signature / Subnets",
+                   preappend_subnet_in_summary = TRUE,
+                   label_width_chars = 25 )
+```
+
+
+
 # Generating a 2-channel Gene Set Network with CERNO data   
 
 Two channel gene set networks are useful for comparing differential pathway activation or repression between conditions, treatments or transitions between cell types. This mainly applies to cases where two distinct cellular states are derived from a single reference state or cell type. In the Bai data set, the fibroblast 2 cellular subset differentiates into hepatocyte-like (CiHep), keratinocyte-like (CiKrt) and several other cell types upon chemical induction. In an analysis of this data set, comparisons can be made between the transition from the fibroblast 2 cell type to both the CiHep and CiKrt induced cell types. 
@@ -550,6 +582,40 @@ knitr::include_graphics( "Bai_CiHep_v_CiKrt_DN.GSN.HD.png" )
 
 
 Hierarchical dendrograms display relationships between all the gene sets, whereas the circular network plot show just gene sets connected to their nearest neighbors within subnet, but not connections between the subnets. Otherwise, the data shown are similar, and the `gsnHierarchicalDendrogram()` function possesses many of the same capabilities as the network plot function, including the ability to specify an alternative statistical columns for leaf coloration and the ability to vary the size of gene set leaves by gene set size.  
+
+
+
+Once again we can use a dot plot to represent subnets from a GSNData object.
+As before, the `gsnPathways()` function is used to add a column named `TF Signature / Subnets` that aggregates the names of the transcription factors whose targets comprise the gene sets of subnets.
+Likewise, we can add another column corresponding to the AUC value for CiHep vs Fibroblasts minus the AUC for CiKrt vs Fibroblasts to compare the relative degree of pathway downregulation for the two different comparisons.
+
+```{r}
+gsnPathways( Bai_CiHep_v_CiKrt_DN.GSN, "TF Signature / Subnets" ) <-
+  with( with( gsnMergePathways( object = Bai_CiHep_v_CiKrt_DN.GSN ),
+              aggregate( x = list( IDs = Title ),
+                         by =list(subnet = subnet ),
+                         FUN = function( x ){
+                           gsub( pattern = "\\starget\\sgenes",
+                                 replacement = "", x ) } ) ),
+        structure( sapply( IDs, function( x ){
+          paste0( x, collapse = ", " ) } ),
+          names = subnet ) )[ gsnMergePathways(Bai_CiHep_v_CiKrt_DN.GSN)[ ,"subnet"] ]
+
+gsnPathways( Bai_CiHep_v_CiKrt_DN.GSN, "AUC.CiHep-CiKrt" ) <-
+  with( gsnPathways( Bai_CiHep_v_CiKrt_DN.GSN ), AUC.CiHep - AUC.CiKrt )
+```
+
+Lastly, we use the `gsnSubnetsDotPlot()` to generate a dot plot representation. The gene sets comprising the subnets are grouped along the y-axis, whereas on the x-axis, were using the statistical column, specifying that the x-axis should have a **log10** scale. Dot sizes correspond here to the value of `n_col`, the number of genes comprising the gene sets, but we have chosen to represent the **AUC.CiHep-CiKrt** column with dot color.  
+
+
+```{r subnets_dot_plot_2, fig.height=4}
+gsnSubnetsDotPlot( object = Bai_CiHep_v_CiKrt_DN.GSN,
+                   color_col = "AUC.CiHep-CiKrt",
+                   x_transform = "log10",
+                   group_by = "TF Signature / Subnets",
+                   preappend_subnet_in_summary = TRUE,
+                   label_width_chars = 25 )
+```
 
 
 # Using GSNA with GSEA Data  
