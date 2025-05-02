@@ -1,3 +1,7 @@
+# GSNA 0.1.6.2
+* Development version
+* Adds tests for `gsnPathways()` and `buildGeneSetNetworkKappa()`.
+
 # GSNA 0.1.6.1
 * Development version  
 * Added tests for `termSummary()`, `gsnSubnetsDotPlot()`, and `myColorF()`.  
