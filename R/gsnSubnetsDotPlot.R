@@ -336,8 +336,8 @@ gsnSubnetsDotPlot <- function(
     axis_label_font_size <- 2 * axis_font_size
   }
 
-  if( is.null( x_axis_label_font_size ) ) x_axis_font_size * 2
-  if( is.null( y_axis_label_font_size ) ) y_axis_font_size * 2
+  if( is.null( x_axis_label_font_size ) ) x_axis_label_font_size <- x_axis_font_size * 2
+  if( is.null( y_axis_label_font_size ) ) y_axis_label_font_size <- y_axis_font_size * 2
 
   # Interactive
   if( interactive ){
@@ -382,22 +382,25 @@ gsnSubnetsDotPlot <- function(
       if( is.null( p ) ) {
         p <- .p
       } else {
-        p <- p + ( .p + ggplot2::theme(
-          axis.text.y=ggplot2::element_blank(),  #remove y axis labels
-          axis.ticks.y=ggplot2::element_blank()  #remove y axis ticks
-        ) )
+        # p <- p | ( .p + ggplot2::theme(
+        #   axis.text.y=ggplot2::element_blank(),  #remove y axis labels
+        #   axis.ticks.y=ggplot2::element_blank()  #remove y axis ticks
+        # ) )
+        p <- p | .p
       }
   }
 
   if( sum( ! sapply( .plots.l, is.null ) ) > 1 ){
-    p <- p + patchwork::plot_layout( axis_titles = "collect_y",
-                                     guides = "collect",
-                                     ncol = length(.plots.l),
-                                     widths = .widths
-    ) & ggplot2::theme( plot.margin = ggplot2::unit( x = c( 12,0.5,12,0.5 ), units = "points") )
+    p <- p + patchwork::plot_layout( axes = "collect_y",
+                                                       axis_titles = "collect_y",
+                                                       guides = "collect",
+                                                       ncol = length(.plots.l) + 1,
+                                                       widths = .widths )
+    #) #& ggplot2::theme( plot.margin = ggplot2::unit( x = c( 12,0.5,12,0.5 ), units = "points") )
   }
 
   p
 }
+
 
 
