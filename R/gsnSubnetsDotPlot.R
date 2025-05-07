@@ -372,6 +372,12 @@ gsnSubnetsDotPlot <- function(
                                heights = height.px )
     }
     .pl <- do.call( what = function(...) plotly::layout(  p = .pl, ... ), .layout_args )
+    # This remove problematic formats from the plotly objects
+    .pl$x$layout$margin <- list(t = 30, r = 7, b = 30, l = 7)
+    .pl$width <- NULL
+    .pl$height <- NULL
+    .pl$x$layout$width <- NULL
+    .pl$x$layout$height <- NULL
     return( .pl )
   }
 

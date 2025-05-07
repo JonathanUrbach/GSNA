@@ -1,3 +1,7 @@
+# GSNA 0.1.6.4
+* Development version  
+* Contains a fix for `gsnSubnetsDotPlot()` in which interactive plots were not occupying available space.  
+
 # GSNA 0.1.6.3
 * Development version  
 * Contains bug-fixes for `gsnSubnetsDotPlot()`.  
