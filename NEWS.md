@@ -1,3 +1,13 @@
+# GSNA 0.1.6.5
+* Development version  
+* Numerous changes to `gsnSubnetsDotPlot()`:
+  + The `max_subnets` argument was added allowing users to specify a maximal number of (top) subnets plotted.
+  + The `subset` argument was added, giving users fine control over which subnets and gene sets are plotted.
+  + Added the ability to specify a transformation (like `"log10"`) for color values using the `color_transform`.
+  + Discrete (character or factor) data is now supported for the `color_col` (character or factor).
+* Prior to this version, the `gsnMergePathways()` function has always returned data.frames in which the column specified by the `id_col` argument was named simply `ID`. This version allows the user to suppress this behavior by setting a (new) `id_reassign` argument to `FALSE`. The default behavior (to return the column as `ID`) is unchanged.  
+* Several tests were added for `gsnMergePathways()`.
+
 # GSNA 0.1.6.4
 * Development version  
 * Contains a fix for `gsnSubnetsDotPlot()` in which interactive plots were not occupying available space.  

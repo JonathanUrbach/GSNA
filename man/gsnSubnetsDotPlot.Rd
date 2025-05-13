@@ -7,19 +7,24 @@
 gsnSubnetsDotPlot(
   object,
   pathways.data = NULL,
+  merged.pathways.data = NULL,
   distance = NULL,
   id_col = NULL,
   stat_col = NULL,
   sig_order = NULL,
   n_col = NULL,
   subnet_col = "subnet",
-  title_col = "ID",
+  title_col = id_col,
   color_col = NULL,
   color_sig_order = NULL,
+  color_transform = "identity",
   group_by = "subnet",
   summarize = FALSE,
   preappend_subnet_in_summary = TRUE,
   summary_annotation_name = "Summary Annotation",
+  max_subnets = NULL,
+  subset = NULL,
+  order_by = NULL,
   x_transform = "identity",
   axis_font_size = 8,
   axis_label_font_size = NULL,
@@ -39,90 +44,118 @@ gsnSubnetsDotPlot(
 \arguments{
 \item{object}{A GSNData object.}
 
-\item{pathways.data}{A pathways data.frame. If not specified, this defaults to the pathways data.frame that
-was imported prior to subnet assignment.}
+\item{pathways.data}{An (optional) pathways data.frame. If not specified, this defaults to the pathways
+data.frame that was imported prior to subnet assignment.}
 
-\item{distance}{A specifier for distance metric. If not specified, this defaults to the return value of
-\code{gsn_default_distance(object)}.}
+\item{merged.pathways.data}{This is an (optional) data.frame, containing a merged pathways data set,
+including a subnet or other cluster grouping column. This is the same data typically obtained via the
+\code{\link{gsnMergePathways}()} function, which is otherwise called if this argument is not specified.
+(default: NULL)}
 
-\item{id_col}{Specifies the id column of the pathways data.frame. (default: value of
+\item{distance}{A specifier for distance metric (optional). If not specified, this defaults to the return
+value of \code{gsn_default_distance(object)}.}
+
+\item{id_col}{(optional) Specifies the id column of the pathways data.frame. (default: value of
 \code{object$pathways$id_col})}
 
-\item{stat_col}{Specifies the id column of the pathways data.frame to be used for plotting the x axis.
-(This is only used in very particular circumstances, and can generally be ignored.
+\item{stat_col}{(optional)  Specifies the id column of the pathways data.frame to be used for plotting
+the x axis. (This is only used in very particular circumstances, and can generally be ignored.
 default: value of \code{object$pathways$id_col})}
 
-\item{sig_order}{Specifies the sig_order of the stat_col column of the pathways data.frame to be used for
-plotting the x axis. (default: value of \code{object$pathways$sig_order})}
+\item{sig_order}{(optional) Specifies the sig_order of the stat_col column of the pathways data.frame to
+be used for plotting the x axis. (default: value of \code{object$pathways$sig_order})}
 
-\item{n_col}{Specifies the name of the pathways data.frame column to be used for plotting the dot sizes.
-Generally, this corresponds to gene set sizes, but other fields may be used for plotting.}
+\item{n_col}{(optional) Specifies the name of the pathways data.frame column to be used for plotting the
+dot sizes. Generally, this corresponds to gene set sizes, but other fields may be used for plotting.}
 
-\item{subnet_col}{This is the name of the column to be used to group subnets. (default \code{'subnet'})}
-
-\item{title_col}{This is the name of the column to be used to identify gene sets. (default \code{'ID'})}
-
-\item{color_col}{This is the name of the column to be used for the color aesthetic. (default NULL)}
-
-\item{color_sig_order}{This is the name of the column to be used to indicate the significance order of
-for the color aesthetic. (default \code{'hiToLo'})}
-
-\item{group_by}{This is the name of the column to be used to label subnets, indicated on the y-axis.
+\item{subnet_col}{(optional)  This is the name of the column to be used to group subnets.
 (default \code{'subnet'})}
 
-\item{summarize}{Logical value indicating whether the function should use the \code{termSummary} feature
-to generate descriptive names for subnets. This is currently an experimental feature. (default \code{FALSE})}
+\item{title_col}{(optional) This is the name of the column to be used to identify gene sets.
+(default \code{id_col})}
 
-\item{preappend_subnet_in_summary}{Logical value indicating whether the function should preappend subnet
-numbers to the subnet descriptors used for the y-axis. (default \code{TRUE})}
+\item{color_col}{(optional) This is the name of the column to be used for the color aesthetic.
+(default NULL)}
 
-\item{summary_annotation_name}{A name for the the summarized annotation column, if one is used.
+\item{color_sig_order}{(optional) This is the name of the column to be used to indicate the significance
+order of for the color aesthetic. (default \code{'hiToLo'})}
+
+\item{color_transform}{(optional) The user can provide the name of a function to transform the data
+such that log or other scales can be used. This takes the same arguments as
+\code{ggplot2::\link[ggplot2]{scale_fill_continuous}()} (default "identity")}
+
+\item{group_by}{(optional) This is the name of the column to be used to label subnets, indicated on the
+y-axis. (default \code{'subnet'})}
+
+\item{summarize}{(optional) Logical value indicating whether the function should use the \code{termSummary}
+feature to generate descriptive names for subnets. This is currently an experimental feature.
+(default \code{FALSE})}
+
+\item{preappend_subnet_in_summary}{(optional) Logical value indicating whether the function should preappend
+subnet numbers to the subnet descriptors used for the y-axis. (default \code{TRUE})}
+
+\item{summary_annotation_name}{(optional)nA name for the the summarized annotation column, if one is used.
 (default: \code{'Summary Annotation'})}
 
-\item{x_transform}{The transform used for the x_axis. This would normally be either \code{'identity'} or
-\code{'log10'}, but can take other values. (See the \code{transform} argument of \strong{ggplot2's}
+\item{max_subnets}{(optional) Specifies the number of top subnets to plot. If \code{NULL}, then all subnets
+are plotted. (default: NULL)}
+
+\item{subset}{(optional) Specifies a logical filter giving the user very fine control over which for subnets
+and gene sets are plotted. This argument is identical to the \code{subset} argument of the
+\code{base::\link[base]{subset.data.frame}()} function to which it is passed. (default: NULL)}
+
+\item{order_by}{(optional) This is an function to be used to order subnets in the plot. The function is
+evaluated within the environment of the data.frame returned by gsnMergePathways(), using \code{group_by} as
+a grouping variable, such that the user can specify something like \code{order_by = function() min( p.value )}
+(default: NULL)}
+
+\item{x_transform}{(optional) The transform used for the x_axis. This would normally be either \code{'identity'}
+or \code{'log10'}, but can take other values. (See the \code{transform} argument of \strong{ggplot2's}
 \code{\link[ggplot2]{scale_x_continuous}()} function.}
 
-\item{axis_font_size}{Specifies the size of the axis tick fonts in points. If set as NULL, then the
+\item{axis_font_size}{(optional)  Specifies the size of the axis tick fonts in points. If set as NULL, then the
 function attempts to pick an appropriate size based on the number of characters in the longest y
 label, and the number of y values. (default 8)}
 
-\item{axis_label_font_size}{Specifies the size of the axis label fonts in points (default 2 x axis_font_size).}
+\item{axis_label_font_size}{(optional) Specifies the size of the axis label fonts in points
+(default 2 x axis_font_size).}
 
-\item{x_axis_font_size}{Specifies the size of the x axis tick fonts in points (default axis_font_size).}
+\item{x_axis_font_size}{(optional) Specifies the size of the x axis tick fonts in points (default axis_font_size).}
 
-\item{y_axis_font_size}{Specifies the size of the y axis tick fonts in points (default axis_font_size).}
+\item{y_axis_font_size}{(optional) Specifies the size of the y axis tick fonts in points (default axis_font_size).}
 
-\item{x_axis_label_font_size}{Specifies the size of the x axis label fonts in points (default axis_label_font_size).}
+\item{x_axis_label_font_size}{(optional) Specifies the size of the x axis label fonts in points
+(default axis_label_font_size).}
 
-\item{y_axis_label_font_size}{Specifies the size of the y axis label fonts in points (default axis_label_font_size).}
+\item{y_axis_label_font_size}{(optional) Specifies the size of the y axis label fonts in points
+(default axis_label_font_size).}
 
-\item{colors}{Specifies a palette of colors to use. If NULL, the function attempts to select a color palette based
-on whether the values in \code{color_col} are positive (white to red), negative (red to white), or include both
-positive and negative values (red to white to blue). If a 3 color palette is specified, the \code{midpoint}
-argument can be used to specify a midpoint value for a color scale. (see \code{midpoint} below.)}
+\item{colors}{(optional) Specifies a palette of colors to use. If NULL, the function attempts to select a color
+palette based on whether the values in \code{color_col} are positive (white to red), negative (red to white), or
+include both positive and negative values (red to white to blue). If a 3 color palette is specified, the
+\code{midpoint} argument can be used to specify a midpoint value for a color scale. (see \code{midpoint} below.)}
 
-\item{midpoint}{A value to be used to specify the middle value of a color scale. If the \code{midpoint} argument
-is specified, and the \code{colors} argument contains exactly 3 colors, then the second one is used for the
-middle color. This is useful for specifying a zero-value (or mid value) color.}
+\item{midpoint}{(optional) A value to be used to specify the middle value of a color scale. If the \code{midpoint}
+argument is specified, and the \code{colors} argument contains exactly 3 colors, then the second one is used for
+the middle color. This is useful for specifying a zero-value (or mid value) color.}
 
-\item{label_width_chars}{Numeric value indicating the length of a y-axis gene set label to wrap. If \code{NULL}.
-no wrapping is performed. (default NULL)}
+\item{label_width_chars}{(optional) Numeric value indicating the length of a y-axis gene set label to wrap. If
+\code{NULL} no wrapping is performed. (default NULL)}
 
-\item{col_widths}{This function uses either the \strong{patchwork} package or the \strong{plotly} \code{subplot()} function
-to create a plot from multiple subplots, such that -Inf or Inf can be represented as broken x-axis values. The
-\code{col_widths} argument specifies the relative sizes of these subplots.}
+\item{col_widths}{(optional) This function uses either the \strong{patchwork} package or the \strong{plotly} \code{subplot()}
+function to create a plot from multiple subplots, such that -Inf or Inf can be represented as broken x-axis values.
+The \code{col_widths} argument specifies the relative sizes of these subplots.}
 
-\item{interactive}{A single logical value specifying that either a ggplot object should be returned
+\item{interactive}{(optional) A single logical value specifying that either a ggplot object should be returned
 (FALSE, non-interactive) or alternatively an interactive \strong{plotly} object should be returned (TRUE).
 (default FALSE).}
 
-\item{width}{This specifies the width of the plotting area in inches. This is mainly to enable automatic
-calculation of the font size, and does not determine the size of images generated by this function.
+\item{width}{(optional) This specifies the width of the plotting area in inches. This is mainly to enable
+automatic calculation of the font size, and does not determine the size of images generated by this function.
 (default, value of \code{grDevices::dev.size()[1]})}
 
-\item{height}{This specifies the height of the plotting area in inches. This is mainly to enable automatic
-calculation of the font size, and does not determine the size of images generated by this function.
+\item{height}{(optional) This specifies the height of the plotting area in inches. This is mainly to enable
+automatic calculation of the font size, and does not determine the size of images generated by this function.
 (default, value of \code{grDevices::dev.size()[2]})}
 }
 \value{
@@ -138,4 +171,20 @@ NOTE: Unlike the \code{gsnPlotNetwork()} and \code{genHierarchicalDendrogram()} 
 \code{gsnSubnetsDotPlot()} does not currently have direct support for output to a file. For outputting to
 a file, use the \strong{ggplot2} \code{ggsave()} function for \strong{ggplot} objects, or for \strong{plotly} objects,
 use the \code{saveWidget()} function from the \strong{htmlwidget} package.
+}
+\details{
+Under the hood, this function calls the \code{gsnMergePathways()} function to generate a subnets
+report with the \code{id_reassign = FALSE} argument, and plots the results from the data.frame that is
+returned. The \code{subset} or \code{max_subnets} arguments, are applied to this data.frame, giving the
+user fine control over which subsets and gene sets are plotted. The subset argument is passed to the
+\code{base::\link[base]{subset.data.frame}()} function.
+
+Plotting is done via \strong{ggplot2}. If there are infinities in x-axis values, for example if
+\code{x_transform = "log10"} and the specified \code{stat_col} is a \emph{p}-value of 0 which would be a
+negative infinity on a log10 scale, infinite values are separated out and plotted as a separate
+\strong{ggplot} object and then combined with the finite values and presented as a broken x-axis. If the
+\code{interactive = TRUE} argument is specified, the initial \code{ggplot} objects are converted to
+interactive \code{plotly (htmlwidget)} objects via \strong{plotly}'s ggplotly or subplot functions.
+If \code{interactive = FALSE} is specified, then the plot is returned as is, or if there are infinities
+in the x-axis, combined using patchwork and then returned.
 }

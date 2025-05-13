@@ -10,7 +10,8 @@ gsnMergePathways(
   distance = NULL,
   id_col = NULL,
   stat_col = NULL,
-  sig_order = NULL
+  sig_order = NULL,
+  id_reassign = TRUE
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ data, if that has already been done.}
 \item{sig_order}{(optional) Character vector of length 1 indicating the whether low values of the statistic are most
 significant ("loToHi", the default) or high values ("hiToLo") for ordering subnets and performing. Defaults to the
 value of \code{sig_order} already set during import of pathways data, if that has already been done.}
+
+\item{id_reassign}{(optional) If \code{TRUE}, in the output of this function, the column corresponding to \code{id_col}
+is named simply \code{'ID'}. If \code{FALSE}, this behavior is suppressed and the output data.frame contains the original
+name. (default \code{TRUE})}
 }
 \value{
 A data.frame containing pathways data with merged subnet assignments and subnetRank values.

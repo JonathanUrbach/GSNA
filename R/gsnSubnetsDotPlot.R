@@ -11,65 +11,103 @@
 #' use the \code{saveWidget()} function from the **htmlwidget** package.
 #'
 #' @param object A GSNData object.
-#' @param pathways.data A pathways data.frame. If not specified, this defaults to the pathways data.frame that
-#' was imported prior to subnet assignment.
-#' @param distance A specifier for distance metric. If not specified, this defaults to the return value of
-#' \code{gsn_default_distance(object)}.
-#' @param id_col Specifies the id column of the pathways data.frame. (default: value of
+#' @param pathways.data An (optional) pathways data.frame. If not specified, this defaults to the pathways
+#' data.frame that was imported prior to subnet assignment.
+#' @param merged.pathways.data This is an (optional) data.frame, containing a merged pathways data set,
+#' including a subnet or other cluster grouping column. This is the same data typically obtained via the
+#' \code{\link{gsnMergePathways}()} function, which is otherwise called if this argument is not specified.
+#' (default: NULL)
+#' @param distance A specifier for distance metric (optional). If not specified, this defaults to the return
+#' value of \code{gsn_default_distance(object)}.
+#' @param id_col (optional) Specifies the id column of the pathways data.frame. (default: value of
 #' \code{object$pathways$id_col})
-#' @param stat_col Specifies the id column of the pathways data.frame to be used for plotting the x axis.
-#' (This is only used in very particular circumstances, and can generally be ignored.
+#' @param stat_col (optional)  Specifies the id column of the pathways data.frame to be used for plotting
+#' the x axis. (This is only used in very particular circumstances, and can generally be ignored.
 #' default: value of \code{object$pathways$id_col})
-#' @param sig_order Specifies the sig_order of the stat_col column of the pathways data.frame to be used for
-#' plotting the x axis. (default: value of \code{object$pathways$sig_order})
-#' @param n_col  Specifies the name of the pathways data.frame column to be used for plotting the dot sizes.
-#' Generally, this corresponds to gene set sizes, but other fields may be used for plotting.
+#' @param sig_order (optional) Specifies the sig_order of the stat_col column of the pathways data.frame to
+#' be used for plotting the x axis. (default: value of \code{object$pathways$sig_order})
+#' @param n_col (optional) Specifies the name of the pathways data.frame column to be used for plotting the
+#' dot sizes. Generally, this corresponds to gene set sizes, but other fields may be used for plotting.
 #  (default: value of \code{object$pathways$n_col})
-#' @param subnet_col This is the name of the column to be used to group subnets. (default \code{'subnet'})
-#' @param title_col This is the name of the column to be used to identify gene sets. (default \code{'ID'})
-#' @param color_col This is the name of the column to be used for the color aesthetic. (default NULL)
-#' @param color_sig_order This is the name of the column to be used to indicate the significance order of
-#' for the color aesthetic. (default \code{'hiToLo'})
-#' @param group_by This is the name of the column to be used to label subnets, indicated on the y-axis.
+#' @param subnet_col (optional)  This is the name of the column to be used to group subnets.
 #' (default \code{'subnet'})
-#' @param summarize Logical value indicating whether the function should use the \code{termSummary} feature
-#' to generate descriptive names for subnets. This is currently an experimental feature. (default \code{FALSE})
-#' @param preappend_subnet_in_summary Logical value indicating whether the function should preappend subnet
-#' numbers to the subnet descriptors used for the y-axis. (default \code{TRUE})
-#' @param summary_annotation_name A name for the the summarized annotation column, if one is used.
+#' @param title_col (optional) This is the name of the column to be used to identify gene sets.
+#' (default \code{id_col})
+#' @param color_col (optional) This is the name of the column to be used for the color aesthetic.
+#' (default NULL)
+#' @param color_sig_order (optional) This is the name of the column to be used to indicate the significance
+#' order of for the color aesthetic. (default \code{'hiToLo'})
+#' @param color_transform (optional) The user can provide the name of a function to transform the data
+#' such that log or other scales can be used. This takes the same arguments as
+#' \code{ggplot2::\link[ggplot2]{scale_fill_continuous}()} (default "identity")
+#' @param group_by (optional) This is the name of the column to be used to label subnets, indicated on the
+#' y-axis. (default \code{'subnet'})
+#' @param summarize (optional) Logical value indicating whether the function should use the \code{termSummary}
+#' feature to generate descriptive names for subnets. This is currently an experimental feature.
+#' (default \code{FALSE})
+#' @param preappend_subnet_in_summary (optional) Logical value indicating whether the function should preappend
+#' subnet numbers to the subnet descriptors used for the y-axis. (default \code{TRUE})
+#' @param summary_annotation_name (optional)nA name for the the summarized annotation column, if one is used.
 #' (default: \code{'Summary Annotation'})
-#' @param x_transform The transform used for the x_axis. This would normally be either \code{'identity'} or
-#' \code{'log10'}, but can take other values. (See the \code{transform} argument of **ggplot2's**
+#' @param max_subnets (optional) Specifies the number of top subnets to plot. If \code{NULL}, then all subnets
+#' are plotted. (default: NULL)
+#' @param subset (optional) Specifies a logical filter giving the user very fine control over which for subnets
+#' and gene sets are plotted. This argument is identical to the \code{subset} argument of the
+#' \code{base::\link[base]{subset.data.frame}()} function to which it is passed. (default: NULL)
+#' @param order_by (optional) This is an function to be used to order subnets in the plot. The function is
+#' evaluated within the environment of the data.frame returned by gsnMergePathways(), using \code{group_by} as
+#' a grouping variable, such that the user can specify something like \code{order_by = function() min( p.value )}
+#' (default: NULL)
+#' @param x_transform (optional) The transform used for the x_axis. This would normally be either \code{'identity'}
+#' or \code{'log10'}, but can take other values. (See the \code{transform} argument of **ggplot2's**
 #' \code{\link[ggplot2]{scale_x_continuous}()} function.
-#' @param axis_font_size Specifies the size of the axis tick fonts in points. If set as NULL, then the
+#' @param axis_font_size (optional)  Specifies the size of the axis tick fonts in points. If set as NULL, then the
 #' function attempts to pick an appropriate size based on the number of characters in the longest y
 #' label, and the number of y values. (default 8)
-#' @param axis_label_font_size Specifies the size of the axis label fonts in points (default 2 x axis_font_size).
-#' @param x_axis_font_size Specifies the size of the x axis tick fonts in points (default axis_font_size).
-#' @param y_axis_font_size Specifies the size of the y axis tick fonts in points (default axis_font_size).
-#' @param x_axis_label_font_size Specifies the size of the x axis label fonts in points (default axis_label_font_size).
-#' @param y_axis_label_font_size Specifies the size of the y axis label fonts in points (default axis_label_font_size).
-#' @param colors Specifies a palette of colors to use. If NULL, the function attempts to select a color palette based
-#' on whether the values in \code{color_col} are positive (white to red), negative (red to white), or include both
-#' positive and negative values (red to white to blue). If a 3 color palette is specified, the \code{midpoint}
-#' argument can be used to specify a midpoint value for a color scale. (see \code{midpoint} below.)
-#' @param midpoint A value to be used to specify the middle value of a color scale. If the \code{midpoint} argument
-#' is specified, and the \code{colors} argument contains exactly 3 colors, then the second one is used for the
-#' middle color. This is useful for specifying a zero-value (or mid value) color.
-#' @param label_width_chars Numeric value indicating the length of a y-axis gene set label to wrap. If \code{NULL}.
-#' no wrapping is performed. (default NULL)
-#' @param col_widths This function uses either the **patchwork** package or the **plotly** \code{subplot()} function
-#' to create a plot from multiple subplots, such that -Inf or Inf can be represented as broken x-axis values. The
-#' \code{col_widths} argument specifies the relative sizes of these subplots.
-#' @param interactive A single logical value specifying that either a ggplot object should be returned
+#' @param axis_label_font_size (optional) Specifies the size of the axis label fonts in points
+#' (default 2 x axis_font_size).
+#' @param x_axis_font_size (optional) Specifies the size of the x axis tick fonts in points (default axis_font_size).
+#' @param y_axis_font_size (optional) Specifies the size of the y axis tick fonts in points (default axis_font_size).
+#' @param x_axis_label_font_size (optional) Specifies the size of the x axis label fonts in points
+#' (default axis_label_font_size).
+#' @param y_axis_label_font_size (optional) Specifies the size of the y axis label fonts in points
+#' (default axis_label_font_size).
+#' @param colors (optional) Specifies a palette of colors to use. If NULL, the function attempts to select a color
+#' palette based on whether the values in \code{color_col} are positive (white to red), negative (red to white), or
+#' include both positive and negative values (red to white to blue). If a 3 color palette is specified, the
+#' \code{midpoint} argument can be used to specify a midpoint value for a color scale. (see \code{midpoint} below.)
+#' @param midpoint (optional) A value to be used to specify the middle value of a color scale. If the \code{midpoint}
+#' argument is specified, and the \code{colors} argument contains exactly 3 colors, then the second one is used for
+#' the middle color. This is useful for specifying a zero-value (or mid value) color.
+#' @param label_width_chars (optional) Numeric value indicating the length of a y-axis gene set label to wrap. If
+#' \code{NULL} no wrapping is performed. (default NULL)
+#' @param col_widths (optional) This function uses either the **patchwork** package or the **plotly** \code{subplot()}
+#' function to create a plot from multiple subplots, such that -Inf or Inf can be represented as broken x-axis values.
+#' The \code{col_widths} argument specifies the relative sizes of these subplots.
+#' @param interactive (optional) A single logical value specifying that either a ggplot object should be returned
 #' (FALSE, non-interactive) or alternatively an interactive **plotly** object should be returned (TRUE).
 #' (default FALSE).
-#' @param width This specifies the width of the plotting area in inches. This is mainly to enable automatic
-#' calculation of the font size, and does not determine the size of images generated by this function.
+#' @param width (optional) This specifies the width of the plotting area in inches. This is mainly to enable
+#' automatic calculation of the font size, and does not determine the size of images generated by this function.
 #' (default, value of \code{grDevices::dev.size()[1]})
-#' @param height This specifies the height of the plotting area in inches. This is mainly to enable automatic
-#' calculation of the font size, and does not determine the size of images generated by this function.
+#' @param height (optional) This specifies the height of the plotting area in inches. This is mainly to enable
+#' automatic calculation of the font size, and does not determine the size of images generated by this function.
 #' (default, value of \code{grDevices::dev.size()[2]})
+#'
+#' @details Under the hood, this function calls the \code{gsnMergePathways()} function to generate a subnets
+#' report with the \code{id_reassign = FALSE} argument, and plots the results from the data.frame that is
+#' returned. The \code{subset} or \code{max_subnets} arguments, are applied to this data.frame, giving the
+#' user fine control over which subsets and gene sets are plotted. The subset argument is passed to the
+#' \code{base::\link[base]{subset.data.frame}()} function.
+#'
+#' Plotting is done via **ggplot2**. If there are infinities in x-axis values, for example if
+#' \code{x_transform = "log10"} and the specified \code{stat_col} is a *p*-value of 0 which would be a
+#' negative infinity on a log10 scale, infinite values are separated out and plotted as a separate
+#' **ggplot** object and then combined with the finite values and presented as a broken x-axis. If the
+#' \code{interactive = TRUE} argument is specified, the initial \code{ggplot} objects are converted to
+#' interactive \code{plotly (htmlwidget)} objects via **plotly**'s ggplotly or subplot functions.
+#' If \code{interactive = FALSE} is specified, then the plot is returned as is, or if there are infinities
+#' in the x-axis, combined using patchwork and then returned.
 #'
 #' @returns This function returns either a **ggplot2** \code{ggplot} object (default) or a \code{plotly/htmlwidget}
 #' if the \code{interactive=TRUE} argument is specified.
@@ -85,19 +123,24 @@
 gsnSubnetsDotPlot <- function(
     object,
     pathways.data = NULL,
+    merged.pathways.data = NULL,
     distance = NULL,
     id_col = NULL,
     stat_col = NULL,
     sig_order = NULL,
     n_col = NULL,
     subnet_col = 'subnet',
-    title_col = "ID",
+    title_col = id_col,
     color_col = NULL,
     color_sig_order = NULL,
+    color_transform = "identity",
     group_by = "subnet",
     summarize = FALSE, # Can be FALSE, TRUE (uses id_col) or the name of a column.
     preappend_subnet_in_summary = TRUE,
     summary_annotation_name = 'Summary Annotation',
+    max_subnets = NULL,
+    subset = NULL,
+    order_by = NULL,
     x_transform = "identity",
     axis_font_size = 8,
     axis_label_font_size = NULL,
@@ -157,27 +200,45 @@ gsnSubnetsDotPlot <- function(
   }
 
   # Get subnet data
-  .subnets <- gsnMergePathways( object = object,
-                                pathways.data = pathways.data,
-                                distance = distance,
-                                id_col = id_col,
-                                stat_col = stat_col,
-                                sig_order = sig_order
-  )
+  if( ! is.null( merged.pathways.data ) ){
+    .subnets <- merged.pathways.data
+  } else {
+    .subnets <- gsnMergePathways( object = object,
+                                  pathways.data = pathways.data,
+                                  distance = distance,
+                                  id_col = id_col,
+                                  stat_col = stat_col,
+                                  sig_order = sig_order,
+                                  id_reassign = FALSE
+    )
+  }
+
+  # Limit the results if `max_subnets` specified.
+  if( !is.null( max_subnets ) ){
+    .subnets <- base::subset.data.frame( .subnets, as.numeric( as.character( .subnets$subnet ) ) <= max_subnets )
+  }
+
+  # Use the subset function to have fine control over which subnets and gene signatures are plotted.
+  if( !is.null( subset ) ){
+    .subnets <- base::subset.data.frame( .subnets, subset )
+  }
+
 
   # If colors is not defined, look at data to pick a good palette
   if( !is.null( color_col ) ){
-    color_col.range <- range( .subnets[[color_col]] )
-    if( is.null( colors ) ){
-      if( color_col.range[1] < 0 & color_col.range[2] > 0 ) {
-        colors = c( "blue", "white", "red" )
-        if( is.null( midpoint ) ) midpoint = 0
-      } else if( color_col.range[2] > 0 ){
-        colors = c("white", "yellow2", "orange", "red")
-        if( color_sig_order == "loToHi" ) colors <- rev( colors )
-      } else if( color_col.range[1] < 0 ){
-        colors = c("red", "orange", "yellow2", "white")
-        if( color_sig_order == "hiToLo" ) colors <- rev( colors )
+    if( is.numeric( .subnets[[color_col]] ) ){
+      color_col.range <- range( .subnets[[color_col]] )
+      if( is.null( colors ) ){
+        if( color_col.range[1] < 0 & color_col.range[2] > 0 ) {
+          colors = c( "blue", "white", "red" )
+          if( is.null( midpoint ) ) midpoint = 0
+        } else if( color_col.range[2] > 0 ){
+          colors = c("white", "yellow2", "orange", "red")
+          if( color_sig_order == "loToHi" ) colors <- rev( colors )
+        } else if( color_col.range[1] < 0 ){
+          colors = c("red", "orange", "yellow2", "white")
+          if( color_sig_order == "hiToLo" ) colors <- rev( colors )
+        }
       }
     }
   }
@@ -194,14 +255,36 @@ gsnSubnetsDotPlot <- function(
   }
 
   # We can add code about ordering the subnets in the list.
-  .subnets.levels <- rev( unique(as.character(.subnets[[group_by]])) )
+  if( !is.null( order_by ) ){
+    if( "function" %in% class( order_by ) ){
+      .order_stat <- sapply( X = unique( .subnets[[group_by]] ),
+                             FUN = function( sn ){
+                               .pw.sn <- subset( .subnets, get( group_by ) == sn )
+                               with( .pw.sn, eval(str2expression(deparse(order_by)))() )
+                             } )
+    } else if( "expression" %in% class( order_by ) ){
+      .order_stat <- sapply( X = unique( .subnets[[group_by]] ),
+                             FUN = function( sn ){
+                               .pw.sn <- subset( .subnets, get( group_by ) == sn )
+                               with( .pw.sn, eval(order_by) )
+                             } )
+    }
+
+    .order_stat <- sort( .order_stat )
+    #.subnets[[group_by]] <- factor( .subnets[[group_by]], levels = names(.order_stat) )
+    .subnets.levels <- names(.order_stat)
+  } else {
+    # We can add code about ordering the subnets in the list.
+    .subnets.levels <- rev( unique(as.character(.subnets[[group_by]])) )
+  }
+  #.subnets.levels <- rev( unique(as.character(.subnets[[group_by]])) )
   .subnets[[group_by]] <- factor( .subnets[[group_by]], levels = .subnets.levels )
 
   if( !is.null( n_col ) ) .subnets <- .subnets[order(- .subnets[[n_col]]),]
 
   .aes <- list( y = rlang::sym( group_by ),
                 x = rlang::sym( stat_col ),
-                text = rlang::sym( "ID" )
+                text = rlang::sym( id_col )
   )
   if( ! is.null( n_col ) ) .aes$size <- rlang::sym(n_col)
   if( ! is.null( color_col ) ) .aes$fill <- rlang::sym(color_col)
@@ -215,6 +298,15 @@ gsnSubnetsDotPlot <- function(
   .x_transform_fun <- .x_transform$transform
   .stat_data.orig <- .subnets[[stat_col]]
   .stat_data.transformed <- .x_transform_fun( .stat_data.orig )
+
+  # If a color transforms generates an infinity, it's merely plotted as gray, so we
+  # don't really need to change anything.
+  if( is.null( color_transform ) ) color_transform <- "identity"
+  .color_transform <- scales::as.transform( color_transform )
+  .color_transform_fun <- .color_transform$transform
+  .color_data.orig <- .subnets[[color_col]]
+  .color_data.transformed <- .color_transform_fun( .color_data.orig )
+
 
   .plots.l <- list()
 
@@ -286,6 +378,14 @@ gsnSubnetsDotPlot <- function(
 
   # Colors
   if( !is.null(color_col) && !is.null(colors) ){
+    if( class( .subnets[[color_col]] ) %in% c( "factor", "character" ) ){
+      .color_scale <- ggplot2::scale_fill_manual(colors,
+                                                 transform = color_transform,
+                                                 limits = range( .color_data.orig[! is.infinite( .color_data.transformed )],
+                                                                 na.rm = TRUE )
+                                                 )
+    }
+
     .color_col_range <- range(.subnets[[color_col]])
     if( length(colors) == 3 ){
       .color_scale <- ggplot2::scale_fill_gradient2( name = color_col,
@@ -293,9 +393,19 @@ gsnSubnetsDotPlot <- function(
                                                      mid = colors[2],
                                                      high = colors[3],
                                                      midpoint = midpoint,
-                                                     limits = .color_col_range )
+                                                     #limits = .color_col_range,
+                                                     transform = color_transform,
+                                                     limits = range( .color_data.orig[! is.infinite( .color_data.transformed )],
+                                                                     na.rm = TRUE )
+                                                     )
     } else {
-      .color_scale <- ggplot2::scale_fill_gradientn( name = color_col, colours = colors, limits = .color_col_range )
+      .color_scale <- ggplot2::scale_fill_gradientn( name = color_col,
+                                                     colours = colors,
+                                                     #limits = .color_col_range,
+                                                     transform = color_transform,
+                                                     limits = range( .color_data.orig[! is.infinite( .color_data.transformed )],
+                                                                     na.rm = TRUE )
+                                                     )
     }
     .plots.l <- lapply(.plots.l, function(x) x + .color_scale)
   }

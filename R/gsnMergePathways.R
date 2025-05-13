@@ -19,6 +19,9 @@ invisible( utils::globalVariables( c("subnet") ) )
 #' @param sig_order (optional) Character vector of length 1 indicating the whether low values of the statistic are most
 #' significant ("loToHi", the default) or high values ("hiToLo") for ordering subnets and performing. Defaults to the
 #' value of \code{sig_order} already set during import of pathways data, if that has already been done.
+#' @param id_reassign (optional) If \code{TRUE}, in the output of this function, the column corresponding to \code{id_col}
+#' is named simply \code{'ID'}. If \code{FALSE}, this behavior is suppressed and the output data.frame contains the original
+#' name. (default \code{TRUE})
 #'
 #' @return A data.frame containing pathways data with merged subnet assignments and subnetRank values.
 #'
@@ -71,7 +74,7 @@ invisible( utils::globalVariables( c("subnet") ) )
 #'
 #' @importFrom dplyr arrange
 #'
-gsnMergePathways <- function( object, pathways.data = NULL, distance = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL ){
+gsnMergePathways <- function( object, pathways.data = NULL, distance = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, id_reassign = TRUE ){
   stopifnot( "GSNData" %in% class( object ) )
   if( is.null( distance ) ) distance <- object$default_distance
   if( is.null( pathways.data ) ) pathways.data <- object$pathways$data
@@ -89,14 +92,22 @@ gsnMergePathways <- function( object, pathways.data = NULL, distance = NULL, id_
   if( is.null( sig_order ) ) sig_order <- object$pathways$sig_order
   if( is.null( sig_order ) ) warning( 'sig_order is NULL. Cannot order subnets.' )
 
+  if( id_reassign ){
   PW.subnets <- merge( x = data.frame( subnet = object$distances[[distance]]$vertex_subnets$subnet,
                                        subnetRank = NA,
                                        ID = object$distances[[distance]]$vertex_subnets$vertex,
                                        stringsAsFactors = FALSE ),
                        y = pathways.data,
                        by.x = "ID",
-                       by.y = id_col,
-  )
+                       by.y = id_col )
+  } else {
+    PW.subnets <- merge( x = within( data.frame( subnet = object$distances[[distance]]$vertex_subnets$subnet,
+                                                 subnetRank = NA,
+                                                 stringsAsFactors = FALSE ),
+                                     { assign( x = id_col, value = object$distances[[distance]]$vertex_subnets$vertex ) } ),
+                         y = pathways.data,
+                         by =  id_col )
+  }
   # Reorder columns:
   PW.subnets <- PW.subnets[,c("subnet", "subnetRank",
                                     colnames(PW.subnets)[!colnames(PW.subnets) %in% c("subnet", "subnetRank")] )]

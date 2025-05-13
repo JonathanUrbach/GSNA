@@ -20,7 +20,7 @@
 get_stopwords <- function(  ){
   .stopwords <- stopwords::stopwords("en", source = "snowball")
   .stopwords <- c(.stopwords, "gobp", "gocc", "gomf", "kegg", "reactome", "biocarta", "wp" )
-  .stopwords <- .stopwords[! .stopwords %in% c("for", "of", "by", "and", "a", "to", "up", "dn" )]
+  .stopwords <- .stopwords[! .stopwords %in% c("for", "of", "by", "and", "a", "to", "up", "dn", "i" )]
   .stopwords
 }
 
