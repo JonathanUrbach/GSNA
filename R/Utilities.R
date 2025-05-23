@@ -392,8 +392,7 @@ pw_type <- function( object ){
 #' @details Prior to log10 transformation, this function first scans for any zeros in the input vector.
 #' If it finds any, it warns that zeros have been detected in the raw statistic, and that a pseudocount
 #' will be added. To do this the function adds a fraction of the minimum non-zero value to the values
-#' in x. (The old version of this function, \code{nzLog10.old()} determined the value of the pseudocount
-#' in a much more complex way. This is a simplification here.)
+#' in x.
 #'
 #' @export
 #'
@@ -408,7 +407,7 @@ nzLog10 <- function(x, quiet = FALSE, pseudocount_frxn = 0.5 ){
   if( any( x == 0 ) ){
     pcount <- min( x[x>0], na.rm = TRUE ) * pseudocount_frxn
     if( ! quiet )
-      warning( "Warning: raw statistic contains zeros. Adding a pseudocount of ", as.character( pcount ), "\n" )
+      warning( "Raw statistic contains zeros. Adding a pseudocount of ", as.character( pcount ), "\n" )
   }
   log10(x + pcount)
 }
@@ -418,47 +417,6 @@ nzLog10 <- function(x, quiet = FALSE, pseudocount_frxn = 0.5 ){
 
 
 
-#' nzLog10.old
-#'
-#' @description Utility function to safely (non-zero) log10 transform p-values that are bounded at 0, and may be zero or
-#' may be rounded to zero in certain contexts. To get around this, prior to applying a log10 transformation the function
-#' adds a very small pseudocount to all the values if any are detected to be zero. This avoids the generation of negative
-#' infinities. (See details, below.)
-#'
-#' @param x A numerical vector containing non-negative values.
-#' @param quiet A boolean that tells the script to suppress warning messages. (This does not suppress errors, however.)
-#'
-#' @return A vector containing transformed values.
-#'
-#' @details Prior to log10 transformation, this function first scans for any zeros in the input vector. If it
-#' finds any, it warns that zeros have been detected in the raw statistic, and that a pseudocount will be added.
-#' To do this the function assesses the precision of the numbers in the numerical vector by counting decimal
-#' places and determining the minimal non-zero number represented in the vector. It then takes whichever is the
-#' lesser of those numbers and adds a pseudocount equal to the lesser of 1/2 the precision, or 1/2 the lowest
-#' non-zero number.
-#'
-#' @export
-#'
-#' @examples
-#'
-#' p_vals <- c( 0.5, 0.001, 0.00001, 5e-19, 6.24e-23, 0 )
-#' nzLog10( p_vals )
-#'
-nzLog10.old <- function(x, quiet = FALSE ){
-  pcount <- 0
-  if( any( x < 0 ) ) stop( "Error: can't log10-transform negative numbers." )
-  if( any( x == 0 ) ){
-    decimal_precision <- max( max(nchar(gsub(x = as.character(x), pattern = "^\\d+\\.", replacement = "" )),
-                                  na.rm = TRUE),
-                              max(-log10(x[x>0]),
-                                  na.rm = TRUE ),
-                              na.rm = TRUE )
-    pcount <- 10^(- (decimal_precision + log10(2)))
-    if( ! quiet )
-      warning( "Warning: raw statistic contains zeros. Adding a pseudocount of ", as.character( pcount ), "\n" )
-  }
-  log10(x + pcount)
-}
 
 
 #' antiSplit

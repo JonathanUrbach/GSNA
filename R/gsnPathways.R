@@ -35,7 +35,7 @@ gsnPathways <- function( object, ... ){
   if( is.null( object$pathways ) || is.null( object$pathways$data ) )
     stop("object$pathways$data is not found. Use gsnAddPathwaysData() to add a pathways data set to the GSNData object.")
   .dots <- as.character(list(...))
-  if( is.vector( value ) ){
+  if( is.vector( value ) || is.factor( value ) ){
     .value <- list(value)
   } else if( is.list( value ) ){
     .value <- as.list( value )

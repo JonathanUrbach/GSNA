@@ -28,8 +28,7 @@ any are detected to be zero. This avoids the generation of negative infinities. 
 Prior to log10 transformation, this function first scans for any zeros in the input vector.
 If it finds any, it warns that zeros have been detected in the raw statistic, and that a pseudocount
 will be added. To do this the function adds a fraction of the minimum non-zero value to the values
-in x. (The old version of this function, \code{nzLog10.old()} determined the value of the pseudocount
-in a much more complex way. This is a simplification here.)
+in x.
 }
 \examples{
 

@@ -1,3 +1,14 @@
+# GSNA 0.1.6.6
+* Development version
+* The `gsnSubnetsDotPlot()` was enhanced:
+  + to allow it to handle naked expressions without the need to enclose them in the `expression()` function.
+  + to include an argument allowing the user to configure the fill color used to represent NA and infinite values (na.color).
+  + to include the argument return_subnets indicating that the function should return a data.frame containing the subnet data rather than a plot object. 
+* Tests were added for `gsnSubnetsDotPlot()`.
+* Fixed a bug in `gsnPathways<-()` that prevented assignment of columns that are factors, and added a test for that.
+* The `termSummary()` function was fixed to make the returned summaries unique. This behavior, which is default, can be overidden however by specifying `make.unique=FALSE`.
+* The `nzLog10.old()` function was removed.  
+
 # GSNA 0.1.6.5
 * Development version  
 * Numerous changes to `gsnSubnetsDotPlot()`:

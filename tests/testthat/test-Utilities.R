@@ -96,11 +96,6 @@ test_that("Utilities works", {
   testthat::expect_equal( object = 10**out.nzLog10, in.nzLog10 + in.nzLog10[2]/2 )
   testthat::expect_error( nzLog10( -1 ) )
 
-  # nzLog10.old # This may be removed soon.
-  testthat::expect_warning( out.nzLog10.old <- nzLog10( in.nzLog10 ) )
-  testthat::expect_equal( object = 10**out.nzLog10.old, in.nzLog10 + in.nzLog10[2]/2 )
-  testthat::expect_error( nzLog10.old( -1 ) )
-
   # antisplit
   GSC.df <- antiSplit(.l = GSC, col.names = c("ID", "GENE") )
   testthat::expect_equal( object = nrow( GSC.df ), expected = length( unlist( GSC ) ) )

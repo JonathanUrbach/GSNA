@@ -218,6 +218,8 @@ filterTerms <- function( terms, .stopwords = get_stopwords(), convert_underscore
 #' function get_zero_score_words().)
 #' @param num_combine The number of (best) term summaries to combine for each term
 #' cluster. (default 1).
+#' @param make_unique Logical value that tells the function to make output term
+#' summaries unique. (default: TRUE)
 #'
 #' @returns A vector of summarized terms for each group.
 #' @export
@@ -258,7 +260,8 @@ termSummary <- function( terms,                      # Either a vector of gene s
                          #      Penalty for being later in the list of terms.
                          .stopwords = get_stopwords(),
                          .zero_score_words = get_zero_score_words(),
-                         num_combine = 1
+                         num_combine = 1,
+                         make_unique = TRUE
 ){
   terms <- filterTerms( terms = terms, .stopwords = .stopwords, convert_underscores = convert_underscores )
 
@@ -276,8 +279,12 @@ termSummary <- function( terms,                      # Either a vector of gene s
                                            priority_factor,
                                            .zero_score_words ) )
 
-  sapply( .summary_terms,
-          FUN = function( x ){
-            paste0( utils::head( names(x), n = num_combine ), collapse = ", ")
-          })
+  .out <- sapply( .summary_terms,
+                  FUN = function( x ){
+                    paste0( utils::head( names(x), n = num_combine ), collapse = ", ")
+                  })
+  if( make_unique ){
+    .out <- structure( base::make.unique( names = .out ), names = names(.out) )
+  }
+  .out
 }

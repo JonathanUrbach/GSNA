@@ -14,7 +14,8 @@ termSummary(
   priority_factor = 1.2,
   .stopwords = get_stopwords(),
   .zero_score_words = get_zero_score_words(),
-  num_combine = 1
+  num_combine = 1,
+  make_unique = TRUE
 )
 }
 \arguments{
@@ -52,6 +53,9 @@ function get_zero_score_words().)}
 
 \item{num_combine}{The number of (best) term summaries to combine for each term
 cluster. (default 1).}
+
+\item{make.unique}{Logical value that tells the function to make output term
+summaries unique. (default: TRUE)}
 }
 \value{
 A vector of summarized terms for each group.
