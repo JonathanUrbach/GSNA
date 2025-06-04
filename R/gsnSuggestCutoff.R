@@ -21,6 +21,11 @@
 #' In that case, a message will still indicate that it is not significant. For similarity metrics such as
 #' Jaccard, Szymkiewicz-Simpson OC and Cohen's kappa, a corresponding *p*-value cannot easily be calculated,
 #' so this argument is not used.
+#' @param extr_dist_quantile_override A logical value allowing the user to override specified quantile if
+#' the distance corresponding to that quantile is the highest or lowest value in the data set, thereby
+#' avoiding a situation where either clusters are not resolved, or no clusters are identified. If \code{TRUE},
+#' the function selects the next highest or lowest distance value. This is an experimental feature.
+#' (default FALSE).
 #'
 #' @return Invisibly returns a numerical vector indicating a suggested cutoff, based on the specified distance,
 #' quantile values, and alpha (if appropriate).
@@ -36,14 +41,17 @@
 #'
 #' @seealso
 #'  \code{\link{gsnDistanceHistogram}}
+#'
 gsnSuggestCutoff <- function( object,
-                                distance = GSNA::gsn_default_distance( object ),
-                                lower_is_closer =  (function(x){ ifelse( is.null( x ), TRUE, x ) })(
-                                  attr( x = object$distances[[distance]]$matrix,
-                                        which = "lower_is_closer",
-                                        exact = TRUE) ),
-                                quantile = ifelse( lower_is_closer, yes = 0.25, no = 0.75 ),
-                                alpha = NULL ){
+                              distance = GSNA::gsn_default_distance( object ),
+                              lower_is_closer =  (function(x){ ifelse( is.null( x ), TRUE, x ) })(
+                                attr( x = object$distances[[distance]]$matrix,
+                                      which = "lower_is_closer",
+                                      exact = TRUE) ),
+                              quantile = ifelse( lower_is_closer, yes = 0.25, no = 0.75 ),
+                              alpha = NULL,
+                              extr_dist_quantile_override = FALSE
+){
   stopifnot("GSNData" %in% class(object))
   if (is.null(distance))
     distance <- object$default_distance
@@ -51,6 +59,10 @@ gsnSuggestCutoff <- function( object,
     stop("Need distance argument.")
   if (is.null(object$distances[[distance]]))
     stop("Cannot find data for distance ", distance)
+  if( length( quantile ) > 1 ) {
+    warning( "The quantile argument must be a numeric vector of length 1. Shortening to length 1." )
+    quantile <- quantile[1]
+  }
   .alpha <- alpha
   if( is.null( .alpha ) ) .alpha <- 0.05
 
@@ -78,13 +90,38 @@ gsnSuggestCutoff <- function( object,
       .qlz <- log( .alpha )
     }
   }
-  .dist.range <- range( as.dist(object$distances[[distance]]$matrix), na.rm = TRUE )
+  .dists <- as.dist(object$distances[[distance]]$matrix)
+  .dist.range <- range( .dists, na.rm = TRUE )
   if( any( .qlz == .dist.range[[1]] )  ){
-    .out.cat <- c(.out.cat, "\nNote: cutoff at specified quantile is equal to the minimum",
-                  "\n  distance value. Subnets may be poorly resolved." )
+    if( extr_dist_quantile_override ){
+      #.qlz <- (min( .dists[.dists != .dist.range[1]], na.rm = TRUE ) + .dist.range[1] )/ 2
+      .qlz <- min( .dists[.dists != .dist.range[1]], na.rm = TRUE )
+      .qtl <- stats::ecdf( .dists )(.qlz)
+      .out.cat <- c(.out.cat,
+                    "\nNote: cutoff at specified quantile is equal to the minimum",
+                    "\n  distance value. Overriding specified quantile.",
+                    "\n  Using: ", .qlz, "(quantile=", .qtl, ")"
+      )
+    } else {
+      .out.cat <- c(.out.cat, "\nNote: cutoff at specified quantile is equal to the minimum",
+                    "\n  distance value. Subnets may be poorly resolved. To override this",
+                    "\n  behavior, use 'extr_dist_quantile_override=TRUE'" )
+    }
   }else if( any( .qlz == .dist.range[[2]] )  ){
-    .out.cat <- c(.out.cat, "\nNote: cutoff at specified quantile is equal to the maximum",
-                  "\n  distance value. Subnets may be poorly resolved." )
+    if( extr_dist_quantile_override ){
+      #.qlz <- (max( .dists[.dists != .dist.range[2]], na.rm = TRUE ) + .dist.range[2] )/ 2
+      .qlz <- max( .dists[.dists != .dist.range[2]], na.rm = TRUE )
+      .qtl <- stats::ecdf( .dists )(.qlz)
+      .out.cat <- c(.out.cat,
+                    "\nNote: cutoff at specified quantile is equal to the maximum",
+                    "\n  distance value. Overriding specified quantile.",
+                    "\n  Using: ", .qlz, "(quantile=", .qtl, ")"
+      )
+    } else {
+      .out.cat <- c(.out.cat, "\nNote: cutoff at specified quantile is equal to the maximum",
+                    "\n  distance value. Subnets may be poorly resolved. To override this",
+                    "\n  behavior, use 'extr_dist_quantile_override=TRUE'\n" )
+    }
   }
 
   .out.cat <- c( .out.cat, "\nsuggested cutoff: ", .qlz)
@@ -92,3 +129,4 @@ gsnSuggestCutoff <- function( object,
   cat(paste0(.out.cat, collapse = ""))
   invisible(.qlz)
 }
+

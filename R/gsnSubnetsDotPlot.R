@@ -128,7 +128,7 @@
 #'
 # @examples
 gsnSubnetsDotPlot <- function(
-    object,
+    object = NULL,
     pathways.data = NULL,
     merged.pathways.data = NULL,
     distance = NULL,
@@ -166,60 +166,54 @@ gsnSubnetsDotPlot <- function(
     height = NULL,
     return_subnets = FALSE
 ){
-  stopifnot( "GSNData" %in% class( object ) )
-  if( is.null( distance ) ) distance <- object$default_distance
-  if( is.null( pathways.data ) ) pathways.data <- object$pathways$data
+  if( is.null( merged.pathways.data ) ){
+    if( is.null( object ) ){ stop( "Either the object argument or the merged.pathways.data must be defined." ) }
+    stopifnot( "GSNData" %in% class( object ) )
+    if( is.null( distance ) ) distance <- object$default_distance
+    if( is.null( pathways.data ) ) pathways.data <- object$pathways$data
 
-  if( is.null( distance ) ) stop( 'distance not defined' )
-  if( is.null( pathways.data ) ) stop( 'pathways.data needed' )
-  if( is.null( object$distances[[distance]]$vertex_subnets ) ) stop( 'No vertex_subnets data found. Did you call \'gsnAssignSubnets()\'?' )
+    if( is.null( distance ) ) stop( 'distance not defined' )
+    if( is.null( pathways.data ) ) stop( 'pathways.data needed' )
+    if( is.null( object$distances[[distance]]$vertex_subnets ) ) stop( 'No vertex_subnets data found. Did you call \'gsnAssignSubnets()\'?' )
 
-  if( is.null( id_col ) ) id_col <- object$pathways$id_col
-  if( is.null( id_col ) ) stop( 'id_col is NULL. Can\'t continue.' )
+    if( is.null( id_col ) ) id_col <- object$pathways$id_col
+    if( is.null( id_col ) ) stop( 'id_col is NULL. Can\'t continue.' )
 
-  if( is.null( title_col ) ) title_col <- id_col
+    if( is.null( title_col ) ) title_col <- id_col
 
-  if( is.null( stat_col ) ) stat_col <- object$pathways$stat_col
-  if( is.null( stat_col ) ) warning( 'stat_col is NULL. Cannot order subnets.' )
+    if( is.null( stat_col ) ) stat_col <- object$pathways$stat_col
+    if( is.null( stat_col ) ) warning( 'stat_col is NULL. Cannot order subnets.' )
 
-  if( is.null( sig_order ) ) sig_order <- object$pathways$sig_order
-  if( is.null( sig_order ) ) warning( 'sig_order is NULL. Cannot order subnets.' )
+    if( is.null( sig_order ) ) sig_order <- object$pathways$sig_order
+    if( is.null( sig_order ) ) warning( 'sig_order is NULL. Cannot order subnets.' )
 
-  if( is.null( n_col ) ) n_col <- object$pathways$n_col
+    if( is.null( n_col ) ) n_col <- object$pathways$n_col
 
-  # If color_col is the same as stat_col, use sig_order for color_sig_order
-  if( is.null(color_sig_order) && ( ! is.null(color_col) ) && color_col == object$pathways$stat_col )
-    color_sig_order <- object$pathways$sig_order
-  if( is.null( color_sig_order ) ) color_sig_order <- "hiToLo" # For p-values, use "loToHi"
+    # If color_col is the same as stat_col, use sig_order for color_sig_order
+    if( is.null(color_sig_order) && ( ! is.null(color_col) ) && color_col == object$pathways$stat_col )
+      color_sig_order <- object$pathways$sig_order
+    if( is.null( color_sig_order ) ) color_sig_order <- "hiToLo" # For p-values, use "loToHi"
 
-  # Device size
-  ppi <- grDevices::dev.size( units = "px" )[1] / grDevices::dev.size( units = "in" )[1]
-  if( is.null( height ) ) {
-    height <- grDevices::dev.size( units = "in" )[2]
-    height.px <- grDevices::dev.size( units = "px" )[2]
+
+    # Get subnet data
+    if( ! is.null( merged.pathways.data ) ){
+      .subnets <- merged.pathways.data
+    } else {
+      .subnets <- gsnMergePathways( object = object,
+                                    pathways.data = pathways.data,
+                                    distance = distance,
+                                    id_col = id_col,
+                                    stat_col = stat_col,
+                                    sig_order = sig_order,
+                                    id_reassign = FALSE
+      )
+    }
   } else {
-    height.px <- ppi * height
-  }
-
-  if( is.null( width ) ) {
-    width <- grDevices::dev.size( units = "in" )[1]
-    width.px <- grDevices::dev.size( units = "px" )[1]
-  }else {
-    width.px <- ppi * width
-  }
-
-  # Get subnet data
-  if( ! is.null( merged.pathways.data ) ){
+    if( is.null( id_col ) ) stop( 'id_col is NULL. Can\'t continue.' )
+    if( is.null( stat_col ) ) stop( 'stat_col is NULL. Can\'t continue.' )
+    if( is.null( title_col ) ) title_col <- id_col
+    if( is.null( color_sig_order ) ) color_sig_order <- "hiToLo" # For p-values, use "loToHi"
     .subnets <- merged.pathways.data
-  } else {
-    .subnets <- gsnMergePathways( object = object,
-                                  pathways.data = pathways.data,
-                                  distance = distance,
-                                  id_col = id_col,
-                                  stat_col = stat_col,
-                                  sig_order = sig_order,
-                                  id_reassign = FALSE
-    )
   }
 
   # Limit the results if `max_subnets` specified.
@@ -240,6 +234,7 @@ gsnSubnetsDotPlot <- function(
       .subnets <- base::subset.data.frame( .subnets, eval(str2expression(deparse(subset)))() )
     }  else {stop( "Don't know how to handle subset argument of class ", class( subset ), "." )}
   }
+
 
 
   # The "x_transform" object can be a character vector corresponding to the name of
@@ -355,6 +350,24 @@ gsnSubnetsDotPlot <- function(
   .color_data.orig <- .subnets[[color_col]]
   .color_data.transformed <- .color_transform_fun( .color_data.orig )
 
+
+  # Device size
+  ppi <- grDevices::dev.size( units = "px" )[1] / grDevices::dev.size( units = "in" )[1]
+  if( is.null( height ) ) {
+    height <- grDevices::dev.size( units = "in" )[2]
+    height.px <- grDevices::dev.size( units = "px" )[2]
+  } else {
+    height.px <- ppi * height
+  }
+
+  if( is.null( width ) ) {
+    width <- grDevices::dev.size( units = "in" )[1]
+    width.px <- grDevices::dev.size( units = "px" )[1]
+  }else {
+    width.px <- ppi * width
+  }
+
+
   # Set up the plots:
   .plots.l <- list()
   .widths <- numeric()
@@ -368,7 +381,7 @@ gsnSubnetsDotPlot <- function(
     .subnets.neg_inf[[stat_col]][ .subnets.neg_inf[[stat_col]] == -Inf ]  <- "-\u221e"
     .plots.l[['neg_inf']] <- ggplot2::ggplot( data = .subnets.neg_inf,
                                               mapping = do.call( what = ggplot2::aes, args = .aes )) +
-                             ggplot2::geom_point(shape = 21)
+      ggplot2::geom_point(shape = 21)
     .widths <- c( .widths, col_widths[['neg_inf']] )
   }
 
@@ -377,8 +390,8 @@ gsnSubnetsDotPlot <- function(
     .subnets.fin <- .subnets[!is.infinite( .stat_data.transformed ),]
     .plots.l[['fin']] <- ggplot2::ggplot( data = .subnets.fin,
                                           mapping = do.call( what = ggplot2::aes, args = .aes )) +
-                         ggplot2::geom_point(shape = 21) +
-                         ggplot2::scale_x_continuous( transform = x_transform )
+      ggplot2::geom_point(shape = 21) +
+      ggplot2::scale_x_continuous( transform = x_transform )
     .widths <- c( .widths, col_widths[['fin']] )
   }
 
@@ -391,7 +404,7 @@ gsnSubnetsDotPlot <- function(
 
     .plots.l[['pos_inf']] <- ggplot2::ggplot( data = .subnets.pos_inf,
                                               mapping = do.call( what = ggplot2::aes, args = .aes )) +
-                                              ggplot2::geom_point(shape = 21)
+      ggplot2::geom_point(shape = 21)
     .widths <- c( .widths, col_widths[['pos_inf']] )
   }
 
@@ -427,7 +440,7 @@ gsnSubnetsDotPlot <- function(
                                                  limits = range( .color_data.orig[! is.infinite( .color_data.transformed )],
                                                                  na.rm = TRUE ),
                                                  na.value = na.color
-                                                 )
+      )
     }
 
     .color_col_range <- range(.subnets[[color_col]])
@@ -442,7 +455,7 @@ gsnSubnetsDotPlot <- function(
                                                      limits = range( .color_data.orig[! is.infinite( .color_data.transformed )],
                                                                      na.rm = TRUE ),
                                                      na.value = na.color
-                                                     )
+      )
     } else {
       .color_scale <- ggplot2::scale_fill_gradientn( name = color_col,
                                                      colours = colors,
@@ -451,7 +464,7 @@ gsnSubnetsDotPlot <- function(
                                                      limits = range( .color_data.orig[! is.infinite( .color_data.transformed )],
                                                                      na.rm = TRUE ),
                                                      na.value = na.color
-                                                     )
+      )
     }
     .plots.l <- lapply(.plots.l, function(x) x + .color_scale)
   }
@@ -558,15 +571,13 @@ gsnSubnetsDotPlot <- function(
 
   if( sum( ! sapply( .plots.l, is.null ) ) > 1 ){
     p <- p + patchwork::plot_layout( axes = "collect_y",
-                                                       axis_titles = "collect_y",
-                                                       guides = "collect",
-                                                       ncol = length(.plots.l) + 1,
-                                                       widths = .widths )
+                                     axis_titles = "collect_y",
+                                     guides = "collect",
+                                     ncol = length(.plots.l) + 1,
+                                     widths = .widths )
     #) #& ggplot2::theme( plot.margin = ggplot2::unit( x = c( 12,0.5,12,0.5 ), units = "points") )
   }
 
   p
 }
-
-
 

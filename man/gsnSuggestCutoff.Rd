@@ -12,7 +12,8 @@ gsnSuggestCutoff(
  })(attr(x =
     object$distances[[distance]]$matrix, which = "lower_is_closer", exact = TRUE)),
   quantile = ifelse(lower_is_closer, yes = 0.25, no = 0.75),
-  alpha = NULL
+  alpha = NULL,
+  extr_dist_quantile_override = FALSE
 )
 }
 \arguments{
@@ -37,6 +38,12 @@ the quantile-based cuttoff will be returned, even if it does not correspond to a
 In that case, a message will still indicate that it is not significant. For similarity metrics such as
 Jaccard, Szymkiewicz-Simpson OC and Cohen's kappa, a corresponding \emph{p}-value cannot easily be calculated,
 so this argument is not used.}
+
+\item{extr_dist_quantile_override}{A logical value allowing the user to override specified quantile if
+the distance corresponding to that quantile is the highest or lowest value in the data set, thereby
+avoiding a situation where either clusters are not resolved, or no clusters are identified. If \code{TRUE},
+the function selects the next highest or lowest distance value. This is an experimental feature.
+(default FALSE).}
 }
 \value{
 Invisibly returns a numerical vector indicating a suggested cutoff, based on the specified distance,

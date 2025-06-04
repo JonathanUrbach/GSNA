@@ -5,7 +5,7 @@
 \title{gsnSubnetsDotPlot}
 \usage{
 gsnSubnetsDotPlot(
-  object,
+  object = NULL,
   pathways.data = NULL,
   merged.pathways.data = NULL,
   distance = NULL,
@@ -169,8 +169,9 @@ automatic calculation of the font size, and does not determine the size of image
 return the data.frame containing the data used to generate the plot object. (default: FALSE)}
 }
 \value{
-This function returns either a \strong{ggplot2} \code{ggplot} object (default) or a \code{plotly/htmlwidget}
-if the \code{interactive=TRUE} argument is specified.
+This function returns a \strong{ggplot2} \code{ggplot} object (default) or a \code{plotly/htmlwidget}
+if the \code{interactive=TRUE} argument is specified. If \code{return_subnets=TRUE} is specified, a
+data.frame is returned instead of a plot object, and the \code{interactive} argument is ignored.
 }
 \description{
 This function generates a \strong{ggplot2} or (if the \code{interactive=TRUE} argument is specified)

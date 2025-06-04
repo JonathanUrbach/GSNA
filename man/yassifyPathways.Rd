@@ -14,6 +14,7 @@ yassifyPathways(
   table_row_colors = c(`1` = "#EEF", `2` = "#FFD"),
   valign = "top",
   halign = "left",
+  color_by = "subnet",
   ...
 )
 }
@@ -43,6 +44,8 @@ URL. By default, this value is \code{TRUE}, suppressing this behavior.}
 
 \item{halign}{(optional) Specifies whether the horizontal alignment of text in the table cells should be \code{"left"},
 \code{"center"}, or \code{"right"}. Defaults to \code{"left"}.}
+
+\item{color_by}{(optional) Specifies the name of a field in a dataframe by which to color rows. (default "subnet").}
 
 \item{...}{Additional arguments passed to \code{DT::datatable}.}
 }

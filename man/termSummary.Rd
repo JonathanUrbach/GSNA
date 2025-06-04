@@ -54,7 +54,7 @@ function get_zero_score_words().)}
 \item{num_combine}{The number of (best) term summaries to combine for each term
 cluster. (default 1).}
 
-\item{make.unique}{Logical value that tells the function to make output term
+\item{make_unique}{Logical value that tells the function to make output term
 summaries unique. (default: TRUE)}
 }
 \value{

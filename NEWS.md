@@ -1,3 +1,9 @@
+# GSNA 0.1.6.7
+* Development version
+* `gsnSubnetsDotPlot()` was improved to allow it to function properly when passed a data.frame via the `merged.pathways.data` argument. Prior to this, it would reqire a GSNData object to produce a plot.  
+* `gsnSuggestCutoff()` was enhanced by the addition of the `extr_dist_quantile_override` argument, a logical value allowing users to override a quantile value when the distance corresponding to that quantile was an extreme value, either the maximum or minimum value. Hence, users can avoid a situation where clusters/subnets are either not resolved, no clusters are identified.  
+* `yassifyPathways()` was enhanced by the addition of the `color_by` argument, allowing users to specify a column by which to color output rows. (The default is 'subnet')  
+
 # GSNA 0.1.6.6
 * Development version
 * The `gsnSubnetsDotPlot()` was enhanced:

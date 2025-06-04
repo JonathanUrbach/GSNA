@@ -25,6 +25,8 @@
 #' \code{"middle"}, or \code{"bottom"}. Defaults to \code{"top"}.
 #' @param halign (optional) Specifies whether the horizontal alignment of text in the table cells should be \code{"left"},
 #' \code{"center"}, or \code{"right"}. Defaults to \code{"left"}.
+#' @param color_by (optional) Specifies the name of a field in a dataframe by which to color rows. (default "subnet").
+#'
 #' @param ... Additional arguments passed to \code{DT::datatable}.
 #' @return An attractive HTML table widget, optionally with unique IDs represented as links.
 #'
@@ -82,9 +84,19 @@
 #' # slower.
 #'
 #' @importFrom utils head
-yassifyPathways <- function (pathways, n = NULL, url_map_list = list(), url_map_by_words_list = list(),
-                             min_decimal = 5e-04, quiet = TRUE, table_row_colors = c(`1` = "#EEF",
-                                                                                     `2` = "#FFD"), valign = "top", halign = "left", ...)
+#'
+yassifyPathways <- function (pathways,
+                             n = NULL,
+                             url_map_list = list(),
+                             url_map_by_words_list = list(),
+                             min_decimal = 5e-04,
+                             quiet = TRUE,
+                             table_row_colors = c(`1` = "#EEF",
+                                                  `2` = "#FFD"),
+                             valign = "top",
+                             halign = "left",
+                             color_by = "subnet",
+                             ...)
 {
   if (is.null(n)) {
     n <- nrow(pathways)
@@ -154,9 +166,9 @@ yassifyPathways <- function (pathways, n = NULL, url_map_list = list(), url_map_
   if (!is.null(halign))
     .dt <- DT::formatStyle(table = .dt, columns = 0:ncol(pathways),
                            `text-align` = halign)
-  if ("subnet" %in% colnames(pathways) && !is.null(table_row_colors) &&
+  if (color_by %in% colnames(pathways) && !is.null(table_row_colors) &&
       length(table_row_colors) > 0) {
-    subnet.id <- unique(pathways$subnet)
+    subnet.id <- unique(pathways[[color_by]])
     if (!any(suppressWarnings(is.na(as.numeric(subnet.id)))) &&
         all(as.numeric(subnet.id) >= 1) && all(as.numeric(subnet.id) ==
                                                as.integer(subnet.id))) {
@@ -166,7 +178,7 @@ yassifyPathways <- function (pathways, n = NULL, url_map_list = list(), url_map_
       subnet.if <- as.integer(factor(subnet.id))
     }
     subnet.val <- table_row_colors[((1:length(subnet.id) - 1)%%length(table_row_colors)) + 1]
-    DT::formatStyle(.dt, "subnet", target = "row", backgroundColor = DT::styleEqual(subnet.id,
+    DT::formatStyle(.dt, color_by, target = "row", backgroundColor = DT::styleEqual(subnet.id,
                                                                                     subnet.val))
   }
   else {
@@ -191,111 +203,6 @@ yassifyPathways <- function (pathways, n = NULL, url_map_list = list(), url_map_
 }
 
 
-
-
-yassifyPathways.old <- function( pathways,
-                             n = NULL,
-                             url_map_list = list(),
-                             url_map_by_words_list = list(),
-                             min_decimal = 0.0005,
-                             quiet = TRUE,
-                             table_row_colors = c("1"="#EEF","2"="#FFD"),
-                             valign = "top",
-                             halign = "left",
-                             ...
-){
-  if( is.null(n) ){ n <- nrow(pathways) }
-
-  small_numeric_cols <- character()
-
-  other_numeric_cols <- colnames( pathways )[ sapply( X = colnames(pathways),
-                                                      FUN = function(x)
-                                                        class( pathways[[x]] ) == "numeric" && ! x %in% small_numeric_cols   ) ]
-
-  for( column in other_numeric_cols ){
-    pathways[[column]] <- sapply( X = pathways[[column]],
-                                  FUN = function(x){
-                                    if( is.na( x ) ) return( NA )
-                                    if( abs( x ) > 1000000 || abs(x) < min_decimal )
-                                      return( format( x, scientific = TRUE, digits = 5 ) )
-                                    return( format( x, scientific = FALSE, digits = 5 ) )
-                                  } )
-  }
-
-  for( column in names( url_map_list ) ){
-    if( ! is.null( pathways[[column]] ) ){
-      pathways[[column]] <- sapply( X = pathways[[column]],
-                                    FUN = function(x){
-                                      if( is.na( x ) ) return( "" )
-                                      if( ! x %in% names(url_map_list[[column]]) ){
-                                        if( ! quiet ) warning("Term '", x, "' not found.\n")
-                                        return( x )
-                                      }
-                                      url <- try( url_map_list[[column]][[x]] )
-                                      if( is.na( url ) ) return( x )
-                                      if( "try-error" %in% class( url ) ){
-                                        return( x )
-                                      }
-                                      paste0( "<a href=\"",url,"\" target=\"_blank\">", x, "</a>" )
-                                    } )
-    }
-  }
-
-  for( column in names( url_map_by_words_list ) ){
-    if( ! is.null( pathways[[column]] ) ){
-      .map <- as.list(url_map_by_words_list[[column]])
-      pathways[[column]] <- sapply( X = pathways[[column]],
-                                    FUN = function(x) try( {
-                                      ids_v <- unlist(stringr::str_match_all( string = x, pattern = "[\\w\\:]+" ))
-                                      x_cp <- x
-                                      for( id in ids_v ){
-                                        url <- .map[[id]]
-                                        if( !is.null( url ) & !is.na( url ) & nchar(url) > 0 )
-                                          x_cp <- gsub( pattern = id,
-                                                        replacement = paste0( "<a href=\"",url,"\" target=\"_blank\">",
-                                                                              id, "</a>" ),
-                                                        x = x_cp )
-                                      }
-                                      x_cp
-                                    } ) )
-    }
-  }
-  pathways <- utils::head( pathways, n )
-  .dt <- DT::datatable( pathways,
-                        escape=FALSE,
-                        rownames=FALSE, ... )
-
-  if( ! is.null( valign ) ) .dt <- DT::formatStyle( table = .dt, columns = 0:ncol(pathways), 'vertical-align' = valign )
-  if( ! is.null( halign ) ) .dt <- DT::formatStyle( table = .dt, columns = 0:ncol(pathways), 'text-align' = halign )
-
-  #if( all( c("subnet", "subnetRank" ) %in% colnames( pathways ) ) ){
-  if( "subnet" %in% colnames( pathways ) && !is.null(table_row_colors) && length(table_row_colors) > 0 ){
-    subnet.id <- unique( pathways$subnet )
-
-    # Convert to integers. If all subnet values are numeric and > 0 integer:
-    if( !  any( suppressWarnings( is.na( as.numeric( subnet.id ) ) ) ) &&
-        all( as.numeric( subnet.id ) >= 1 ) &&
-        all( as.numeric( subnet.id ) == as.integer( subnet.id ) )
-    ) { # Convert to integer directly.
-      subnet.id <- as.integer( subnet.id )
-    } else { # Otherwise, use factor:
-      subnet.if <- as.integer( factor( subnet.id ) )
-    }
-
-    #subnet.val <- c("1"="#EEE","2"="#FFF")[(as.numeric( subnet.id ) %% 2) + 1]
-    #subnet.val <- table_row_colors[(as.numeric( factor(subnet.id) ) %% length(table_row_colors)) ]
-
-    subnet.val <- table_row_colors[(( subnet.id  - 1) %% length(table_row_colors)) + 1]
-
-    DT::formatStyle( .dt,
-                     'subnet',
-                     target = 'row',
-                     backgroundColor = DT::styleEqual( subnet.id, subnet.val )
-    )
-  } else {
-    .dt
-  }
-}
 
 
 
