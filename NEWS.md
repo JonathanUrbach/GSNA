@@ -1,3 +1,7 @@
+# GSNA 0.1.6.8
+* Development version
+* Fixes a bug in `gsnSubnetsDotPlot()` that can lead to inappropriate duplication of x-axis labels.  
+
 # GSNA 0.1.6.7
 * Development version
 * `gsnSubnetsDotPlot()` was improved to allow it to function properly when passed a data.frame via the `merged.pathways.data` argument. Prior to this, it would reqire a GSNData object to produce a plot.  

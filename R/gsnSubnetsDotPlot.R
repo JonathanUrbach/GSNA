@@ -480,7 +480,7 @@ gsnSubnetsDotPlot <- function(
 
   if( length( .plots.l ) > 1 && 'fin' %in% names( .plots.l ) ){
     for( .name in names( .plots.l ) ){
-      if( .name != 'fin' ) .plots.l[[.name]] <- .plots.l[[.name]] + ggplot2::theme( axis.title.x=ggplot2::element_blank() )
+      if( .name != 'fin' ) .plots.l[[.name]] <- .plots.l[[.name]] + ggplot2::xlab(NULL)
     }
   }
 
@@ -491,7 +491,6 @@ gsnSubnetsDotPlot <- function(
     .labels <- stringr::str_wrap( .labels, width = label_width_chars )
   }
   .label_max_width.chars <- max( nchar( unlist( stringr::str_split( string = .labels, pattern = "\n" ) ) ) )
-  #.label_lines <- length( unlist( stringr::str_split( string = .labels, pattern = "\n" ) ) )
   .label_lines <- length( .labels ) * max( sapply( stringr::str_split( string = .labels, pattern = "\n" ), length ) )
 
   if( is.null( axis_font_size ) )
