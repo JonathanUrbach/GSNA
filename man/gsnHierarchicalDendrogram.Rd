@@ -122,7 +122,7 @@ the title part of the label is suppressed.}
 ID for the labeling gene sets in data set. If set to \code{NA}, the ID in the plot is disabled.}
 
 \item{font_face}{(optional) The font used for plot text, including leaf labels. For best results, this should be a
-monospaced font. If not specified, the system attempts to pick a suitable default: \code{'Andale Mono'} on Mac OS X,
+monospaced font. If not specified, the system attempts to pick a suitable default: \code{'mono'} on Mac OS X,
 \code{'Lucida Sans Typewriter'} for Windows, and \code{'mono'} for all other systems.}
 
 \item{color_labels_by}{(optional) This parameter tells the plotting function to assign colors to dendrogram
