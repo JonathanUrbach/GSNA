@@ -54,13 +54,13 @@ test_that( "termSummary works", {
               "GOBP_PHAGOCYTOSIS",
               "GOBP_REGULATED_EXOCYTOSIS" )
    .groups = c(1,1,1,1,1,1,1,2,2,2,2,2,2,2,2)
-   expect_equal( object = termSummary( terms = .terms, group = .groups ),
-                 expected = .expect )
+   expect_equal( object = unname( termSummary( terms = .terms, group = .groups ) ),
+                 expected = unname( .expect ) )
 
    # When there's no group argument, the output vector has no names.
    .expect2 <- c( "natural killer cell", "cell activation involved immune response")
    .terms2 <- c( "GOBP_REGULATION_OF_NATURAL_KILLER_CELL_ACTIVATION, GOBP_POSITIVE_REGULATION_OF_NATURAL_KILLER_CELL_ACTIVATION, GOBP_NATURAL_KILLER_CELL_ACTIVATION, GOBP_POSITIVE_REGULATION_OF_NATURAL_KILLER_CELL_PROLIFERATION, GOBP_ANTIBODY_DEPENDENT_CELLULAR_CYTOTOXICITY, GOBP_TYPE_II_HYPERSENSITIVITY, GOBP_NATURAL_KILLER_CELL_PROLIFERATION",
       "GOBP_MYELOID_LEUKOCYTE_ACTIVATION, GOBP_MYELOID_LEUKOCYTE_MEDIATED_IMMUNITY, GOBP_NATURAL_KILLER_CELL_ACTIVATION_INVOLVED_IN_IMMUNE_RESPONSE, GOBP_MYELOID_CELL_ACTIVATION_INVOLVED_IN_IMMUNE_RESPONSE, GOBP_LEUKOCYTE_DEGRANULATION, GOBP_NATURAL_KILLER_CELL_DEGRANULATION, GOBP_PHAGOCYTOSIS, GOBP_REGULATED_EXOCYTOSIS" )
-   expect_equal( object = termSummary( terms = .terms2 ), expected = .expect2 )
+   expect_equal( object = uname( termSummary( terms = .terms2 ) ), expected = unname( .expect2 ) )
 })
 
