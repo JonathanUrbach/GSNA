@@ -3,7 +3,10 @@
 * Adds support for FGSEA import in `gsnImportFGSEA()` and `gsnAddPathways()`.
 * For `makeNodeSizeLegend()` and `makeLeafSizeLegend()`, the new `logGraduations()` function has been introduced to take the place of `axisTicks()` for creating log scales.  
 * Introductory support for retaining the layout of networks such that it can be retained after subsetting by subnet.  
+<<<<<<< HEAD
 * 'mono' is used as the default monospace Mac font for plots, and 'Andale Mono' was removed.  
+=======
+>>>>>>> 2e3f2f435681b86c7c01ab7f66d86bb2a2da75a1
 
 # GSNA 0.1.6.8
 * Development version
