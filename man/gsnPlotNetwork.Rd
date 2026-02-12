@@ -41,9 +41,7 @@ gsnPlotNetwork(
   color.edges.by.distance = FALSE,
   edge_arrow_size = NULL,
   seed = 29189892,
-  layout = function(x) {
-     igraph::layout_with_fr(x, grid = "nogrid")
- },
+  layout = NULL,
   .plot = igraph::plot.igraph,
   show.legend = TRUE,
   legend.lab.cex = NULL,
@@ -67,6 +65,7 @@ gsnPlotNetwork(
   legend_spacing.y.in = par("cin")[2],
   resolution = 72,
   prepend_subnet = TRUE,
+  return_igraph = TRUE,
   DO_BROWSER = FALSE
 )
 }

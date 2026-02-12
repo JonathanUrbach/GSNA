@@ -762,5 +762,91 @@ color2IntV <- function( color ){
   as.vector(grDevices::col2rgb(color))
 }
 
+#' logGraduate
+#'
+#' @description Based on a range of user supplied values (usr) and a (single) paradigm or pattern,
+#' for the gradations, e.g. \code{c(1,2,5)}, \code{logGraduate()} returns a set of graduations.
+#'
+#' This function does the main work of \code{\link{logGraduate}()}.
+#'
+#' @param usr A range of values to be represented by the gradations.
+#'
+#' @param .paradigm A single numeric vector pattern to be used to generate the gradations. (Default is
+#' c(1,2,5))
+#'
+#' @return A vector of gradations.
+#'
+#' @seealso [logGraduations()]
+#'
+logGraduate <- function( usr, .paradigm = c( 1, 2, 5 ) ){
+  .grads <- c()
+  .usr <- range( usr )
 
+  .floor <- 10 ^ floor( log10(usr[1]) )
+  .ceil <- 10 ^ ceiling( log10( usr[2] ) )
+
+  .paradigm_range <- range(.paradigm)
+
+  .step_up <- 10 ^ ceiling(log10( .paradigm_range[2]/.paradigm_range[1] ) )
+
+  # We may add min_step_up to the argument list for more flexibility. For the moment, min_step_up is 10.
+  min_step_up = 10
+  if( .step_up < min_step_up ){ .step_up <- min_step_up }
+
+  # Generate .grads
+  .grads  <- .floor * .paradigm
+  .base <- .step_up * .floor
+  while( ! all( ( .pre_grads  <- .base * .paradigm ) > .ceil ) ){
+    .grads <- c( .grads, .pre_grads )
+    .base <- .step_up * .base
+  }
+  .grads <- .grads[ .grads >= .usr[1] & .grads <= .usr[2] ]
+  sort( unique( .grads ) )
+}
+
+
+#' logGraduations
+#'
+#' @description This function is meant to do what axisTicks should do for data to be represented on a
+#' log scale but performs poorly at. For numbers within the expected range of sizes of gene sets,
+#' where the sizes are greater than 1, but vary by less than 3-4 orders of magnitude, this returns
+#' an optimized set of gradations for a legend, based on a range of values provided by the user, the
+#' total desired number of gradations, a log-scale margin.
+#'
+#' @param usr A range of values to be represented by the gradations.
+#'
+#' @param nint The approximate number of gradations to return (default 5).
+#'
+#' @param log_margin This is a factor that extends the range of the gradation values returned.
+#' All values are within the range of \eqn{min(usr)*log_margin -> max(usr)/log_margin}.
+#' (Default is 10^{0.1} or about 25%.)
+#'
+#' @param .paradigms A list of numeric vector patterns to be used to generate the gradations. (Default is
+#' list(c(1,2,5), c(1,3), 1, 2, 3, 4, 5, 6, 8 ))
+#'
+#' @return A vector of gradations.
+#'
+#' @seealso [logGraduate()]
+logGraduations <- function(  usr,
+                            nint = 5,
+                            log_margin = 10^0.1,
+                            .paradigms = list(c(1,2,5), c(1,3), 1, 2, 3, 4, 5, 6, 8 ) ){
+  usr <- range( usr )
+  usr <- c(usr[1] / log_margin, usr[2] * log_margin ) # log_margin extends the range of the gradations by log_margin
+
+  .gradz <- lapply( X = .paradigms, FUN = function( .paradigm ) logGraduate(usr, .paradigm = .paradigm) )
+  # Now that we have a set of graduations, figure out which is closest to nint.
+  .nint_diff <- abs( sapply( .gradz, length ) - nint )
+  .nint_diff_min <- min( .nint_diff )
+  .gradz <- .gradz[.nint_diff == .nint_diff_min]
+
+
+  # Now figure out which values are best centered
+  .mean_log_usr <- mean(log10(usr))
+  .gradz_diff <- abs( sapply( .gradz, FUN = function(.grad) abs( mean(log10(.grad) ) - .mean_log_usr ) ) )
+  .gradz_diff_min <- min( .gradz_diff )
+  .gradz <- .gradz[.gradz_diff == .gradz_diff_min]
+
+  .gradz[[1]]
+}
 

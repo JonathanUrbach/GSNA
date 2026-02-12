@@ -79,54 +79,128 @@
 #'  \code{\link{gsnImportGSNORA}}
 #'  \code{\link{gsnImportGenericPathways}}
 #'
-gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
-  stopifnot( "GSNData" %in% class( object ) )
-  field_names <- colnames( pathways_data )
-  # "ID", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val"
-  if( ( !is.null(type) && type == "cerno" ) |
-      all( c( "ID", "cerno", "adj.P.Val" ) %in% field_names ) ){
-    message( "Using CERNO import." )
-    object <- gsnImportCERNO( object = object, pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
-  } else if ( ( !is.null(type) && type == "gsea" ) ||
-              ( all( c( "NAME", "ES", "NES" ) %in% field_names ) &&
-                any( c( "FDR q-val", "FDR.q.val" ) %in% field_names )
-              )
-  ){
-    message( "Using GSEA import." )
-    object <- gsnImportGSEA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
-  } else if ( (!is.null(type) && type == "gsnora" ) ||
-              (all( c("ID", "Title", "Enrichment", "P.1S" ) %in% field_names ))){
-    message( "Using GSN-ORA import." )
-    object <- gsnImportGSNORA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
-  } else if ( (!is.null(type) && type == "david" ) ||
-              (all( c("Category", "Term", "Count", "%", "PValue",
-                      "Genes", "List Total", "Pop Hits", "Pop Total",
-                      "Fold Enrichment", "Bonferroni", "Benjamini", "FDR") %in% field_names ))){
-    message( "Using DAVID import." )
-    object <- gsnImportDAVID( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
-  } else {
-    message( "Using generic pathways import." )
-    object <- gsnImportGenericPathways( object = object, pathways_data = pathways_data, type = type, id_col = id_col, stat_col = stat_col, sig_order = sig_order )
+#'
+gsnAddPathwaysData <- function (object, pathways_data, type = NULL, id_col = NULL,
+                                stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL,
+                                n_col = NULL)
+{
+  stopifnot("GSNData" %in% class(object))
+  field_names <- colnames(pathways_data)
+  if ((!is.null(type) && type == "cerno") | all(c("ID", "cerno",
+                                                  "adj.P.Val") %in% field_names)) {
+    message("Using CERNO import.")
+    object <- gsnImportCERNO(object = object, pathways_data,
+                             id_col = id_col, stat_col = stat_col, sig_order = sig_order,
+                             n_col = n_col)
   }
-
-  # Setting stat_col_2 and sig_order_2
-  if( ! is.null(stat_col_2) ){
-    if( ! stat_col_2 %in% colnames( object$pathways$data ) ){
-      stop( "stat_col_2 '", stat_col_2, "' not found in pathways data."  )
-    } else {
+  else if ((!is.null(type) && type == "gsea") || (all(c("NAME",
+                                                        "ES", "NES") %in% field_names) && any(c("FDR q-val",
+                                                                                                "FDR.q.val") %in% field_names))) {
+    message("Using GSEA import.")
+    object <- gsnImportGSEA(object = object, pathways_data = pathways_data,
+                            id_col = id_col, stat_col = stat_col, sig_order = sig_order,
+                            n_col = n_col)
+  }
+  else if ((!is.null(type) && type == "gsnora") || (all(c("ID",
+                                                          "Title", "Enrichment", "P.1S") %in% field_names))) {
+    message("Using GSN-ORA import.")
+    object <- gsnImportGSNORA(object = object, pathways_data = pathways_data,
+                              id_col = id_col, stat_col = stat_col, sig_order = sig_order,
+                              n_col = n_col)
+  }
+  else if ((!is.null(type) && type == "david") || (all(c("Category",
+                                                         "Term", "Count", "%", "PValue", "Genes", "List Total",
+                                                         "Pop Hits", "Pop Total", "Fold Enrichment", "Bonferroni",
+                                                         "Benjamini", "FDR") %in% field_names))) {
+    message("Using DAVID import.")
+    object <- gsnImportDAVID(object = object, pathways_data = pathways_data,
+                             id_col = id_col, stat_col = stat_col, sig_order = sig_order,
+                             n_col = n_col)
+  }
+  else if ((!is.null(type) && type == "fgsna") || (all(c("pathway", "pval", "padj", "log2err",
+                                                         "ES", "NES", "size", "leadingEdge") %in% field_names))) {
+    message("Using fgsna import.")
+    object <- gsnImportFGSEA(object = object, pathways_data = pathways_data,
+                             id_col = id_col, stat_col = stat_col, sig_order = sig_order,
+                             n_col = n_col)
+  }
+  else {
+    message("Using generic pathways import.")
+    object <- gsnImportGenericPathways(object = object, pathways_data = pathways_data,
+                                       type = type, id_col = id_col, stat_col = stat_col,
+                                       sig_order = sig_order)
+  }
+  if (!is.null(stat_col_2)) {
+    if (!stat_col_2 %in% colnames(object$pathways$data)) {
+      stop("stat_col_2 '", stat_col_2, "' not found in pathways data.")
+    }
+    else {
       object$pathways$stat_col_2 <- stat_col_2
     }
   }
-  if( !is.null(sig_order_2) ){
-    if( ! sig_order_2 %in% c( "loToHi", "hiToLo" ) ){
-      stop( "Invalid sig_order_2: ", as.character( sig_order_2 ) )
-    } else {
+  if (!is.null(sig_order_2)) {
+    if (!sig_order_2 %in% c("loToHi", "hiToLo")) {
+      stop("Invalid sig_order_2: ", as.character(sig_order_2))
+    }
+    else {
       object$pathways$sig_order_2 <- sig_order_2
     }
   }
-
   object
 }
+
+# gsnAddPathwaysData <- function( object, pathways_data, type = NULL, id_col = NULL, stat_col = NULL, sig_order = NULL, stat_col_2 = NULL, sig_order_2 = NULL, n_col = NULL ){
+#   stopifnot( "GSNData" %in% class( object ) )
+#   field_names <- colnames( pathways_data )
+#   # "ID", "Title", "cerno", "N1", "AUC", "cES", "P.Value", "adj.P.Val"
+#   if( ( !is.null(type) && type == "cerno" ) |
+#       all( c( "ID", "cerno", "adj.P.Val" ) %in% field_names ) ){
+#     message( "Using CERNO import." )
+#     object <- gsnImportCERNO( object = object, pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
+#   } else if ( ( !is.null(type) && type == "gsea" ) ||
+#               ( all( c( "NAME", "ES", "NES" ) %in% field_names ) &&
+#                 any( c( "FDR q-val", "FDR.q.val" ) %in% field_names )
+#               )
+#   ){
+#     message( "Using GSEA import." )
+#     object <- gsnImportGSEA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
+#   } else if ( (!is.null(type) && type == "gsnora" ) ||
+#               (all( c("ID", "Title", "Enrichment", "P.1S" ) %in% field_names ))){
+#     message( "Using GSN-ORA import." )
+#     object <- gsnImportGSNORA( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
+#   } else if ( (!is.null(type) && type == "david" ) ||
+#               (all( c("Category", "Term", "Count", "%", "PValue",
+#                       "Genes", "List Total", "Pop Hits", "Pop Total",
+#                       "Fold Enrichment", "Bonferroni", "Benjamini", "FDR") %in% field_names ))){
+#     message( "Using DAVID import." )
+#     object <- gsnImportDAVID( object = object, pathways_data = pathways_data, id_col = id_col, stat_col = stat_col, sig_order = sig_order, n_col = n_col )
+#   } else {
+#     message( "Using generic pathways import." )
+#     object <- gsnImportGenericPathways( object = object, pathways_data = pathways_data, type = type, id_col = id_col, stat_col = stat_col, sig_order = sig_order )
+#   }
+#
+#   # Setting stat_col_2 and sig_order_2
+#   if( ! is.null(stat_col_2) ){
+#     if( ! stat_col_2 %in% colnames( object$pathways$data ) ){
+#       stop( "stat_col_2 '", stat_col_2, "' not found in pathways data."  )
+#     } else {
+#       object$pathways$stat_col_2 <- stat_col_2
+#     }
+#   }
+#   if( !is.null(sig_order_2) ){
+#     if( ! sig_order_2 %in% c( "loToHi", "hiToLo" ) ){
+#       stop( "Invalid sig_order_2: ", as.character( sig_order_2 ) )
+#     } else {
+#       object$pathways$sig_order_2 <- sig_order_2
+#     }
+#   }
+#
+#   object
+# }
+
+
+
+
 
 
 #' gsnAddPathwayData

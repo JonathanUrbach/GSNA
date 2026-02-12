@@ -314,7 +314,8 @@ gsnPlotNetwork <- function( object,
                             color.edges.by.distance = FALSE,
                             edge_arrow_size = NULL,
                             seed = 29189892,
-                            layout = function(x){igraph::layout_with_fr(x, grid = "nogrid" )},
+                            #layout = function(x){igraph::layout_with_fr(x, grid = "nogrid" )},
+                            layout = NULL,
                             .plot = igraph::plot.igraph,
                             show.legend = TRUE,
                             legend.lab.cex = NULL,
@@ -338,6 +339,7 @@ gsnPlotNetwork <- function( object,
                             legend_spacing.y.in = par('cin')[2],
                             resolution = 72, # pixels per inch
                             prepend_subnet = TRUE,
+                            return_igraph = TRUE,
                             DO_BROWSER = FALSE
 
 ){
@@ -352,8 +354,8 @@ gsnPlotNetwork <- function( object,
   if( ( !is.null( stat_col ) && is.null( sig_order ) ) )
     stop("If stat_col is specified, so must sig_order be. ('loToHi' or 'hiToLo')")
   if( !is.null( stat_col_2 ) )
-      if( !is.na( stat_col_2 ) && is.null( sig_order_2 ) )
-    stop("If stat_col_2 is specified (other than NA), so must sig_order_2 be. ('loToHi' or 'hiToLo')")
+    if( !is.na( stat_col_2 ) && is.null( sig_order_2 ) )
+      stop("If stat_col_2 is specified (other than NA), so must sig_order_2 be. ('loToHi' or 'hiToLo')")
 
   # Set defaults from object
   if( is.null(distance) ) distance <- object$default_distance
@@ -407,7 +409,7 @@ gsnPlotNetwork <- function( object,
     transform_function <- get(transform_function)
   }
 
-  # Determine plot layout.
+  # Determine plot dimensions.
   if( is.null( width ) ) width <- par('fin')[1]   # grDevices::dev.size("in")[1]
   if( is.null( height ) ) height <- par('fin')[2] # grDevices::dev.size("in")[2]
 
@@ -554,8 +556,8 @@ gsnPlotNetwork <- function( object,
     if( ! is.null( substitute_id_col ) )
       id <- pathways_dat[ igraph::V(sigNet)$name, substitute_id_col ]
 
-      # Add Subnet
-      if( prepend_subnet ) id <- paste0( "(", subnet_by_vertex[igraph::V(sigNet)$name],") ", id )
+    # Add Subnet
+    if( prepend_subnet ) id <- paste0( "(", subnet_by_vertex[igraph::V(sigNet)$name],") ", id )
 
     # igraph::V(sigNet)$label <- paste0( gsub( x = id, pattern = '(.{1,15})([\\s\\~\\:])', replacement = '\\1\n' ),
     #                                    "\n",
@@ -566,7 +568,7 @@ gsnPlotNetwork <- function( object,
     igraph::V(sigNet)$label <- paste0( break_long_lines( x = id ),
                                        "\n",
                                        break_long_lines( x = pathways_dat[igraph::V(sigNet)$name, pathways_title_col ] ) )
-                                       # Adds converts '\s' to '\n' after up to 1
+    # Adds converts '\s' to '\n' after up to 1
   } else {
     if( prepend_subnet ) id <- paste0( "(", subnet_by_vertex[igraph::V(sigNet)$name],") ", id )
     igraph::V(sigNet)$label <- break_long_lines( x = id )
@@ -607,11 +609,11 @@ gsnPlotNetwork <- function( object,
     if( color.edges.by.distance ){
       warning( "The 'color.edges.by.distance' functionality will deprecated and removed in future versions." )
       igraph::E(sigNet)$color <-
-      myColorF( numbers = 1+as.integer(apply(X = read.table(text = attr( igraph::E(sigNet),"vnames" ), sep = "|"),
-                                             MARGIN = 1,
-                                             FUN = convert_fun ) * (length( edge_colors ) - 1 ) ),
-                n = length( edge_colors ),
-                colors = edge_colors )
+        myColorF( numbers = 1+as.integer(apply(X = read.table(text = attr( igraph::E(sigNet),"vnames" ), sep = "|"),
+                                               MARGIN = 1,
+                                               FUN = convert_fun ) * (length( edge_colors ) - 1 ) ),
+                  n = length( edge_colors ),
+                  colors = edge_colors )
     }
   }
 
@@ -661,11 +663,32 @@ gsnPlotNetwork <- function( object,
   # Set plot parameters
   par( mai = .mai.plot, new = new ) # This will be restored by an on.exit call
 
-  if( !is.null( seed ) ){
-    withr::with_seed( seed = seed, code = .plot(sigNet, layout = layout, xlim = c(-1,1), ylim = c(-1,1 ), new = new ) )
+  # If layout is NULL, check for precalculated layout coords. If they do not exist, calculate plot layout, then cache.
+  if( is.null( layout ) ) {
+    layout <- object$distances[[distance]]$layout
   } else {
-    .plot(sigNet, layout = layout, xlim = c(-1,1), ylim = c(-1,1 ), new = new)
+    object$distances[[distance]]$layout <- layout
   }
+
+  if( is.null( layout ) ) layout <- function(graph){igraph::layout_with_fr(graph, grid = "nogrid" )}
+
+  if( "function" %in% class( layout ) ){
+    if( is.null( seed ) ) seed <- object$distances[[distance]]$seed
+    if( is.null( seed ) ){
+      layout <- layout( sigNet ) # This converts layout to coord matrix.
+    } else {
+      layout <- withr::with_seed( seed = seed, code = layout( sigNet ) )
+      object$distances[[distance]]$seed <- seed
+    }
+    object$distances[[distance]]$layout <- layout # This should always be a matrix! #TEST#
+  }
+  #object$distances[[distance]]$layout <- layout
+
+  # if( !is.null( seed ) ){
+  #   withr::with_seed( seed = seed, code = .plot(sigNet, layout = layout, xlim = c(-1,1), ylim = c(-1,1 ), new = new ) )
+  # } else {
+  .plot(sigNet, layout = layout, xlim = c(-1,1), ylim = c(-1,1 ), new = new)
+  #}
   uxcpi <- get_usr_x_coords_per_inch()
 
 
@@ -807,7 +830,7 @@ gsnPlotNetwork <- function( object,
                        h.adjust = NULL,
                        legend.fg = legend.fg,
                        legend.bg = legend.bg
-                       ) #-> legend.dat
+      ) #-> legend.dat
       plt.idx <- plt.idx + 1
     } else if (! is.null( oneColorEncode.fun ) ){
       make1ColorLegend( numbers = numbers,
@@ -850,78 +873,82 @@ gsnPlotNetwork <- function( object,
 
   close_fun() -> out
 
-
   # Store plotting parameters as GSNA_plot_params attribute.
-  attr( x = sigNet, which = "GSNA_plot_params" ) <- list(filename = filename,
-                                                         out_format = out_format,
+  .plot_params <- list(filename = filename,
+                       out_format = out_format,
 
-                                                         width = width,
-                                                         height = height,
-                                                         vertex.size = vertex.size,
-                                                         vertex.size.range = vertex.size.range,
-                                                         vertex.label.cex = vertex.label.cex,
-                                                         vertex.shape =  vertex.shape,
-                                                         seed = seed,
-                                                         max_edge_width = max_edge_width,
+                       width = width,
+                       height = height,
+                       vertex.size = vertex.size,
+                       vertex.size.range = vertex.size.range,
+                       vertex.label.cex = vertex.label.cex,
+                       vertex.shape =  vertex.shape,
+                       seed = seed,
+                       max_edge_width = max_edge_width,
 
-                                                         transform_function = deparse(substitute(transform_function)),
+                       transform_function = deparse(substitute(transform_function)),
 
-                                                         edge_colors = edge_colors,
-                                                         vertex_colors = vertex_colors,
-                                                         vertex_colors.1 = vertex_colors.1,
-                                                         vertex_colors.2 = vertex_colors.2,
-                                                         combine_method = combine_method,
-                                                         na.color = na.color,
+                       edge_colors = edge_colors,
+                       vertex_colors = vertex_colors,
+                       vertex_colors.1 = vertex_colors.1,
+                       vertex_colors.2 = vertex_colors.2,
+                       combine_method = combine_method,
+                       na.color = na.color,
 
-                                                         vertex.label.col = vertex.label.col,
-                                                         vertex.frame.color = vertex.frame.color,
-                                                         contrasting_color.fun = deparse(substitute(contrasting_color.fun)),
-                                                         scale_labels_by_vertex = scale_labels_by_vertex,
-                                                         max_edge_width = max_edge_width,
-                                                         scale.edges.by.distance = scale.edges.by.distance,
-                                                         color.edges.by.distance = color.edges.by.distance,
-                                                         edge_arrow_size = edge_arrow_size,
+                       vertex.label.col = vertex.label.col,
+                       vertex.frame.color = vertex.frame.color,
+                       contrasting_color.fun = deparse(substitute(contrasting_color.fun)),
+                       scale_labels_by_vertex = scale_labels_by_vertex,
+                       max_edge_width = max_edge_width,
+                       scale.edges.by.distance = scale.edges.by.distance,
+                       color.edges.by.distance = color.edges.by.distance,
+                       edge_arrow_size = edge_arrow_size,
 
-                                                         layout = deparse(substitute(layout)),
-                                                         .plot = deparse(substitute(.plot)),
-                                                         show.legend = show.legend,
-                                                         legend.lab.cex = legend.lab.cex,
-                                                         legend.axis.cex = legend.axis.cex,
-                                                         legend.fg = legend.fg,
-                                                         legend.bg = legend.bg,
-                                                         legend.vertex.fg = legend.vertex.fg,
-                                                         legend.vertex.bg = legend.vertex.bg,
-                                                         font_face = font_face,
-                                                         main = main,
-                                                         cex.main = cex.main,
-                                                         mar.main = mar.main,
-                                                         lines.main = lines.main,
-                                                         .mar.plot = .mar.plot,
+                       layout = deparse(substitute(layout)),
+                       .plot = deparse(substitute(.plot)),
+                       show.legend = show.legend,
+                       legend.lab.cex = legend.lab.cex,
+                       legend.axis.cex = legend.axis.cex,
+                       legend.fg = legend.fg,
+                       legend.bg = legend.bg,
+                       legend.vertex.fg = legend.vertex.fg,
+                       legend.vertex.bg = legend.vertex.bg,
+                       font_face = font_face,
+                       main = main,
+                       cex.main = cex.main,
+                       mar.main = mar.main,
+                       lines.main = lines.main,
+                       .mar.plot = .mar.plot,
 
-                                                         draw.legend.box.bool = draw.legend.box.bool,
-                                                         legend.free.cex.bool = legend.free.cex.bool,
-                                                         legend_x_size.in = legend_x_size.in, #
-                                                         colors.n = colors.n,
-                                                         new = new,
-                                                         legend_spacing.x.in = legend_spacing.x.in,
-                                                         legend_spacing.y.in = legend_spacing.y.in,
+                       draw.legend.box.bool = draw.legend.box.bool,
+                       legend.free.cex.bool = legend.free.cex.bool,
+                       legend_x_size.in = legend_x_size.in, #
+                       colors.n = colors.n,
+                       new = new,
+                       legend_spacing.x.in = legend_spacing.x.in,
+                       legend_spacing.y.in = legend_spacing.y.in,
 
-                                                         distance = distance,
-                                                         id_col = id_col,
-                                                         substitute_id_col = substitute_id_col,
-                                                         stat_col = stat_col,
-                                                         stat_col_2 = stat_col_2,
-                                                         sig_order = sig_order,
-                                                         sig_order_2 = sig_order_2,
-                                                         n_col = n_col,
-                                                         optimal_extreme = optimal_extreme,
-                                                         pathways_title_col = pathways_title_col
+                       distance = distance,
+                       id_col = id_col,
+                       substitute_id_col = substitute_id_col,
+                       stat_col = stat_col,
+                       stat_col_2 = stat_col_2,
+                       sig_order = sig_order,
+                       sig_order_2 = sig_order_2,
+                       n_col = n_col,
+                       optimal_extreme = optimal_extreme,
+                       pathways_title_col = pathways_title_col
 
   )
+  attr( x = sigNet, which = "GSNA_plot_params" ) <- .plot_params
 
-  invisible( sigNet )
+  if( return_igraph ) return( invisible( sigNet ) )
+
+  # Otherwise, store plot parameters, etc in object
+  object$plot_params <- .plot_params
+  object$distances[[distance]]$igraph <- sigNet
+  invisible( object )
 } # gsnPlotNetwork
-
 
 
 
@@ -930,4 +957,14 @@ break_long_lines <- function( x ){
   gsub( pattern = '(.{1,15})(\\s+)', replacement = '\\1\n',
         x = gsub( x = x, pattern = '([~:;])', replacement = '\\1 ' ) )
 }
+
+
+
+
+
+
+
+
+
+
 

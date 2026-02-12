@@ -46,6 +46,10 @@
 #'   \item{\code{$distances[[DIST]]$pared}}{A pared distance matrix.}
 #'   \item{\code{$distances[[DIST]]$edges}}{A data.frame containing a gathered set of network edges derived from \code{$distances[[DIST]]$pared}}
 #'   \item{\code{$distances[[DIST]]$vertices}}{A complete list of gene set IDs in the network.}
+#'   \item{\code{$distances[[DIST]]$igraph}}{A plottable \code{igraph} object. This field is set when \code{gsnPlotNetwork()} is called with
+#'                                the argument \code{return_igraph = TRUE}.}
+#'   \item{\code{$distances[[DIST]]$layout}}{A 2-column matrix with vertex positions. This field is set when \code{gsnPlotNetwork()} is called
+#'                                with argument \code{return_igraph = TRUE}.}
 #'   \item{\code{$default_distance}}{The default distance used for network construction.}
 #'   \item{\code{$ordered_genes}}{A character vector containing the ordered list of genes in the data set (most important first).
 #'                                This list is also used as the background of observable genes for creating the
@@ -69,6 +73,8 @@
 #'                                and "hiToLo" indicating high values are optimal/most significant.}
 #'   \item{\code{$pathways$n_col}}{Indicates the name of the pathways column used to indicate effective gene set size, based on
 #'                                genes actually observable in an experimental data set.}
+#'   \item{\code{$plot_params}}{This contains a list of plotting parameters, useful for optimizing graphical parameters. This
+#'                                field is set when \code{gsnPlotNetwork()} is called with argument \code{return_igraph = TRUE}.}
 #'}
 #'
 #' @export
