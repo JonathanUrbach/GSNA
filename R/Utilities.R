@@ -818,8 +818,8 @@ logGraduate <- function( usr, .paradigm = c( 1, 2, 5 ) ){
 #' @param nint The approximate number of gradations to return (default 5).
 #'
 #' @param log_margin This is a factor that extends the range of the gradation values returned.
-#' All values are within the range of \eqn{min(usr)*log_margin -> max(usr)/log_margin}.
-#' (Default is 10^{0.1} or about 25%.)
+#' All values are within the range of \eqn{min(usr)*log\_margin -> max(usr)/log\_margin}.
+#' (Default is 10^0.1 or about 25%.)
 #'
 #' @param .paradigms A list of numeric vector patterns to be used to generate the gradations. (Default is
 #' list(c(1,2,5), c(1,3), 1, 2, 3, 4, 5, 6, 8 ))

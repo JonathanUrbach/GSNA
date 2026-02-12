@@ -212,6 +212,10 @@
 #' subnet identifier to the gene set identifier when plotting. If \code{FALSE}, the subnet identifier
 #' is not prepended. (default \code{TRUE})
 #'
+#' @param return_igraph (optional) Logical value telling the function to return an igraph object representing
+#' the gene set netowork. If \code{FALSE}, the GSNData object is returned instead with plot parameters and igraph
+#' embedded.
+#'
 #' @param DO_BROWSER (optional) Logical indicating whether browser() should be run for this function. (For debugging
 #' purposes, will probably remove.)
 #'
