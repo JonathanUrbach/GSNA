@@ -57,7 +57,6 @@ write_fake_david_cluster <- function( fake_david_chart, outfile, fake_cluster_ct
 }
 
 
-
 # This takes the gsnORAtest data and makes a fake GSEA
 fake_GSEA_data <- function(ora_data = PW.ORA, .gsc = GSC){
   .nrow <- nrow( ora_data )
@@ -81,4 +80,21 @@ fake_GSEA_data <- function(ora_data = PW.ORA, .gsc = GSC){
     check.names = FALSE)
 }
 
+# This takes the gsnORAtest data and makes a fake FGSEA data set
+fake_FGSEA_data <- function(ora_data = PW.ORA, .gsc = GSC){
+  .nrow = nrow( ora_data )
+  .gsc <- .gsc[ora_data$ID]
 
+  # "pathway", "pval", "padj", "log2err", "ES",  "NES", "size", "leadingEdge"
+  .out <- data.frame(
+    pathway = ora_data$ID,
+    `pval` = ora_data$P.1S,
+    `padj` = ora_data$adj.P.1S,
+    log2err = rep( 0.5, .nrow ),
+    ES = ora_data$Enrichment * 10,
+    NES = ora_data$Enrichment * 10,
+    size = ora_data$N,
+    check.names = FALSE)
+  .out$leadingEdge <- rep( list( c("AAA", "BBB", "CCC", "DDD", "EEE")), .nrow )
+  .out
+}

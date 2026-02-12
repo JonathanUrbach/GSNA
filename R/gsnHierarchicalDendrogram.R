@@ -63,7 +63,7 @@
 #' to the values to mitigate this problem, prior to log10 transformation, but for other types of data, other transformations
 #' or even 'identity' may be more suitable. (default, \code{nzLog10})
 #' @param font_face (optional) The font used for plot text, including leaf labels. For best results, this should be a
-#' monospaced font. If not specified, the system attempts to pick a suitable default: \code{'Andale Mono'} on Mac OS X,
+#' monospaced font. If not specified, the system attempts to pick a suitable default: \code{'mono'} on Mac OS X,
 #' \code{'Lucida Sans Typewriter'} for Windows, and \code{'mono'} for all other systems.
 #' @param color_labels_by (optional) This parameter tells the plotting function to assign colors to dendrogram
 #' leaf labels on on the basis of this argument. Currently, only 'subnets' and NULL are supported arguments.
@@ -198,7 +198,7 @@ gsnHierarchicalDendrogram <- function( object,
                                        pathways_title_col = c("Title", "Name", "NAME", "STANDARD_NAME" ),
                                        substitute_id_col = NULL,
 
-                                       font_face = NULL,     #"Andale Mono", 'Courier', 'mono', Lucida Sans Typewriter"
+                                       font_face = NULL,     #"mono", 'Courier', 'mono', Lucida Sans Typewriter"
 
                                        #modules = NULL,
 
@@ -312,7 +312,7 @@ gsnHierarchicalDendrogram <- function( object,
   if( is.null( font_face ) ){ # Pick a font. Sans serif monospaced if possible.
     .system <- Sys.info()['sysname']
     if( .system == 'Darwin' ){
-      font_face <-  "Andale Mono"
+      font_face <-  "mono"
     } else if ( .system == 'Windows' ) {
       font_face <- "Lucida Sans Typewriter"
     } else {

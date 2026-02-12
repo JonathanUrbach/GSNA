@@ -209,9 +209,10 @@ makeNodeSizeLegend <-
 
     # Calculate tic locations for tick_values
     if( log_scale ){
-      tick_values <- axisTicks( usr = log10( numbers.range ), log = TRUE )
+      #tick_values <- axisTicks( usr = log10( numbers.range ), log = TRUE )
+      tick_values <- logGraduations( usr = numbers.range, nint = 5 )
     } else {
-      tick_values <- axisTicks( usr = numbers.range, log = FALSE )
+      tick_values <- axisTicks( usr = numbers.range, log = FALSE, nint = 5 )
     }
 
     # Some conversions: User Coords per inch (x&y)
@@ -283,7 +284,13 @@ makeNodeSizeLegend <-
                                       2 * figureXsize2figureYsize( tick.radius.fu ),
                                       na.rm = TRUE ), legend.header.height.fu), na.rm = TRUE  )
 
-    y.dim.needed.fu <- y.line.height.fu * ( lines_needed + bottom_legend_margin ) * y.compression.factor
+    # This tells us how many line height equivalents we'll need due to the size of the largest legend tick
+    # assuming that it's at the bottom of the legend.
+    y.max_tick.radius.lines <- ( max_tick.radius.fu / y.line.height.fu ) * ( par('fin')[1]/ par('fin')[2] )
+    y.max_tick.radius.extralines <- max( (y.max_tick.radius.lines - 0.5), 0 )
+
+    #y.dim.needed.fu <- y.line.height.fu * ( lines_needed + bottom_legend_margin ) * y.compression.factor
+    y.dim.needed.fu <- y.line.height.fu * ( lines_needed + bottom_legend_margin + y.max_tick.radius.extralines ) * y.compression.factor
 
     if( y.dim.avail.fu < y.dim.needed.fu ) warning( "Node size legend may have insufficient height to plot." )
 
@@ -310,7 +317,15 @@ makeNodeSizeLegend <-
       y0 <- .plt.adj[3]
 
       ticks_needed <- length(tick_values)
-      ys <- seq( from = 0.5 + bottom_legend_margin, lines_needed - 0.5, length.out = lines_needed )
+
+      ## This value may need tweaking to optimize the geometry of the legend, since the bottom legend node often gets cut off.
+      # We may need to add a little extra space because of the largest node:
+      #bottom_legend_y_offset <- 1.5 + ( max_tick.radius.fu / y.line.height.fu ) * ( par('fin')[1]/ par('fin')[2] )
+      bottom_legend_y_offset <- 1.5 + y.max_tick.radius.extralines
+
+     # ys <- seq( from = bottom_legend_y_offset + bottom_legend_margin, lines_needed - 0.5, length.out = lines_needed )
+      ys <- seq( from = bottom_legend_y_offset + bottom_legend_margin, lines_needed + 1.0, length.out = lines_needed )
+      #ys <- seq( from = 0.5 + bottom_legend_margin, lines_needed - 0.5, length.out = lines_needed )
 
       vertices <- data.frame( tick_val = tick_values,
                               size.usr = tick.radius.usr,

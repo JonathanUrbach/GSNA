@@ -176,9 +176,11 @@ makeLeafSizeLegend <-
 
     # Calculate tic locations for tick_values
     if( log_scale ){
-      tick_values <- axisTicks( usr = log10( numbers.range ), log = TRUE )
+      #tick_values <- axisTicks( usr = log10( numbers.range ), log = TRUE )
+      tick_values <- logGraduations( usr = numbers.range, nint = 5 )
     } else {
-      tick_values <- axisTicks( usr = numbers.range, log = FALSE )
+      #tick_values <- axisTicks( usr = numbers.range, log = FALSE )
+      tick_values <- axisTicks( usr = numbers.range, log = FALSE, nint = 5 )
     }
 
     # Order ticks appropriately
